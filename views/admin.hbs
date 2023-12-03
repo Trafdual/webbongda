@@ -9,6 +9,10 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<!-- My CSS -->
 	<title>AdminMangaLand</title>
@@ -646,7 +650,7 @@
 
 	<!-- SIDEBAR -->
 	<section id="sidebar">
-		<a href="#" class="brand">
+		<a href="" class="brand">
 			<i class='bx bxs-smile'></i>
 			<span class="text">AdminMangaLand</span>
 		</a>
@@ -658,39 +662,40 @@
 				</a>
 			</li>
 			<li>
-				<a href="#" id="userManagerLink">
+				<a href="#userManagerLink" id="userManagerLink">
 					<i class='bx bxs-user'></i>
 					<span class="text">User Management</span>
 				</a>
 			</li>
 			<li>
-				<a href="#" id="categoryManagerLink">
+				<a href="#categoryManagerLink" id="categoryManagerLink">
 					<i class='bx bxs-category'></i>
 					<span class="text">Category Manager</span>
 				</a>
 			</li>
 			<li>
-				<a id="mangaManagerLink" href="#">
+				<a id="mangaManagerLink" href="#mangaManagerLink">
 					<i class='bx bxs-book-bookmark'></i>
 					<span class="text">Manga Manager</span>
 				</a>
 			</li>
 			<li>
-				<a id="chapterManagerLink" href="#">
+				<a id="chapterManagerLink" href="#chapterManagerLink">
 					<i class='bx bx bxs-file'></i>
 					<span class="text">Chapter Manager</span>
 				</a>
 			</li>
 			<li>
-				<a href="#" id="revenueManagerLink">
+				<a href="" id="revenueManagerLink">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
 				</a>
 			</li>
+
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="#">
+				<a href="">
 					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
@@ -712,8 +717,8 @@
 		<!-- NAVBAR -->
 		<nav>
 			<i class='bx bx-menu'></i>
-			<a href="#" class="nav-link">Manager</a>
-			<form action="#">
+			<a href="" class="nav-link">Manager</a>
+			<form action="">
 				<div class="form-input">
 					<input type="search" placeholder="Search...">
 					<button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
@@ -721,7 +726,7 @@
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
+			<a href="" id="notification" class="notification">
 				<i class='bx bxs-bell'></i>
 				<span class="num">8</span>
 			</a>
@@ -738,7 +743,7 @@
 					<h1>Dashboard</h1>
 					<ul class="breadcrumb">
 						<li>
-							<a href="#">Dashboard</a>
+							<a href="">Dashboard</a>
 						</li>
 						<li><i class='bx bx-chevron-right'></i></li>
 						<li>
@@ -916,7 +921,7 @@
 		const mangaManagerLink = document.getElementById('mangaManagerLink');
 
 		mangaManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/mangass')
 				.then(response => response.text())
 				.then(data => {
@@ -926,10 +931,10 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-			const chapterManagerLink = document.getElementById('chapterManagerLink');
+		const chapterManagerLink = document.getElementById('chapterManagerLink');
 
 		chapterManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/getchap')
 				.then(response => response.text())
 				.then(data => {
@@ -940,89 +945,136 @@
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		
-    function setupChapterPage() {
-        const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-        chapterDetailButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                const chapterId = this.getAttribute('data-chapter-id');
-                fetch(`/chapterchitiet/${chapterId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            const modalBody = document.querySelector('#image-modal .modal-body');
-                            {{!-- const imagesHtml = data.map(image => `<img src="${image}" style="width: 100px; height: 100px;" loading="lazy">`).join(''); --}}
-                            modalBody.innerHTML = '';
-							  data.forEach(image => {
-                                    const imgElement = document.createElement('img');
-                                    imgElement.src = image;
-                                    imgElement.style.width = '100px';
-                                    imgElement.style.height = '100px';
-                                    imgElement.style.margin = '5px';
-                                    imgElement.style.objectFit = 'cover';
-                                    modalBody.appendChild(imgElement);
-                                });
-                            $('#image-modal').modal('show');
-                        } else {
-                            alert('Chưa có ảnh cho chương này.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy dữ liệu ảnh:', error);
-                        alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
-                    });
-            });
-        });
-    }
+		function setupChapterPage() {
+			const chapterDetailButtons = document.querySelectorAll('.detail-button');
 
-	const revenueManagerLink = document.getElementById('revenueManagerLink');
+			chapterDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const chapterId = this.getAttribute('data-chapter-id');
+					fetch(`/chapterchitiet/${chapterId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data.length > 0) {
+								const modalBody = document.querySelector('#image-modal .modal-body');
+								modalBody.innerHTML = '';
+								data.forEach(image => {
+									const imgElement = document.createElement('img');
+									imgElement.src = image;
+									imgElement.style.width = '100px';
+									imgElement.style.height = '100px';
+									imgElement.style.margin = '5px';
+									imgElement.style.objectFit = 'cover';
+									modalBody.appendChild(imgElement);
+								});
+								$('#image-modal').modal('show');
+							} else {
+								alert('Chưa có ảnh cho chương này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy dữ liệu ảnh:', error);
+							alert('Đã xảy ra lỗi khi lấy dữ liệu ảnh.');
+						});
+				});
+			});
+		}
+
+		const revenueManagerLink = document.getElementById('revenueManagerLink');
 
 		revenueManagerLink.addEventListener("click", function (event) {
-    event.preventDefault();
-    fetch('/getrevenue')
-        .then(response => response.json())
-        .then(data => {
-            const mainContent = document.querySelector("#main-content");
-            const revenueChartDiv = document.createElement('div');
-            revenueChartDiv.classList.add('revenue-chart');
-            revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
-            mainContent.innerHTML = '';
-            mainContent.appendChild(revenueChartDiv);
-            const dates = data.map(item => item.date);
-            const amounts = data.map(item => item.totalAmount);
-            createRevenueChart(dates, amounts);
-        })
-        .catch(error => console.error('Đã xảy ra lỗi:', error));
-});
+			event.preventDefault();
+			fetch('/revenue')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					updateChart();
+					initializeChart()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
 
-const createRevenueChart = (dates, amounts) => {
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Doanh thu',
-                data: amounts,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-};
+		const fetchRevenueData = async (startDate, endDate) => {
+			let url = '/getrevenue';
+			if (startDate && endDate) {
+				url += `?startDate=${startDate}&endDate=${endDate}`;
+			}
 
-	const categoryManagerLink = document.getElementById('categoryManagerLink');
+			const response = await fetch(url);
+			const data = await response.json();
+			return data;
+		};
+
+		const updateChart = async () => {
+			const startDate = document.getElementById('startDate').value;
+			const endDate = document.getElementById('endDate').value;
+			const data = await fetchRevenueData(startDate, endDate);
+
+			const dates = data.map(item => item.date);
+			const amounts = data.map(item => item.totalAmount);
+
+			const ctx = document.getElementById('revenueChart').getContext('2d');
+
+			// Phá hủy instance biểu đồ trước nếu nó tồn tại
+			if (window.revenueChart) {
+				window.revenueChart.destroy();
+			}
+
+			createRevenueChart(dates, amounts);
+		};
+
+
+		const initializeChart = async () => {
+			const startDateInput = document.getElementById('startDate');
+			const endDateInput = document.getElementById('endDate');
+
+			const startDate = startDateInput ? startDateInput.value : null;
+			const endDate = endDateInput ? endDateInput.value : null;
+			const data = await fetchRevenueData(startDate, endDate);
+			const mainContent = document.querySelector("#reve");
+			const revenueChartDiv = document.createElement('div');
+			revenueChartDiv.classList.add('revenue-chart');
+			revenueChartDiv.innerHTML = `<canvas id="revenueChart" width="800" height="400"></canvas>`;
+			mainContent.innerHTML = '';
+			mainContent.appendChild(revenueChartDiv);
+
+			const dates = data.map(item => item.date);
+			const amounts = data.map(item => item.totalAmount);
+			createRevenueChart(dates, amounts);
+		};
+
+		const createRevenueChart = (dates, amounts) => {
+			const ctx = document.getElementById('revenueChart').getContext('2d');
+			window.revenueChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dates,
+					datasets: [{
+						label: 'Doanh thu',
+						data: amounts,
+						borderColor: 'rgb(75, 192, 192)',
+						tension: 0.1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
+			const totalRevenue = amounts.reduce((acc, curr) => acc + curr, 0);
+
+			// Hiển thị tổng doanh thu
+			document.getElementById('totalRevenue').textContent = `Total Revenue: ${totalRevenue.toFixed(2)}$`
+		};
+
+		const categoryManagerLink = document.getElementById('categoryManagerLink');
 
 		categoryManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+			event.preventDefault();
 			fetch('/categoryscreen')
 				.then(response => response.text())
 				.then(data => {
@@ -1033,33 +1085,33 @@ const createRevenueChart = (dates, amounts) => {
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
 
-		function setcategory(){
-			  $(document).ready(function () {
-            // Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
-            $("#addCategoryButton").click(function () {
-                $("#addCategoryModal").modal("show");
-            });
+		function setcategory() {
+			$(document).ready(function () {
+				// Hiện dialog thêm thể loại khi bấm nút "Thêm thể loại"
+				$("#addCategoryButton").click(function () {
+					$("#addCategoryModal").modal("show");
+				});
 
-            // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
-            $(".editCategoryButton").click(function () {
-                // Lấy thông tin thể loại từ hàng bảng
-                var categoryId = $(this).closest("tr").find("td:first").text();
-                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+				// Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
+				$(".editCategoryButton").click(function () {
+					// Lấy thông tin thể loại từ hàng bảng
+					var categoryId = $(this).closest("tr").find("td:first").text();
+					var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
 
-                // Hiển thị thông tin thể loại trong modal sửa thể loại
-                $("#editCategoryname").val(categoryname);
+					// Hiển thị thông tin thể loại trong modal sửa thể loại
+					$("#editCategoryname").val(categoryname);
 
-                // Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
-                $("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
+					// Đặt action của form sửa thể loại để gửi cập nhật đúng thể loại
+					$("#editCategoryForm").attr("action", "/categoryput/" + categoryId);
 
-                $("#editCategoryModal").modal("show");
-            });
+					$("#editCategoryModal").modal("show");
+				});
 
-        });
+			});
 		}
 		const userManagerLink = document.getElementById('userManagerLink');
-			userManagerLink.addEventListener("click", function (event) {
-			 event.preventDefault(); 
+		userManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
 			fetch('/userscreen')
 				.then(response => response.text())
 				.then(data => {
@@ -1069,33 +1121,318 @@ const createRevenueChart = (dates, amounts) => {
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
-	
-		function setuser(){
-			  $(document).ready(function () {
 
-            $("#addCategoryButton").click(function () {
-                $("#addCategoryModal").modal("show");
-            });
+		function setuser() {
+			$(document).ready(function () {
+
+				$("#addCategoryButton").click(function () {
+					$("#addCategoryModal").modal("show");
+				});
 
 
-            $(".editCategoryButton").click(function () {
+				$(".editCategoryButton").click(function () {
 
-                var id = $(this).closest("tr").find("td:first").text();
-                var username = $(this).closest("tr").find("td:nth-child(2)").text();
-                var password = $(this).closest("tr").find("td:nth-child(3)").text();
-                var role = $(this).closest("tr").find("td:nth-child(4)").text();
+				 var id = $(this).closest("tr").find(".user-id").text();
+                var username = $(this).closest("tr").find(".user-username").text();
+                var phone = $(this).closest("tr").find(".user-phone").text();
+                var role = $(this).closest("tr").find(".user-role").text();
 
                 $("#editusername").val(username);
-                $("#editpassword").val(username);
+                $("#editphone").val(phone);
                 $("#editrole").val(role);
 
+					$("#editCategoryForm").attr("action", "/userput/" + id);
 
-                $("#editCategoryForm").attr("action", "/userput/" + id);
+					$("#editCategoryModal").modal("show");
+				});
 
-                $("#editCategoryModal").modal("show");
-            });
+			});
+		}
 
-        });
+		const notificationManagerLink = document.getElementById('notification');
+		notificationManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/rendernotifi')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setupMangaPage()
+					mangasua()
+					annut()
+					chapDetail()
+					chapDetailsua()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+
+
+		fetch('/unread-count')
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				// Cập nhật số lượng thông báo chưa đọc trong thẻ span
+				const notificationSpan = document.querySelector('.num');
+				notificationSpan.innerText = data.unreadCount.toString();
+			})
+			.catch(error => console.error(error));
+
+		function setupMangaPage() {
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+
+			mangaDetailButtons.forEach(button => {
+
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifi/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả: ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết truyện.');
+						});
+				});
+			});
+		}
+		function annut() {
+			$(document).ready(function () {
+				$('.huymangaButton').click(function () {
+					$('#huymangaModal').modal('show');
+				});
+				$('.huysuamangaButton').click(function () {
+					$('#huysuamangaModal').modal('show');
+				});
+				$('.huychapButton').click(function () {
+					$('#huychapModal').modal('show');
+				});
+				$('.huysuachapButton').click(function () {
+					$('#huysuachapModal').modal('show');
+				});
+			})
+
+			const approveMangaButtons = document.querySelectorAll('.approveMangaButton');
+			const approveChapButtons = document.querySelectorAll('.approveChapButton');
+			const approvesuatruyen = document.querySelectorAll('.approvesuatruyen');
+			const approvesuachap = document.querySelectorAll('.approvesuachap');
+			const titleCells = document.querySelectorAll('.titleCell');
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+			const mangaDetailButtons = document.querySelectorAll('.manga-detail-button');
+			const chapSuaDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+			const huymangaButton = document.querySelectorAll('.huymangaButton');
+			const huychapButton = document.querySelectorAll('.huychapButton');
+			const huysuachapButton = document.querySelectorAll('.huysuachapButton');
+			const huysuamangaButton = document.querySelectorAll('.huysuamangaButton');
+
+			approveMangaButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approveChapButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			approvesuatruyen.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			approvesuachap.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			mangaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			chapSuaDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			chapDetailButtons.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			huysuamangaButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+
+			huymangaButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+			huysuachapButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+					button.style.display = 'none';
+				}
+			});
+
+			huychapButton.forEach((button, index) => {
+				const title = titleCells[index].textContent.trim();
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+					button.style.display = 'none';
+				}
+			});
+		}
+
+		function mangasua() {
+
+			const mangaSuaDetailButtons = document.querySelectorAll('.mangasua-detail-button');
+
+			mangaSuaDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/manganotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết sửa truyện trong modal
+								document.getElementById('mangaDetailImage').src = data.image;
+								document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+								document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+								document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+								document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+								// Các trường thông tin khác nếu có
+
+								// Kích hoạt modal
+								$('#mangaDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết sửa cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+						});
+				});
+			});
+		}
+
+		function chapDetail() {
+			const chapDetailButtons = document.querySelectorAll('.chap-detail-button');
+
+			chapDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/chapternotify/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết chap trong modal mới
+								document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+								document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+								const imagesContainer = document.getElementById('chapDetailImages');
+								imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+								data.images.forEach(imageSrc => {
+									const imgElement = document.createElement('img');
+									imgElement.src = imageSrc;
+									imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
+									imgElement.style.height = '500px';
+									imgElement.style.borderRadius = '0';
+									imgElement.style.margin = '0 auto'
+									imgElement.style.maxWidth = '100%'
+									imagesContainer.appendChild(imgElement);
+								});
+								// Kích hoạt modal mới
+								$('#chapDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho chap này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết chap:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+						});
+				});
+			});
+		}
+		function chapDetailsua() {
+			const chapDetailButtons = document.querySelectorAll('.chapsua-detail-button');
+
+			chapDetailButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/chapternotifysua/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								// Hiển thị thông tin chi tiết chap trong modal mới
+								document.getElementById('chapDetailMangaNameAndNumber').textContent = `Chap ${data.number} - Truyện ${data.mangaName}`;
+								document.getElementById('chapDetailVipOrFreeAndPrice').textContent = `${data.viporfree} - price: ${data.price} coin`;
+								const imagesContainer = document.getElementById('chapDetailImages');
+								imagesContainer.innerHTML = ""; // Xóa nội dung cũ
+								data.images.forEach(imageSrc => {
+									const imgElement = document.createElement('img');
+									imgElement.src = imageSrc;
+									imgElement.style.width = '500px'; // Đảm bảo chiều rộng không vượt quá 100%
+									imgElement.style.height = '500px';
+									imgElement.style.borderRadius = '0';
+									imgElement.style.margin = '0 auto'
+									imgElement.style.maxWidth = '100%'
+									imagesContainer.appendChild(imgElement);
+								});
+								// Kích hoạt modal mới
+								$('#chapDetailModal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết cho chap này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết chap:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
+						});
+				});
+			});
 		}
 	</script>
 </body>
