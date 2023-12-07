@@ -686,6 +686,12 @@
 				</a>
 			</li>
 			<li>
+				<a id="baivietManagerLink" href="#baivietManagerLink">
+					<i class='bx bxs-receipt'></i>
+					<span class="text">Baiviet Manager</span>
+				</a>
+			</li>
+			<li>
 				<a href="" id="revenueManagerLink">
 					<i class='bx bxs-dollar-circle'></i>
 					<span class="text">Revenue Management</span>
@@ -695,7 +701,7 @@
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="">
+				<a href="#" id="setting">
 					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
@@ -731,7 +737,7 @@
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="https://lmhoptacxatthue.com.vn/wp-content/uploads/2023/05/anh-con-cho-ngao-10.jpg">
+				<img src="data:image/jpeg;base64,{{user.avatar}}">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -753,35 +759,10 @@
 				</div>
 			</div>
 
-			<ul class="box-info">
-				<li>
-					<i class='bx bxs-calendar-check'></i>
-					<span class="text">
-						<h3>1020</h3>
-						<p>New Order</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-group'></i>
-					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-dollar-circle'></i>
-					<span class="text">
-						<h3>$2543</h3>
-						<p>Total Sales</p>
-					</span>
-				</li>
-			</ul>
-
-
 			<div class="table-data">
 				<div class="order">
 					<div class="head">
-						<h3>Top5</h3>
+						<h3>Top 5 truyện nhiều lượt xem nhất</h3>
 						<i class='bx bx-search'></i>
 						<i class='bx bx-filter'></i>
 					</div>
@@ -798,35 +779,6 @@
 
 						</tbody>
 					</table>
-				</div>
-				<div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus'></i>
-						<i class='bx bx-filter'></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</main>
@@ -1132,16 +1084,16 @@
 
 				$(".editCategoryButton").click(function () {
 
-				 var id = $(this).closest("tr").find(".user-id").text();
-                var username = $(this).closest("tr").find(".user-username").text();
-                var phone = $(this).closest("tr").find(".user-phone").text();
-                var role = $(this).closest("tr").find(".user-role").text();
+					var id = $(this).data("id");
+					var username = $(this).closest("tr").find(".user-username").text();
+					var phone = $(this).closest("tr").find(".user-phone").text();
+					var role = $(this).closest("tr").find(".user-role").text();
 
-                $("#editusername").val(username);
-                $("#editphone").val(phone);
-                $("#editrole").val(role);
+					$("#editusername").val(username);
+					$("#editphone").val(phone);
+					$("#editrole").val(role);
 
-					$("#editCategoryForm").attr("action", "/userput/" + id);
+					$("#editCategoryForm").attr("action", "/userputweb/" + id);
 
 					$("#editCategoryModal").modal("show");
 				});
@@ -1245,81 +1197,81 @@
 
 			approveMangaButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			approveChapButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			approvesuatruyen.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 			approvesuachap.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			mangaSuaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			mangaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 			chapSuaDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			chapDetailButtons.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			huysuamangaButton.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			huymangaButton.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 			huysuachapButton.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt thêm chap' || title === 'Duyệt sửa truyện' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
 
 			huychapButton.forEach((button, index) => {
 				const title = titleCells[index].textContent.trim();
-				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap') {
+				if (title === 'Duyệt thêm truyện' || title === 'Duyệt sửa truyện' || title === 'Duyệt sửa chap' || title === 'Report') {
 					button.style.display = 'none';
 				}
 			});
@@ -1432,6 +1384,120 @@
 							alert('Đã xảy ra lỗi khi lấy chi tiết chap.');
 						});
 				});
+			});
+		}
+
+		const baivietManagerLink = document.getElementById('baivietManagerLink');
+
+		baivietManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/renderbaiviet')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setbaiviet()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function setbaiviet() {
+			$(document).ready(function () {
+				$("#postContent").click(function () {
+					$("#myModal").modal("show");
+				});
+
+			});
+		}
+		const settingmanage = document.getElementById('setting');
+
+		settingmanage.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/setting')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setting()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function setting() {
+			$(document).ready(function () {
+				$("#avatar").click(function () {
+					$("#myModal").modal("show");
+				});
+				$("#repass").click(function () {
+					$("#mk").modal("show");
+				});
+				$("#rename").click(function () {
+					$("#modalusername").modal("show");
+				});
+				$("#banking").click(function () {
+					$("#modalbank").modal("show");
+				});
+				$("#bankingmanage").click(function () {
+					$("#modalbankmanage").modal("show");
+					fetch("/bank")
+						.then(response => response.json())
+						.then(data => {
+							// Hiển thị danh sách tài khoản ngân hàng trong modal
+							const bankList = $("#bankList");
+							bankList.empty();
+							data.forEach(bank => {
+								const listItem = `<div class="bank-item">
+            <div class="info">
+              <p>Họ và tên: ${bank.hovaten}</p>
+              <p>Phương thức: ${bank.phuongthuc}</p>
+              <p>Số tài khoản: ${bank.sotaikhoan}</p>
+            </div>
+            <div class="qr-code">
+              <img id="imgQR" src="data:image/jpeg;base64,${bank.maQR}">
+            </div>
+          </div>
+          <hr>`;
+								bankList.append(listItem);
+							});
+						})
+						.catch(error => {
+							console.error('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng:', error);
+							alert('Đã xảy ra lỗi khi lấy danh sách tài khoản ngân hàng.');
+						});
+				});
+				$("#mk form").submit(function (e) {
+					e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+
+					// Lấy giá trị từ các trường nhập liệu
+					var passOld = $("#passOld").val();
+					var passNew = $("#passNew").val();
+
+					// Gửi yêu cầu AJAX đến /repass
+					fetch("/repass", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							passOld: passOld,
+							passNew: passNew,
+						}),
+					})
+						.then(response => response.json())
+						.then(data => {
+							if (data.message) {
+								alert(data.message);
+								$("#mk").modal("hide");
+							}
+						})
+						.catch(error => {
+							alert("Đã xảy ra lỗi khi đổi mật khẩu: " + error.message);
+						});
+				});
+
+
+				$("#saveButton").click(function () {
+					$("#mk form").submit();
+				});
+
 			});
 		}
 	</script>

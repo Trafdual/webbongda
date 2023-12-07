@@ -27,19 +27,17 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: center;">id</th>
-                            <th style="text-align: center;">username</th>
-                            <th style="text-align: center;">phone</th>
-                            <th style="text-align: center;">role</th>
-                            <th style="text-align: center;">coin</th>
-                            <th style="text-align: center;">nút</th>
+                            <th style="text-align: center;">Username</th>
+                            <th style="text-align: center;">Phone</th>
+                            <th style="text-align: center;">Role</th>
+                            <th style="text-align: center;">Coin</th>
+                            <th style="text-align: center;">Option</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {{#each user}}
                         <tr>
-                            <td style="text-align: center;" class="user-id">{{this._id}}</td>
                             <td style="text-align: center;" class="user-username">{{this.username}}</td>
                             <td style="text-align: center;" class="user-phone">{{this.phone}}</td>
                             <td style="text-align: center;" class="user-role">{{this.role}}</td>
@@ -48,10 +46,10 @@
                                 <form style="margin-top: 10px;" action="/userput/{{this._id}}" method="get">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-                                        type="button" class="editCategoryButton">Edit</button>
+                                        type="button" class="editCategoryButton" data-id="{{this._id}}">Edit</button>
                                 </form>
-                                <form style="margin-top: 10px;" action="/userdelete/{{this._id}}"
-                                    onclick="return confirm('ban co muon xoa khong ?" method="post">
+                                <form style="margin-top: 10px;" action="/userdeleteweb/{{this._id}}"
+                                    onclick="return confirm('Bạn có muốn xóa người dùng này?" method="post">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
                                         type="submit">Delete</button>
@@ -78,7 +76,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form thêm thể loại -->
-                    <form id="addCategoryForm" method="post" action="/register">
+                    <form id="addCategoryForm" method="post" action="/registerweb">
                         <div class="form-group">
                             <label for="username">username:</label>
                             <input type="text" class="form-control" id="username" name="username">
@@ -106,7 +104,7 @@
         </div>
     </div>
 
-    <!-- Modal Sửa thể loại -->
+    <!-- Modal Sửa user -->
     <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -118,15 +116,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Form sửa thể loại -->
                     <form id="editCategoryForm" method="post">
                         <div class="form-group">
                             <label for="editusername">username:</label>
                             <input type="text" class="form-control" id="editusername" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="editpassword">password:</label>
-                            <input type="text" class="form-control" id="editpassword" name="password">
                         </div>
                         <div class="form-group">
                             <label for="editrole">role:</label>
@@ -157,7 +150,7 @@
 
             $(".editCategoryButton").click(function () {
 
-                var id = $(this).closest("tr").find(".user-id").text();
+                 var id = $(this).data("id");
                 var username = $(this).closest("tr").find(".user-username").text();
                 var phone = $(this).closest("tr").find(".user-phone").text();
                 var role = $(this).closest("tr").find(".user-role").text();
@@ -167,7 +160,7 @@
                 $("#editrole").val(role);
 
 
-                $("#editCategoryForm").attr("action", "/userput/" + id);
+                $("#editCategoryForm").attr("action", "/userputweb/" + id);
 
                 $("#editCategoryModal").modal("show");
             });
