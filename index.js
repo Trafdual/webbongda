@@ -998,13 +998,14 @@ app.get('/baivietreport/:baivietId',async(req,res)=>{
       res.status(404).json({ message: 'không tìm thấy user' });
     }
     const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
-    res.json({
-      avatar:user.avatar,
+    const formatdata= {
+      avatar:user.avatar || '',
       username:user.username,
       content:baiviet.content,
       date:formattedDate,
       images:baiviet.images || ''
-    })
+    }
+    res.json(formatdata)
   } catch (error) {
     console.error('Lỗi khi tìm bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm bài viết.' });

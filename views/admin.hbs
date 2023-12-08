@@ -1435,12 +1435,12 @@
 								}
 								$('#reportmodal').modal('show');
 							} else {
-								alert('Không có thông tin chi tiết sửa cho truyện này.');
+								alert('Không có thông tin bài viết.');
 							}
 						})
 						.catch(error => {
-							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
-							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+							console.error('Lỗi khi lấy thông tin bài viết:', error);
+                            alert('Đã xảy ra lỗi khi khi lấy thông tin bài viết.');
 						});
 				});
 			});
