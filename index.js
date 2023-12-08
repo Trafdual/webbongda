@@ -975,7 +975,7 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
       title: 'Report',
       content: `bài viết ${baiviet.content} của bạn đã bị xóa do vi phạm tiêu chuẩn cộng đồng`,
       userId: baiviet.userId,
-      mangaId: baivietId,
+      baivietId: baivietId,
       date: vietnamTime,
     });
     await notification.save()
