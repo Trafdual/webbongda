@@ -954,7 +954,7 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
   try {
     const baivietId = req.params.baivietId;
     const userId = req.session.userId
-
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
     const user = await User.findById(userId)
     if (!user) {
       res.status(404).json({ message: 'không tìm thấy user' })
@@ -971,12 +971,12 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
       user.baiviet.splice(baivietIndex, 1);
       await user.save();
     }
-    const notification = new Notification({
-      adminId: '653a20c611295a22062661f9',
-      title: 'Bị report',
+    const notification = new NotificationBaiviet({
+      title: 'Report',
       content: `bài viết ${baiviet.content} của bạn đã bị xóa do vi phạm tiêu chuẩn cộng đồng`,
       userId: baiviet.userId,
-      mangaId: baiviet._id
+      mangaId: baivietId,
+      date: vietnamTime,
     });
     await notification.save()
     res.render("successadmin",{ message: 'report bài viết thành công' })
