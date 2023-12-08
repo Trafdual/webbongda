@@ -292,16 +292,21 @@
                                     style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                     type="button">Hủy</button>
 
-                                <form style="margin-top: 10dp; text-align: center;" action="reportbaiviet/{{this.mangaId}}"
-                                    onclick="return confirm('Report ?')" method="post">
+                                <form style="margin-top: 10dp; text-align: center;"
+                                    action="reportbaiviet/{{this.mangaId}}" onclick="return confirm('Report ?')"
+                                    method="post">
                                     <button class="btn btn-info report"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Report</button>
                                 </form>
+                                <form style="margin-top: 10dp; text-align: center;"
+                                    action="deletenotifybaiviet/{{this._id}}" onclick="return confirm('Xóa nha ?')"
+                                    method="post">
+                                    <button class="btn btn-info huyreport"
+                                        style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
+                                        type="button">Xóa</button>
+                                </form>
 
-                                <button class="btn btn-info huyreport"
-                                    style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
-                                    type="button" onclick="deleteNotification({{this._id}})">Xóa</button>
 
                                 <script>
                                     $(document).ready(function () {
@@ -591,24 +596,6 @@
                         });
                 });
             });
-        }
-        function deleteNotification(notificationId) {
-            fetch('/deletenotifybaiviet/' + notificationId, {
-                method: 'POST',
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Xóa thông báo từ giao diện người dùng
-                    document.getElementById('notification-container').innerHTML = '<p>' + data.message + '</p>';
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
         }
         document.addEventListener('DOMContentLoaded', function () {
             setupMangaPage();
