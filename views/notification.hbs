@@ -62,6 +62,7 @@
         #images {
             width: 80%;
             height: 300px;
+            border-radius: 0;
         }
     </style>
 </head>
@@ -280,7 +281,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div id="avatar"></div>
+                                                <img id="avatar">
                                                 <h4 id="username"></h4>
                                                 <p id="date"></p>
                                                 <p id="content"></p>
@@ -566,7 +567,7 @@
                                     imagesDiv.style.display = 'block'; // Hiển thị thẻ images
 
                                     // Tạo các thẻ img để hiển thị từng ảnh trong mảng
-                                    const imagesHtml = data.images.map(img => `<img src="data:image/jpeg;base64,${img}" alt="Images">`).join('');
+                                    const imagesHtml = data.images.map(img => `<img id="images" src="data:image/jpeg;base64,${img}" alt="Images">`).join('');
 
                                     imagesDiv.innerHTML = imagesHtml; // Thêm hình ảnh vào thẻ
                                 } else {
