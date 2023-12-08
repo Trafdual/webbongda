@@ -1421,7 +1421,7 @@
 							if (data) {
 								const contentParagraph = document.getElementById('content');
 								contentParagraph.innerHTML = data.content;
-								document.getElementById('contents').textContent = contentParagraph.innerHTML;
+								document.getElementById('contents').textContent = contentParagraph;
 								const avatarImg = document.getElementById('avatar');
 								avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
 								document.getElementById('username').textContent = data.username;
