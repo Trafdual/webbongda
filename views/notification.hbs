@@ -293,14 +293,14 @@
                                     type="button">Hủy</button>
 
                                 <form style="margin-top: 10dp; text-align: center;"
-                                    action="reportbaiviet/{{this.mangaId}}" onclick="return confirm('Report ?')"
+                                    action="/reportbaiviet/{{this.mangaId}}" onclick="return confirm('Report ?')"
                                     method="post">
                                     <button class="btn btn-info report"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
                                         type="submit">Report</button>
                                 </form>
                                 <form style="margin-top: 10dp; text-align: center;"
-                                    action="deletenotifybaiviet/{{this._id}}" onclick="return confirm('Xóa nha ?')"
+                                    action="/deletenotifybaiviet/{{this._id}}" onclick="return confirm('Xóa nha ?')"
                                     method="post">
                                     <button class="btn btn-info huyreport"
                                         style="width: 100px; height: 50px; margin-top: 5px; background-color: rgb(110, 111, 111); border: none; border-radius: 5px; color: white; font-size: 12px; display: inline-block;"
@@ -447,9 +447,6 @@
 
                 </table>
             </div>
-        </div>
-        <div id="notification-container">
-            <!-- Nội dung thông báo sẽ được cập nhật ở đây -->
         </div>
     </div>
     <script>
