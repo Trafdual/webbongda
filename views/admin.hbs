@@ -1419,6 +1419,8 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data) {
+								const contentParagraph = document.getElementById('content');
+                                contentParagraph.innerHTML = data.content;
                                 const avatarImg = document.getElementById('avatar');
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
                                 document.getElementById('username').textContent = data.username;
@@ -1437,9 +1439,6 @@
                                 } else {
                                     imagesDiv.style.display = 'none'; // Ẩn thẻ images
                                 }
-								const contentParagraph = document.getElementById('content');
-                                contentParagraph.innerHTML = data.content;
-
                                 $('#reportmodal').modal('show');
                             } else {
                                 alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
