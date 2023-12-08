@@ -543,7 +543,7 @@
                 });
             });
         }
-        function report() {
+        function reportmodal() {
             const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
             reportdetailbutton.forEach(button => {
@@ -553,7 +553,7 @@
                     fetch(`/baivietreport/${mangaId}`)
                         .then(response => response.json())
                         .then(data => {
-                             if (data && data.username && data.content && data.date) {
+                             if (data) {
                                 const avatarImg = document.getElementById('avatar');
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
                                 document.getElementById('username').textContent = data.username;
@@ -697,7 +697,7 @@
             mangasua();
             chapDetail();
             chapDetailsua();
-            report();
+            reportmodal();
         }); 
     </script>
 </body>
