@@ -986,7 +986,7 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
-app.post('deletenotifybaiviet/:_id',async(req,res)=>{
+app.post('/deletenotifybaiviet/:_id',async(req,res)=>{
   try {
     const id=req.params._id;
     const notify=await Notification.findByIdAndDelete(id);
