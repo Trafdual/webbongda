@@ -1419,11 +1419,12 @@
 					fetch(`/baivietreport/${mangaId}`)
 						.then(response => response.json())
 						.then(data => {
-							if (data) {
+							if (data && data.username && data.content && data.date) {
 								document.getElementById('avatar').src = data.avatar;
-								document.getElementById('username').textContent = `${data.username}`;
-								document.getElementById('content').textContent = `${data.content}`;
-								document.getElementById('date').textContent = `${data.date}`;
+								document.getElementById('username').textContent = data.username;
+								document.getElementById('content').textContent = data.content;
+								document.getElementById('date').textContent = data.date;
+
 								const imagesDiv = document.getElementById('images');
 
 								// Kiểm tra nếu có hình ảnh
@@ -1435,17 +1436,17 @@
 								}
 								$('#reportmodal').modal('show');
 							} else {
-								alert('Không có thông tin bài viết.');
+								alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
 							}
 						})
 						.catch(error => {
 							console.error('Lỗi khi lấy thông tin bài viết:', error);
-                            alert('Đã xảy ra lỗi khi khi lấy thông tin bài viết.');
+							alert('Đã xảy ra lỗi khi khi lấy thông tin bài viết.');
 						});
 				});
 			});
 		}
-	
+
 		const baivietManagerLink = document.getElementById('baivietManagerLink');
 
 		baivietManagerLink.addEventListener("click", function (event) {
