@@ -556,19 +556,8 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data) {
-                                const contentContainer = document.createElement('div');
-
-                                // Thiết lập nội dung văn bản
-                                contentContainer.textContent = "Nội dung có icon ";
-
-                                // Tạo một phần tử span cho icon
                                 const iconSpan = document.createElement('span');
-                                iconSpan.innerHTML = data.content; // Sử dụng innerHTML cho phần icon
-
-                                // Thêm phần tử span vào trong phần tử div
-                                contentContainer.appendChild(iconSpan);
-
-                                // Lấy nội dung cuối cùng từ phần tử div và đặt vào phần tử HTML mong muốn
+                                iconSpan.innerHTML = data.content; 
                                 const finalContent = iconSpan.innerHTML;
                                 document.getElementById('contents').textContent = finalContent;
                                 const avatarImg = document.getElementById('avatar');
