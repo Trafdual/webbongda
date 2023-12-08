@@ -1437,6 +1437,8 @@
                                 } else {
                                     imagesDiv.style.display = 'none'; // Ẩn thẻ images
                                 }
+								const contentParagraph = document.getElementById('content');
+                                contentParagraph.innerHTML = data.content;
 
                                 $('#reportmodal').modal('show');
                             } else {
