@@ -1420,7 +1420,9 @@
                         .then(data => {
                             if (data) {
 								const contentParagraph = document.getElementById('content');
-                                contentParagraph.innerHTML = data.content;
+                                const iconSpan = document.createElement('span');
+                                iconSpan.innerHTML = data.content;
+                                contentParagraph.appendChild(iconSpan);
                                 const avatarImg = document.getElementById('avatar');
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
                                 document.getElementById('username').textContent = data.username;
