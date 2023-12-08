@@ -569,7 +569,7 @@
                                 contentContainer.appendChild(iconSpan);
 
                                 // Lấy nội dung cuối cùng từ phần tử div và đặt vào phần tử HTML mong muốn
-                                const finalContent = contentContainer.innerHTML;
+                                const finalContent = iconSpan.innerHTML;
                                 document.getElementById('contents').textContent = finalContent;
                                 const avatarImg = document.getElementById('avatar');
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
