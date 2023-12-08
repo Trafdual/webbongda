@@ -950,6 +950,55 @@ app.post('/report/:baivietId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
+app.post('/reportbaiviet/:baivietId',async(req,res)=>{
+  try {
+    const baivietId = req.params.baivietId;
+    const userId = req.session.userId
+
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+
+    const baiviet = await Baiviet.findByIdAndDelete(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+    await NotificationBaiviet.deleteMany({ baivietId: baivietId });
+    await Notification.deleteMany({mangaId: baivietId});
+    const baivietIndex = user.baiviet.indexOf(baivietId);
+    if (baivietIndex !== -1) {
+      user.baiviet.splice(baivietIndex, 1);
+      await user.save();
+    }
+    const notification = new Notification({
+      adminId: '653a20c611295a22062661f9',
+      title: 'Bị report',
+      content: `bài viết ${baiviet.content} của bạn đã bị xóa do vi phạm tiêu chuẩn cộng đồng`,
+      userId: baiviet.userId,
+      mangaId: baiviet._id
+    });
+    await notification.save()
+    res.render("successadmin",{ message: 'report bài viết thành công' })
+
+  } catch (error) {
+    console.error('Lỗi report bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
+  }
+})
+app.post('deletenotifybaiviet/:_id',async(req,res)=>{
+  try {
+    const id=req.params._id;
+    const notify=await Notification.findByIdAndDelete(id);
+    if(!notify){
+      res.status(403).json({message:'không tìm thấy thông báo'})
+    }
+    res.render('successadmin',{message:'xóa thông báo thành công'})
+  } catch (error) {
+    console.error('Lỗi xóa thông báo:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi xóa thông báo' });
+  }
+})
 app.get('/renderbaiviet', async (req, res) => {
   try {
     const userId = req.session.userId;

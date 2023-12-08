@@ -1114,6 +1114,7 @@
 					annut()
 					chapDetail()
 					chapDetailsua()
+					deleteNotification(data._id)
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1408,6 +1409,24 @@
 			});
 		}
 
+        function deleteNotification(notificationId) {
+            fetch('/deletenotifybaiviet/' + notificationId, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Xóa thông báo từ giao diện người dùng
+                    document.getElementById('notification-container').innerHTML = '<p>' + data.message + '</p>';
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
 		const baivietManagerLink = document.getElementById('baivietManagerLink');
 
 		baivietManagerLink.addEventListener("click", function (event) {
