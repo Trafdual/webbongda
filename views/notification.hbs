@@ -58,6 +58,10 @@
             margin-top: 10px;
             /* Khoảng cách giữa date và content */
         }
+        #images{
+            width: 80%;
+            height: 300px;
+        }
     </style>
 </head>
 
@@ -551,11 +555,18 @@
                         .then(data => {
                             if (data) {
                                 document.getElementById('avatar').src = data.avatar;
-                                document.getElementById('images').src = data.images;
                                 document.getElementById('username').textContent = `${data.username}`;
                                 document.getElementById('content').textContent = `${data.content}`;
                                 document.getElementById('date').textContent = `${data.date}`;
+                                const imagesDiv = document.getElementById('images');
 
+                                // Kiểm tra nếu có hình ảnh
+                                if (data.images) {
+                                    imagesDiv.style.display = 'block'; // Hiển thị thẻ images
+                                    imagesDiv.innerHTML = `<img id="images" src="${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
+                                } else {
+                                    imagesDiv.style.display = 'none'; // Ẩn thẻ images
+                                }
                                 $('#reportmodal').modal('show');
                             } else {
                                 alert('Không có thông tin chi tiết sửa cho truyện này.');
@@ -684,6 +695,7 @@
             mangasua();
             chapDetail();
             chapDetailsua();
+            report();
         }); 
     </script>
 </body>

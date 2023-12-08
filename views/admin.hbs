@@ -1114,6 +1114,7 @@
 					annut()
 					chapDetail()
 					chapDetailsua()
+					report()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1408,6 +1409,43 @@
 			});
 		}
 
+		function report() {
+			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
+
+			reportdetailbutton.forEach(button => {
+
+				button.addEventListener('click', function (event) {
+					const mangaId = this.getAttribute('data-manga-id');
+					fetch(`/baivietreport/${mangaId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data) {
+								document.getElementById('avatar').src = data.avatar;
+								document.getElementById('username').textContent = `${data.username}`;
+								document.getElementById('content').textContent = `${data.content}`;
+								document.getElementById('date').textContent = `${data.date}`;
+								const imagesDiv = document.getElementById('images');
+
+								// Kiểm tra nếu có hình ảnh
+								if (data.images) {
+									imagesDiv.style.display = 'block'; // Hiển thị thẻ images
+									imagesDiv.innerHTML = `<img id="images" src="${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
+								} else {
+									imagesDiv.style.display = 'none'; // Ẩn thẻ images
+								}
+								$('#reportmodal').modal('show');
+							} else {
+								alert('Không có thông tin chi tiết sửa cho truyện này.');
+							}
+						})
+						.catch(error => {
+							console.error('Lỗi khi lấy chi tiết sửa truyện:', error);
+							alert('Đã xảy ra lỗi khi lấy chi tiết sửa truyện.');
+						});
+				});
+			});
+		}
+	
 		const baivietManagerLink = document.getElementById('baivietManagerLink');
 
 		baivietManagerLink.addEventListener("click", function (event) {
