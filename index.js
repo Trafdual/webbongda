@@ -986,6 +986,30 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
+app.get('/baivietreport/:baivietId',async(req,res)=>{
+  try {
+    const baivietId = req.params.baivietId;
+    const baiviet = await Baiviet.findById(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+    const user=await User.findById(baiviet.userId);
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' });
+    }
+    const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
+    res.json({
+      avatar:user.avatar,
+      username:user.username,
+      content:baiviet.content,
+      date:formattedDate,
+      images:baiviet.images || ''
+    })
+  } catch (error) {
+    console.error('Lỗi khi tìm bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm bài viết.' });
+  }
+})
 app.post('/deletenotifybaiviet/:_id',async(req,res)=>{
   try {
     const id=req.params._id;
