@@ -1423,6 +1423,8 @@
                                 const iconSpan = document.createElement('span');
                                 iconSpan.innerHTML = data.content;
                                 contentParagraph.appendChild(iconSpan);
+                                const finalcontent=contentParagraph.innerHTML;
+                                document.getElementById('content').textContent=finalcontent;
                                 const avatarImg = document.getElementById('avatar');
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
                                 document.getElementById('username').textContent = data.username;
