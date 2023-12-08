@@ -58,8 +58,7 @@
             margin-top: 10px;
             /* Khoảng cách giữa date và content */
         }
-
-        #images {
+        #images{
             width: 80%;
             height: 300px;
         }
@@ -522,24 +521,19 @@
                     fetch(`/manganotifysua/${mangaId}`)
                         .then(response => response.json())
                         .then(data => {
-                            if (data && data.username && data.content && data.date) {
-                                document.getElementById('avatar').src = data.avatar;
-                                document.getElementById('username').textContent = data.username;
-                                document.getElementById('content').textContent = data.content;
-                                document.getElementById('date').textContent = data.date;
+                            if (data) {
+                                // Hiển thị thông tin chi tiết sửa truyện trong modal
+                                document.getElementById('mangaDetailImage').src = data.image;
+                                document.getElementById('mangaDetailCategory').textContent = `Thể loại : ${data.category}`;
+                                document.getElementById('mangaDetailAuthor').textContent = `Tác giả : ${data.author}`;
+                                document.getElementById('mangaDetailmanganame').textContent = `${data.manganame}`;
+                                document.getElementById('mangaDetailContent').textContent = `Nội dung: ${data.content}`;
+                                // Các trường thông tin khác nếu có
 
-                                const imagesDiv = document.getElementById('images');
-
-                                // Kiểm tra nếu có hình ảnh
-                                if (data.images) {
-                                    imagesDiv.style.display = 'block'; // Hiển thị thẻ images
-                                    imagesDiv.innerHTML = `<img id="images" src="${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
-                                } else {
-                                    imagesDiv.style.display = 'none'; // Ẩn thẻ images
-                                }
-                                $('#reportmodal').modal('show');
+                                // Kích hoạt modal
+                                $('#mangaDetailModal').modal('show');
                             } else {
-                                alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
+                                alert('Không có thông tin chi tiết sửa cho truyện này.');
                             }
                         })
                         .catch(error => {
@@ -559,23 +553,25 @@
                     fetch(`/baivietreport/${mangaId}`)
                         .then(response => response.json())
                         .then(data => {
-                            if (data) {
-                                document.getElementById('avatar').src = data.avatar;
-                                document.getElementById('username').textContent = `${data.username}`;
-                                document.getElementById('content').textContent = `${data.content}`;
-                                document.getElementById('date').textContent = `${data.date}`;
+                             if (data && data.username && data.content && data.date) {
+                                const avatarImg = document.getElementById('avatar');
+                                avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
+                                document.getElementById('username').textContent = data.username;
+                                document.getElementById('content').textContent = data.content;
+                                document.getElementById('date').textContent = data.date;
+
                                 const imagesDiv = document.getElementById('images');
 
                                 // Kiểm tra nếu có hình ảnh
                                 if (data.images) {
                                     imagesDiv.style.display = 'block'; // Hiển thị thẻ images
-                                    imagesDiv.innerHTML = `<img id="images" src="${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
+                                    imagesDiv.innerHTML = `<img id="images" src="data:image/jpeg;base64,${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
                                 } else {
                                     imagesDiv.style.display = 'none'; // Ẩn thẻ images
                                 }
                                 $('#reportmodal').modal('show');
                             } else {
-                                alert('Không có thông tin bài viết.');
+                                alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
                             }
                         })
                         .catch(error => {
