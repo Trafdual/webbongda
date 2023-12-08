@@ -1413,31 +1413,35 @@
 			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
 			reportdetailbutton.forEach(button => {
-
 				button.addEventListener('click', function (event) {
 					const mangaId = this.getAttribute('data-manga-id');
 					fetch(`/baivietreport/${mangaId}`)
 						.then(response => response.json())
 						.then(data => {
-							 if (data) {
-                                const avatarImg = document.getElementById('avatar');
-                                avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
-                                document.getElementById('username').textContent = data.username;
-                                document.getElementById('date').textContent = data.date;
+							if (data) {
+								const avatarImg = document.getElementById('avatar');
+								avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
+								document.getElementById('username').textContent = data.username;
+								document.getElementById('date').textContent = data.date;
 
-                                const imagesDiv = document.getElementById('images');
+								const imagesDiv = document.getElementById('images');
 
-                                // Kiểm tra nếu có hình ảnh
-                                if (data.images) {
-                                    imagesDiv.style.display = 'block'; // Hiển thị thẻ images
-                                    imagesDiv.innerHTML = `<img id="images" src="data:image/jpeg;base64,${data.images}" alt="Images">`; // Thêm hình ảnh vào thẻ
-                                } else {
-                                    imagesDiv.style.display = 'none'; // Ẩn thẻ images
-                                }
-                                $('#reportmodal').modal('show');
-                            } else {
-                                alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
-                            }
+								// Kiểm tra nếu có hình ảnh
+								if (data.images && data.images.length > 0) {
+									imagesDiv.style.display = 'block'; // Hiển thị thẻ images
+
+									// Tạo các thẻ img để hiển thị từng ảnh trong mảng
+									const imagesHtml = data.images.map(img => `<img src="data:image/jpeg;base64,${img}" alt="Images">`).join('');
+
+									imagesDiv.innerHTML = imagesHtml; // Thêm hình ảnh vào thẻ
+								} else {
+									imagesDiv.style.display = 'none'; // Ẩn thẻ images
+								}
+
+								$('#reportmodal').modal('show');
+							} else {
+								alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
+							}
 						})
 						.catch(error => {
 							console.error('Lỗi khi lấy thông tin bài viết:', error);
