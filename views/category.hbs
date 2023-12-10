@@ -23,8 +23,8 @@
         <h2>Danh sách thể loại</h2>
         <div class="table-data">
             <div class="order">
-                <table>
-                    <thead>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
                             <th style="text-align: center;">Category Name</th>
                             <th style="text-align: center;">Option</th>
@@ -34,7 +34,7 @@
                     <tbody>
                         {{#each category}}
                         <tr>
-                            <td>{{this.categoryname}}</td>
+                            <td style="text-align: center;">{{this.categoryname}}</td>
                             <td>
                                 <form style="margin-top: 10px; text-align: center;" action="/categoryput/{{this._id}}" method="get">
                                     <button
