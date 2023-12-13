@@ -1554,24 +1554,27 @@
 				});
 			});
 		}
-		   function getAndDisplayComments(mangaId) {
-			const commentsSection = document.querySelectorAll('.commentsSection');
-            fetch(`/getcmtbaiviet/${mangaId}`)
-                .then(response => response.json())
-                .then(data => {
-                    commentsSections.forEach(commentsSection => {
+       function getAndDisplayComments(mangaId) {
+            const commentsSection = document.querySelectorAll('.commentsSection');
+            commentsSections.forEach(commentsSection => {
+                fetch(`/getcmtbaiviet/${mangaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+
+
                         commentsSection.innerHTML = '';
+
                         data.forEach(comment => {
                             const newCommentDiv = document.createElement('div');
                             newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
                             commentsSection.appendChild(newCommentDiv);
                         });
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy danh sách bình luận:', error);
+                        alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
                     });
-                })
-                .catch(error => {
-                    console.error('Lỗi khi lấy danh sách bình luận:', error);
-                    alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
-                });
+            })
         }
 
 		const settingmanage = document.getElementById('setting');
