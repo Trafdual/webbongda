@@ -217,7 +217,7 @@
                 });
         }
 
-        function reportmodal() {
+        function baivietmodal() {
             const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
             reportdetailbutton.forEach(button => {
@@ -250,6 +250,7 @@
                                 }
 
                                 $('#reportmodal').modal('show');
+                                getAndDisplayComments(mangaId)
                             } else {
                                 alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
                             }
@@ -268,7 +269,7 @@
 
         });
         document.addEventListener('DOMContentLoaded', function () {
-            reportmodal();
+            baivietmodal();
         }); 
     </script>
 
