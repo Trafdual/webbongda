@@ -1510,7 +1510,7 @@
 					mainContent.innerHTML = data;
 					setbaiviet()
 					baivietmodal()
-					setcomment()
+					postcmt()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1522,30 +1522,33 @@
 
 			});
 		}
-		function setcomment() {
-			document.getElementById('postCommentBtn').addEventListener('click', function () {
-				const comment = document.getElementById('commentInput').value;
-				const mangaId = document.getElementById('reportmodal').getAttribute('data-manga-id');
+        function postcmt() {
+            const postCommentBtn = document.querySelectorAll('.postCommentBtn');
+            postCommentBtn.forEach(button => {
+                button.addEventListener('click', function () {
+                    const comment = document.getElementById('commentInput').value;
+                    const mangaId = this.getAttribute('data-manga-id');
 
-				// Gửi request POST đến server để lưu comment mới
-				fetch(`/postcmtbaiviet/${mangaId}`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ comment }),
-				})
-					.then(response => response.json())
-					.then(data => {
-						getAndDisplayComments(mangaId)
-						document.getElementById('commentInput').value = '';
-					})
-					.catch(error => {
-						console.error('Lỗi khi gửi bình luận:', error);
-						alert('Đã xảy ra lỗi khi gửi bình luận.');
-					});
-			});
-		}
+                    // Gửi request POST đến server để lưu comment mới
+                    fetch(`/postcmtbaiviet/${mangaId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ comment }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            getAndDisplayComments(mangaId)
+                            document.getElementById('commentInput').value = '';
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi gửi bình luận:', error);
+                            alert('Đã xảy ra lỗi khi gửi bình luận.');
+                        });
+                });
+            })
+        }
 		function getAndDisplayComments(mangaId) {
 			fetch(`/getcmtbaiviet/${mangaId}`)
 				.then(response => response.json())

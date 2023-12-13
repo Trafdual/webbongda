@@ -89,8 +89,7 @@
                             <td>
                                 <button class="btn btn-info report-detail-button"
                                     style="width: 100px; height: 30px; margin-top: 5px; background-color: #33b2fc; border: none; border-radius: 5px; color: white;"
-                                    type="submit" data-toggle="modal" data-target="#reportmodal"
-                                    data-manga-id="{{this._id}}">Chi tiết</button>
+                                    type="submit" data-manga-id="{{this._id}}">Chi tiết</button>
                             </td>
                             <td>
                                 <form style="margin-top: 10px;" action="/deletebaiviet/{{this._id}}"
@@ -101,44 +100,46 @@
                                 </form>
                             </td>
                         </tr>
+                        <!--Modal Bai Viet -->
+                        <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog"
+                            aria-labelledby="reportmodalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img id="avatar">
+                                        <h4 id="username"></h4>
+                                        <p id="date"></p>
+                                        <p id="contents"></p>
+                                        <div id="images"></div>
+                                        <div id="commentsSection">
+                                        </div>
 
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="input-group">
+                                            <input id="commentInput" type="text" class="form-control"
+                                                placeholder="Viết bình luận">
+                                            <div class="input-group-append">
+                                                <i class='bx bx-send input-group-text postCommentBtn'
+                                                    style="cursor: pointer;" data-manga-id="{{this._id}}"></i>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
             </div>
             {{/each}}
             </tbody>
             </table>
-        </div>
-    </div>
-    <!--Modal Bai Viet -->
-    <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog" aria-labelledby="reportmodalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <img id="avatar">
-                    <h4 id="username"></h4>
-                    <p id="date"></p>
-                    <p id="contents"></p>
-                    <div id="images"></div>
-                    <div id="commentsSection">
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="input-group">
-                        <input id="commentInput" type="text" class="form-control" placeholder="Viết bình luận">
-                        <div class="input-group-append">
-                            <i id="postCommentBtn" class='bx bx-send input-group-text' style="cursor: pointer;"></i>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -175,28 +176,34 @@
 
 
     <script>
-        document.getElementById('postCommentBtn').addEventListener('click', function () {
-            const comment = document.getElementById('commentInput').value;
-            const mangaId = document.getElementById('reportmodal').getAttribute('data-manga-id');
+        function postcmt() {
+            const postCommentBtn = document.querySelectorAll('.postCommentBtn');
+            postCommentBtn.forEach(button => {
+                button.addEventListener('click', function () {
+                    const comment = document.getElementById('commentInput').value;
+                    const mangaId = this.getAttribute('data-manga-id');
 
-            // Gửi request POST đến server để lưu comment mới
-            fetch(`/postcmtbaiviet/${mangaId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ comment }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    getAndDisplayComments(mangaId)
-                    document.getElementById('commentInput').value = '';
-                })
-                .catch(error => {
-                    console.error('Lỗi khi gửi bình luận:', error);
-                    alert('Đã xảy ra lỗi khi gửi bình luận.');
+                    // Gửi request POST đến server để lưu comment mới
+                    fetch(`/postcmtbaiviet/${mangaId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ comment }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            getAndDisplayComments(mangaId)
+                            document.getElementById('commentInput').value = '';
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi gửi bình luận:', error);
+                            alert('Đã xảy ra lỗi khi gửi bình luận.');
+                        });
                 });
-        });
+            })
+        }
+
 
         function getAndDisplayComments(mangaId) {
             fetch(`/getcmtbaiviet/${mangaId}`)
@@ -268,6 +275,7 @@
 
         });
         document.addEventListener('DOMContentLoaded', function () {
+            postcmt()
             baivietmodal();
         }); 
     </script>
