@@ -962,8 +962,8 @@
 				// Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
 				$(".editCategoryButton").click(function () {
 					// Lấy thông tin thể loại từ hàng bảng
-					var categoryId = $(this).closest("tr").find("td:first").text();
-					var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+					var categoryId = $(this).data("id");
+					var categoryname = $(this).closest("tr").find("td:first").text();
 
 					// Hiển thị thông tin thể loại trong modal sửa thể loại
 					$("#editCategoryname").val(categoryname);
@@ -1066,7 +1066,7 @@
 				notificationSpan.innerText = data.unreadCount.toString();
 			})
 			.catch(error => console.error(error));
-			
+
 		function reportmodal() {
 			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 

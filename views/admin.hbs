@@ -1047,8 +1047,8 @@
 				// Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
 				$(".editCategoryButton").click(function () {
 					// Lấy thông tin thể loại từ hàng bảng
-					var categoryId = $(this).closest("tr").find("td:first").text();
-					var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+					var categoryId = $(this).data("id");
+					var categoryname = $(this).closest("tr").find("td:first").text();
 
 					// Hiển thị thông tin thể loại trong modal sửa thể loại
 					$("#editCategoryname").val(categoryname);
@@ -1419,10 +1419,10 @@
 						.then(response => response.json())
 						.then(data => {
 							if (data) {
-                                const iconSpan = document.createElement('span');
-                                iconSpan.innerHTML = data.content; 
-                                const finalContent = iconSpan.innerHTML;
-                                document.getElementById('contents').textContent = finalContent;
+								const iconSpan = document.createElement('span');
+								iconSpan.innerHTML = data.content;
+								const finalContent = iconSpan.innerHTML;
+								document.getElementById('contents').textContent = finalContent;
 								const avatarImg = document.getElementById('avatar');
 								avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
 								document.getElementById('username').textContent = data.username;
