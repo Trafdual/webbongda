@@ -57,11 +57,11 @@
     </style>
 </head>
 
-<body>
-    <div class="jumbotron text-center">
+<body style="font-family: Arial, sans-serif;margin: 0;background-color: #f4f4f4;">
+    <div id="container" class="jumbotron text-center">
         <h2>Đăng Bài Viết</h2>
-        <div>
-            <input style="width: 100%;margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;"
+        <div style="display: flex;flex-direction: column;" class="post-form">
+            <input style="margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;"
                 placeholder="Bạn đang nghĩ gì?" id="postContent">
         </div>
         <div class="table-data">
@@ -143,8 +143,8 @@
                 <div class="modal-body">
                     <form action="/postbaiviet" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="postcontent">content:</label>
-                            <input type="text" class="form-control" id="postcontent" name="content">
+                            <label for="content">content:</label>
+                            <input type="text" class="form-control" id="content" name="content">
                         </div>
                         <div class="form-group">
                             <input type="file" class="form-control" id="images" name="images" multiple>
@@ -160,6 +160,8 @@
         </div>
     </div>
     </div>
+
+
     <script>
         function reportmodal() {
             const reportdetailbutton = document.querySelectorAll('.report-detail-button');
