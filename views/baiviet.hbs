@@ -211,7 +211,7 @@
 
         function getAndDisplayComments(mangaId) {
             const commentsSection = document.querySelectorAll('.commentsSection');
-            commentsSections.forEach(commentsSection => {
+            commentsSection.forEach(commentsSection => {
                 fetch(`/getcmtbaiviet/${mangaId}`)
                     .then(response => response.json())
                     .then(data => {
