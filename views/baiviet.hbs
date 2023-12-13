@@ -117,7 +117,7 @@
                                         <p id="date"></p>
                                         <p id="contents"></p>
                                         <div id="images"></div>
-                                        <div class="commentsSection" data-manga-id="{{this._id}}">
+                                        <div class="commentsSection">
                                         </div>
 
                                     </div>
@@ -210,10 +210,11 @@
 
 
         function getAndDisplayComments(mangaId) {
+            const commentsSection = document.querySelectorAll('.commentsSection');
             fetch(`/getcmtbaiviet/${mangaId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const commentsSection = document.querySelectorAll('.commentsSection');
+                    
                     commentsSections.forEach(commentsSection => {
                         commentsSection.innerHTML = '';
 

@@ -1523,6 +1523,7 @@
 			});
 		}
 		function postcmt() {
+			
 			const postCommentBtns = document.querySelectorAll('.postCommentBtn');
 			const commentInputs = document.querySelectorAll('.commentInput');
 
@@ -1554,13 +1555,12 @@
 			});
 		}
 		   function getAndDisplayComments(mangaId) {
+			const commentsSection = document.querySelectorAll('.commentsSection');
             fetch(`/getcmtbaiviet/${mangaId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const commentsSection = document.querySelectorAll('.commentsSection');
                     commentsSections.forEach(commentsSection => {
                         commentsSection.innerHTML = '';
-
                         data.forEach(comment => {
                             const newCommentDiv = document.createElement('div');
                             newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
