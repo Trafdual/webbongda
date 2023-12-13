@@ -1142,16 +1142,19 @@ app.post('/categoryput/:id', async (req, res) => {
     const categoryId = req.params.id;
     const { categoryname } = req.body;
 
-    const category = await Category.findByIdAndUpdate(
-      categoryId,
-      { categoryname },
-      { new: true }
-    );
+    const category = await Category.findById(categoryId);
 
     if (!category) {
       return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
     }
-
+    const manga=await Manga.find({category:category.categoryname});
+    manga.forEach(cate=>{
+      cate.category=categoryname;
+    })
+    await Promise.all(manga.map(cate => cate.save()));
+    category.categoryname = categoryname;
+    await category.save();
+    
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'sửa thể loại thành công' })
     }
