@@ -550,8 +550,8 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
         cmt: item.cmt,
         username: usercmt.username,
         avatar: usercmt.avatar || '',
-        role:usercmt.role,
-        rolevip:usercmt.rolevip,
+        role: usercmt.role,
+        rolevip: usercmt.rolevip,
         date: formatdatecmt
       };
     }))
@@ -950,7 +950,7 @@ app.post('/report/:baivietId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
-app.post('/reportbaiviet/:baivietId',async(req,res)=>{
+app.post('/reportbaiviet/:baivietId', async (req, res) => {
   try {
     const baivietId = req.params.baivietId;
     const userId = req.session.userId
@@ -965,7 +965,7 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
       res.status(404).json({ message: 'không tìm thấy bài viết này' });
     }
     await NotificationBaiviet.deleteMany({ baivietId: baivietId });
-    await Notification.deleteMany({mangaId: baivietId});
+    await Notification.deleteMany({ mangaId: baivietId });
     const baivietIndex = user.baiviet.indexOf(baivietId);
     if (baivietIndex !== -1) {
       user.baiviet.splice(baivietIndex, 1);
@@ -979,31 +979,31 @@ app.post('/reportbaiviet/:baivietId',async(req,res)=>{
       date: vietnamTime,
     });
     await notification.save()
-    res.render("successadmin",{ message: 'report bài viết thành công' })
+    res.render("successadmin", { message: 'report bài viết thành công' })
 
   } catch (error) {
     console.error('Lỗi report bài viết:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
-app.get('/baivietreport/:baivietId',async(req,res)=>{
+app.get('/baivietreport/:baivietId', async (req, res) => {
   try {
     const baivietId = req.params.baivietId;
     const baiviet = await Baiviet.findById(baivietId)
     if (!baiviet) {
       res.status(404).json({ message: 'không tìm thấy bài viết này' });
     }
-    const user=await User.findById(baiviet.userId);
+    const user = await User.findById(baiviet.userId);
     if (!user) {
       res.status(404).json({ message: 'không tìm thấy user' });
     }
     const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
-    const formatdata= {
-      avatar:user.avatar || '',
-      username:user.username,
-      content:baiviet.content,
-      date:formattedDate,
-      images:baiviet.images || ''
+    const formatdata = {
+      avatar: user.avatar || '',
+      username: user.username,
+      content: baiviet.content,
+      date: formattedDate,
+      images: baiviet.images || ''
     }
     res.json(formatdata)
   } catch (error) {
@@ -1011,14 +1011,14 @@ app.get('/baivietreport/:baivietId',async(req,res)=>{
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm bài viết.' });
   }
 })
-app.post('/deletenotifybaiviet/:_id',async(req,res)=>{
+app.post('/deletenotifybaiviet/:_id', async (req, res) => {
   try {
-    const id=req.params._id;
-    const notify=await Notification.findByIdAndDelete(id);
-    if(!notify){
-      res.status(403).json({message:'không tìm thấy thông báo'})
+    const id = req.params._id;
+    const notify = await Notification.findByIdAndDelete(id);
+    if (!notify) {
+      res.status(403).json({ message: 'không tìm thấy thông báo' })
     }
-    res.render('successadmin',{message:'xóa thông báo thành công'})
+    res.render('successadmin', { message: 'xóa thông báo thành công' })
   } catch (error) {
     console.error('Lỗi xóa thông báo:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi xóa thông báo' });
@@ -1370,7 +1370,7 @@ app.post('/mangapost', async (req, res) => {
 
       await notification.save();
 
-      manga.link=`https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
+      manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = false;
       await manga.save();
       categoryObject.manga.push(manga._id);
@@ -1378,7 +1378,7 @@ app.post('/mangapost', async (req, res) => {
       res.render('successnhomdich', { message: 'Truyện của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
-      manga.link=`https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
+      manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = true
       await manga.save();
       categoryObject.manga.push(manga._id);
@@ -1793,8 +1793,8 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         userID: com.userID,
         username: username,
         avatar: userComment.avatar || '',
-        role:userComment.role,
-        rolevip:userComment.rolevip,
+        role: userComment.role,
+        rolevip: userComment.rolevip,
         cmt: com.cmt,
         date: formatdatecmt
       };
@@ -2138,7 +2138,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const userId = req.session.userId
-    const { mangaName, number, viporfree, images, price } = req.body;
+    const { mangaName, number, viporfree, images } = req.body;
     const user = await User.findById(userId)
     if (!userId || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -2166,7 +2166,12 @@ app.post('/chapters', async (req, res) => {
         mangaId: chapter._id
       });
       await notification.save();
-
+      if (chapter.viporfree === 'free') {
+        chapter.price = 0;
+      }
+      else {
+        chapter.price = 2;
+      }
       chapter.isChap = false;
       await chapter.save();
       manga.chapters.push(chapter._id);
@@ -2174,6 +2179,12 @@ app.post('/chapters', async (req, res) => {
       res.render('successnhomdich', { message: 'Chap của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
+      if (chapter.viporfree === 'free') {
+        chapter.price = 0;
+      }
+      else {
+        chapter.price = 2;
+      }
       chapter.isChap = true
       await chapter.save();
       manga.chapters.push(chapter._id);
@@ -3244,12 +3255,12 @@ app.get('/user/:userId', async (req, res) => {
         };
       }
     });
-    const detailuser=userRoles[user._id.toString()]
+    const detailuser = userRoles[user._id.toString()]
     res.json({
       userId: detailuser.userId,
       username: detailuser.username,
       role: detailuser.role,
-      rolevip:detailuser.rolevip,
+      rolevip: detailuser.rolevip,
       coin: user.coin,
       avatar: detailuser.avatar || ''
     })
