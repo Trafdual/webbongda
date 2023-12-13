@@ -36,11 +36,9 @@
                         <tr>
                             <td style="text-align: center;">{{this.categoryname}}</td>
                             <td>
-                                <form style="margin-top: 10px; text-align: center;" action="/categoryput/{{this._id}}" method="get">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-                                        type="button" class="editCategoryButton">Edit</button>
-                                </form>
+                                        type="button" class="editCategoryButton" data-id="{{this._id}}">Edit</button>
                                 <form style="margin-top: 10px;" action="/categorydelete/{{this._id}}"
                                     onclick="return confirm('Bạn có muốn xóa Thể loại này?" method="post">
                                     <button
@@ -124,8 +122,8 @@
             // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
             $(".editCategoryButton").click(function () {
                 // Lấy thông tin thể loại từ hàng bảng
-                var categoryId = $(this).closest("tr").find("td:first").text();
-                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+                var categoryId = $(this).data("id");
+                var categoryname = $(this).closest("tr").find("td:first").text();
 
                 // Hiển thị thông tin thể loại trong modal sửa thể loại
                 $("#editCategoryname").val(categoryname);
