@@ -1,10 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng bài</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -14,6 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
+        td {
+            text-align: center;
+            max-width: 200px;
+            overflow: hidden;
+        }
+
         #avatar {
             width: 50px;
             /* Kích thước avatar */
@@ -55,10 +58,12 @@
 </head>
 
 <body style="font-family: Arial, sans-serif;margin: 0;background-color: #f4f4f4;">
-    <div  id="container" class="jumbotron text-center">
+    <div id="container" class="jumbotron text-center">
         <h2>Đăng Bài Viết</h2>
         <div style="display: flex;flex-direction: column;" class="post-form">
-            <input style="resize: none;padding: 10px;margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;" placeholder="Bạn đang nghĩ gì?" id="postContent">
+            <input
+                style="resize: none;padding: 10px;margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;"
+                placeholder="Bạn đang nghĩ gì?" id="postContent">
         </div>
         <div class="table-data">
             <div class="order">
