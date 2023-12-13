@@ -1370,6 +1370,7 @@ app.post('/mangapost', async (req, res) => {
 
       await notification.save();
 
+      manga.link=`https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = false;
       await manga.save();
       categoryObject.manga.push(manga._id);
@@ -1377,6 +1378,7 @@ app.post('/mangapost', async (req, res) => {
       res.render('successnhomdich', { message: 'Truyện của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
+      manga.link=`https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = true
       await manga.save();
       categoryObject.manga.push(manga._id);
