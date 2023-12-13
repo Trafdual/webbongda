@@ -57,12 +57,11 @@
     </style>
 </head>
 
-<body >
+<body>
     <div class="jumbotron text-center">
         <h2>Đăng Bài Viết</h2>
-        <div >
-            <input
-                style="margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;"
+        <div>
+            <input style="width: 100%;margin-bottom: 10px;border: 1px solid #ccc;border-radius: 20px;font-size: 16px;"
                 placeholder="Bạn đang nghĩ gì?" id="postContent">
         </div>
         <div class="table-data">
@@ -105,32 +104,31 @@
                 </table>
             </div>
         </div>
-    </div>
-    <!--Modal Bai Viet -->
-    <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog" aria-labelledby="reportmodalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <img id="avatar">
-                    <h4 id="username"></h4>
-                    <p id="date"></p>
-                    <p id="contents"></p>
-                    <div id="images"></div>
+        <!--Modal Bai Viet -->
+        <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog" aria-labelledby="reportmodalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="avatar">
+                        <h4 id="username"></h4>
+                        <p id="date"></p>
+                        <p id="contents"></p>
+                        <div id="images"></div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
@@ -145,8 +143,8 @@
                 <div class="modal-body">
                     <form action="/postbaiviet" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="content">content:</label>
-                            <input type="text" class="form-control" id="content" name="content">
+                            <label for="postcontent">content:</label>
+                            <input type="text" class="form-control" id="postcontent" name="content">
                         </div>
                         <div class="form-group">
                             <input type="file" class="form-control" id="images" name="images" multiple>
@@ -161,7 +159,7 @@
             </div>
         </div>
     </div>
-
+    </div>
     <script>
         function reportmodal() {
             const reportdetailbutton = document.querySelectorAll('.report-detail-button');
