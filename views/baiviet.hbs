@@ -117,13 +117,13 @@
                                         <p id="date"></p>
                                         <p id="contents"></p>
                                         <div id="images"></div>
-                                        <div id="commentsSection">
+                                        <div class="commentsSection" data-manga-id="{{this._id}}">
                                         </div>
 
                                     </div>
                                     <div class="modal-footer">
                                         <div class="input-group">
-                                            <input id="commentInput" type="text" class="form-control"
+                                            <input type="text" class="form-control commentInput"
                                                 placeholder="Viết bình luận">
                                             <div class="input-group-append">
                                                 <i class='bx bx-send input-group-text postCommentBtn'
@@ -180,8 +180,9 @@
             const postCommentBtn = document.querySelectorAll('.postCommentBtn');
             postCommentBtn.forEach(button => {
                 button.addEventListener('click', function () {
-                    const comment = document.getElementById('commentInput').value;
                     const mangaId = this.getAttribute('data-manga-id');
+                    const comment = document.querySelector(`.commentInput[data-manga-id="${mangaId}"]`).value;
+                    
 
                     // Gửi request POST đến server để lưu comment mới
                     fetch(`/postcmtbaiviet/${mangaId}`, {
@@ -194,7 +195,7 @@
                         .then(response => response.json())
                         .then(data => {
                             getAndDisplayComments(mangaId)
-                            document.getElementById('commentInput').value = '';
+                            document.getElementById(`.commentInput[data-manga-id="${mangaId}"]`).value = '';
                         })
                         .catch(error => {
                             console.error('Lỗi khi gửi bình luận:', error);
@@ -209,7 +210,7 @@
             fetch(`/getcmtbaiviet/${mangaId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const commentsSection = document.getElementById('commentsSection');
+                    const commentsSection = document.querySelector(`.commentsSection[data-manga-id="${mangaId}"]`);
                     commentsSection.innerHTML = ''; // Xóa nội dung cũ
                     data.forEach(comment => {
                         const newCommentDiv = document.createElement('div');
