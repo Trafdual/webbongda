@@ -1525,7 +1525,7 @@
 		function setcomment() {
 			document.getElementById('postCommentBtn').addEventListener('click', function () {
 				const comment = document.getElementById('commentInput').value;
-				const mangaId = this.getAttribute('data-manga-id');
+				const mangaId = document.getElementById('reportmodal').getAttribute('data-manga-id');
 
 				// Gửi request POST đến server để lưu comment mới
 				fetch(`/postcmtbaiviet/${mangaId}`, {
