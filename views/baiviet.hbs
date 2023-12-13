@@ -16,38 +16,6 @@
             max-width: 200px;
             overflow: hidden;
         }
-
-        #avatar {
-            width: 50px;
-            /* Kích thước avatar */
-            height: 50px;
-            border-radius: 50%;
-            /* Để làm cho avatar thành hình tròn */
-            overflow: hidden;
-            /* Để ẩn phần vuông không mong muốn của hình ảnh */
-            display: inline-block;
-            /* Hiển thị avatar và username trên cùng một hàng */
-        }
-
-        /* CSS để định dạng username và date */
-        #username {
-            display: inline-block;
-            margin-left: 10px;
-            /* Khoảng cách giữa avatar và username */
-        }
-
-        #date {
-            margin-top: 5px;
-            /* Khoảng cách giữa username và date */
-        }
-
-        /* CSS để định dạng content */
-        #contents {
-            font-size: 20px;
-            margin-top: 10px;
-            /* Khoảng cách giữa date và content */
-        }
-
         .modal-dialog {
             max-height: 80vh;
             /* Giới hạn chiều cao tối đa của modal là 80% chiều cao của viewport */
@@ -112,11 +80,11 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <img id="avatar">
-                                        <h4 id="username"></h4>
-                                        <p id="date"></p>
-                                        <p id="contents"></p>
-                                        <div id="images"></div>
+                                        <img style=" width: 50px;height: 50px;border-radius: 50%;overflow: hidden;display: inline-block;" id="avatar_{{this._id}}">
+                                        <h4 style="display: inline-block;margin-left: 10px;" id="username _{{this._id}}"></h4>
+                                        <p style="margin-top: 5px;" id="date_{{this._id}}"></p>
+                                        <p style="font-size: 20px;margin-top: 10px;" id="contents_{{this._id}}"></p>
+                                        <div id="images_{{this._id}}"></div>
                                         <div class="commentsSection">
                                         </div>
 
@@ -244,12 +212,12 @@
                                 const iconSpan = document.createElement('span');
                                 iconSpan.innerHTML = data.content;
                                 const finalContent = iconSpan.innerHTML;
-                                document.getElementById('contents').textContent = finalContent;
-                                const avatarImg = document.getElementById('avatar');
+                                document.getElementById(`contents_${mangaId}`).textContent = finalContent;
+                                const avatarImg = document.getElementById(`avatar_${mangaId}`);
                                 avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
-                                document.getElementById('username').textContent = data.username;
-                                document.getElementById('date').textContent = data.date;
-                                const imagesDiv = document.getElementById('images');
+                                document.getElementById(`username_${mangaId}`).textContent = data.username;
+                                document.getElementById(`date_${mangaId}`).textContent = data.date;
+                                const imagesDiv = document.getElementById(`images_${mangaId}`);
 
                                 // Kiểm tra nếu có hình ảnh
                                 if (data.images && data.images.length > 0) {
