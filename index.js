@@ -2156,7 +2156,7 @@ app.post('/chapters', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
-    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray, price });
+    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray });
     if (user.role === 'nhomdich') {
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',

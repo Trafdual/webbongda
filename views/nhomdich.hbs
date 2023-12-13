@@ -1066,31 +1066,7 @@
 				notificationSpan.innerText = data.unreadCount.toString();
 			})
 			.catch(error => console.error(error));
-
-
-		const baivietManagerLink = document.getElementById('baivietManagerLink');
-
-		baivietManagerLink.addEventListener("click", function (event) {
-			event.preventDefault();
-			fetch('/renderbaiviet')
-				.then(response => response.text())
-				.then(data => {
-					const mainContent = document.querySelector("#content main");
-					mainContent.innerHTML = data;
-					setbaiviet()
-					reportmodal()
-				})
-				.catch(error => console.error('Đã xảy ra lỗi:', error));
-		});
-		function setbaiviet() {
-			$(document).ready(function () {
-				$("#postContent").click(function () {
-					$("#myModal").modal("show");
-				});
-
-			});
-		}
-
+			
 		function reportmodal() {
 			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
@@ -1135,6 +1111,31 @@
 				});
 			});
 		}
+
+		const baivietManagerLink = document.getElementById('baivietManagerLink');
+
+		baivietManagerLink.addEventListener("click", function (event) {
+			event.preventDefault();
+			fetch('/renderbaiviet')
+				.then(response => response.text())
+				.then(data => {
+					const mainContent = document.querySelector("#content main");
+					mainContent.innerHTML = data;
+					setbaiviet()
+					reportmodal()
+				})
+				.catch(error => console.error('Đã xảy ra lỗi:', error));
+		});
+		function setbaiviet() {
+			$(document).ready(function () {
+				$("#postContent").click(function () {
+					$("#myModal").modal("show");
+				});
+
+			});
+		}
+
+
 		const settingmanage = document.getElementById('setting');
 
 		settingmanage.addEventListener("click", function (event) {
