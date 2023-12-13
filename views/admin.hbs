@@ -1523,59 +1523,55 @@
 			});
 		}
 		function postcmt() {
-			
 			const postCommentBtns = document.querySelectorAll('.postCommentBtn');
-			const commentInputs = document.querySelectorAll('.commentInput');
 
 			postCommentBtns.forEach(button => {
 				button.addEventListener('click', function () {
 					const mangaId = this.getAttribute('data-manga-id');
+					const commentInput = this.closest('.modal-footer').querySelector('.commentInput');
+					const comment = commentInput.value;
 
-					commentInputs.forEach(commentInput => {
-						const comment = commentInput.value;
-
-						fetch(`/postcmtbaiviet/${mangaId}`, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({ comment }),
+					fetch(`/postcmtbaiviet/${mangaId}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ comment }),
+					})
+						.then(response => response.json())
+						.then(data => {
+							getAndDisplayComments(mangaId);
+							commentInput.value = '';
 						})
-							.then(response => response.json())
-							.then(data => {
-								getAndDisplayComments(mangaId);
-								commentInput.value = '';
-							})
-							.catch(error => {
-								console.error('Lỗi khi gửi bình luận:', error);
-								alert('Đã xảy ra lỗi khi gửi bình luận.');
-							});
-					});
+						.catch(error => {
+							console.error('Lỗi khi gửi bình luận:', error);
+							alert('Đã xảy ra lỗi khi gửi bình luận.');
+						});
 				});
 			});
 		}
-       function getAndDisplayComments(mangaId) {
-            const commentsSection = document.querySelectorAll('.commentsSection');
-            commentsSection.forEach(commentsSection => {
-                fetch(`/getcmtbaiviet/${mangaId}`)
-                    .then(response => response.json())
-                    .then(data => {
+		function getAndDisplayComments(mangaId) {
+			const commentsSection = document.querySelectorAll('.commentsSection');
+			commentsSection.forEach(commentsSection => {
+				fetch(`/getcmtbaiviet/${mangaId}`)
+					.then(response => response.json())
+					.then(data => {
 
 
-                        commentsSection.innerHTML = '';
+						commentsSection.innerHTML = '';
 
-                        data.forEach(comment => {
-                            const newCommentDiv = document.createElement('div');
-                            newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
-                            commentsSection.appendChild(newCommentDiv);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy danh sách bình luận:', error);
-                        alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
-                    });
-            })
-        }
+						data.forEach(comment => {
+							const newCommentDiv = document.createElement('div');
+							newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
+							commentsSection.appendChild(newCommentDiv);
+						});
+					})
+					.catch(error => {
+						console.error('Lỗi khi lấy danh sách bình luận:', error);
+						alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
+					});
+			})
+		}
 
 		const settingmanage = document.getElementById('setting');
 
