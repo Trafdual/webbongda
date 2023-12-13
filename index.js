@@ -771,7 +771,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       role: userbv.role,
       rolevip: userbv.rolevip,
       content: baiviet.content,
-      image: baiviet.images,
+      images: baiviet.images,
       like: baiviet.like,
       isLiked: isLiked,
       date: formattedDate,
