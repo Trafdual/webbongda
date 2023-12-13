@@ -1066,51 +1066,7 @@
 				notificationSpan.innerText = data.unreadCount.toString();
 			})
 			.catch(error => console.error(error));
-			
-		function reportmodal() {
-			const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 
-			reportdetailbutton.forEach(button => {
-				button.addEventListener('click', function (event) {
-					const mangaId = this.getAttribute('data-manga-id');
-					fetch(`/baivietreport/${mangaId}`)
-						.then(response => response.json())
-						.then(data => {
-							if (data) {
-								const iconSpan = document.createElement('span');
-								iconSpan.innerHTML = data.content;
-								const finalContent = iconSpan.innerHTML;
-								document.getElementById('contents').textContent = finalContent;
-								const avatarImg = document.getElementById('avatar');
-								avatarImg.src = `data:image/jpeg;base64,${data.avatar}`; // Hiển thị avatar từ base64
-								document.getElementById('username').textContent = data.username;
-								document.getElementById('date').textContent = data.date;
-
-								const imagesDiv = document.getElementById('images');
-
-								// Kiểm tra nếu có hình ảnh
-								if (data.images && data.images.length > 0) {
-									imagesDiv.style.display = 'block'; // Hiển thị thẻ images
-
-									// Tạo các thẻ img để hiển thị từng ảnh trong mảng
-									const imagesHtml = data.images.map(img => `<img style="width: 80%;height: auto;border-radius: 0;" id="image" src="data:image/jpeg;base64,${img}" alt="Images">`).join('');
-
-									imagesDiv.innerHTML = imagesHtml; // Thêm hình ảnh vào thẻ
-								} else {
-									imagesDiv.style.display = 'none'; // Ẩn thẻ images
-								}
-								$('#reportmodal').modal('show');
-							} else {
-								alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
-							}
-						})
-						.catch(error => {
-							console.error('Lỗi khi lấy thông tin bài viết:', error);
-							alert('Đã xảy ra lỗi khi khi lấy thông tin bài viết.');
-						});
-				});
-			});
-		}
 
 		const baivietManagerLink = document.getElementById('baivietManagerLink');
 
@@ -1122,7 +1078,6 @@
 					const mainContent = document.querySelector("#content main");
 					mainContent.innerHTML = data;
 					setbaiviet()
-					reportmodal()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
