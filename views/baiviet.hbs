@@ -100,46 +100,50 @@
                                 </form>
                             </td>
                         </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!--Modal Bai Viet -->
-        <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog" aria-labelledby="reportmodalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <img id="avatar">
-                        <h4 id="username"></h4>
-                        <p id="date"></p>
-                        <p id="contents"></p>
-                        <div id="images"></div>
-                        <div id="commentsSection">
-                            <!-- Hiển thị danh sách comment ở đây -->
-                        </div>
+                        <!--Modal Bai Viet -->
+                        <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog"
+                            aria-labelledby="reportmodalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="reportmodalLabel">Thông tin bài viết</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img id="avatar">
+                                        <h4 id="username"></h4>
+                                        <p id="date"></p>
+                                        <p id="contents"></p>
+                                        <div id="images"></div>
+                                        <div id="commentsSection">
+                                            <!-- Hiển thị danh sách comment ở đây -->
+                                        </div>
 
-                    </div>
-                    <div class="modal-footer">
-                        <div class="input-group">
-                            <input id="commentInput" type="text" class="form-control" placeholder="Viết bình luận">
-                            <div class="input-group-append">
-                                <i id="postCommentBtn" class='bx bx-send input-group-text' style="cursor: pointer;" data-manga-id="{{this._id}}"></i>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="input-group">
+                                            <input id="commentInput" type="text" class="form-control"
+                                                placeholder="Viết bình luận">
+                                            <div class="input-group-append">
+                                                <i id="postCommentBtn" class='bx bx-send input-group-text'
+                                                    style="cursor: pointer;" data-manga-id="{{this._id}}"></i>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
             </div>
+            {{/each}}
+            </tbody>
+            </table>
         </div>
     </div>
+
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
