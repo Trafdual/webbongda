@@ -1043,7 +1043,7 @@ app.get('/renderbaiviet', async (req, res) => {
           date: moment(item.date).format('DD/MM/YYYY HH:mm:ss')
         };
       });
-      res.render('baiviet1', {
+      res.render('baiviet', {
         baiviet: formattedBaiviet, user
       });
     }
@@ -1058,7 +1058,7 @@ app.get('/renderbaiviet', async (req, res) => {
           date: moment(item.date).format('DD/MM/YYYY HH:mm:ss')
         };
       });
-      res.render('baiviet1', {
+      res.render('baiviet', {
         baiviet: formattedBaiviet, user
       });
     }
