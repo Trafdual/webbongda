@@ -1154,7 +1154,7 @@ app.post('/categoryput/:id', async (req, res) => {
     await Promise.all(manga.map(cate => cate.save()));
     category.categoryname = categoryname;
     await category.save();
-    
+
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'sửa thể loại thành công' })
     }
@@ -1177,11 +1177,19 @@ app.post('/categorydelete/:_id', async (req, res) => {
     const categoryId = req.params._id;
 
 
-    const deletedCategory = await Category.findByIdAndRemove(categoryId);
+    const deletedCategory = await Category.findById(categoryId);
 
     if (!deletedCategory) {
       return res.status(404).json({ message: 'thể loại không tồn tại.' });
     }
+    const manga=await Manga.find({category:deletedCategory.categoryname});
+    manga.forEach(cate=>{
+      cate.category='Đang cập nhật'
+    })
+    await Promise.all(manga.map(cate => cate.save()));
+
+
+    await deletedCategory.deleteOne();
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'xóa thể loại thành công' })
     }
