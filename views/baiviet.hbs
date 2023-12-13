@@ -92,7 +92,7 @@
                                     <div class="modal-footer">
                                         <div class="input-group">
                                             <input type="text" class="form-control commentInput"
-                                                placeholder="Viết bình luận">
+                                                placeholder="Viết bình luận" required>
                                             <div class="input-group-append">
                                                 <i class='bx bx-send input-group-text postCommentBtn'
                                                     style="cursor: pointer;" data-manga-id="{{this._id}}"></i>
@@ -125,7 +125,7 @@
                     <form action="/postbaiviet" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="postcontent">content:</label>
-                            <input type="text" class="form-control" id="postcontent" name="content">
+                            <input type="text" class="form-control" id="postcontent" name="content" required>
                         </div>
                         <div class="form-group">
                             <input type="file" class="form-control" id="images" name="images" multiple>
