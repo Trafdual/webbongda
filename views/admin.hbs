@@ -1485,7 +1485,7 @@
 								} else {
 									imagesDiv.style.display = 'none'; // Ẩn thẻ images
 								}
-								$('#reportmodal').modal('show');
+								$(`#reportmodal_${mangaId}`).modal('show');
 								getAndDisplayComments(mangaId)
 							} else {
 								alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
@@ -1528,8 +1528,9 @@
 			postCommentBtns.forEach(button => {
 				button.addEventListener('click', function () {
 					const mangaId = this.getAttribute('data-manga-id');
-					const commentInput = this.closest('.modal-footer').querySelector('.commentInput');
-					const comment = commentInput.value;
+					 const modalId = `#reportmodal_${mangaId}`;
+                    const commentInput = document.querySelector(`${modalId} .commentInput`);
+                    const comment = commentInput.value;
 
 					fetch(`/postcmtbaiviet/${mangaId}`, {
 						method: 'POST',
@@ -1550,28 +1551,29 @@
 				});
 			});
 		}
-		function getAndDisplayComments(mangaId) {
-			const commentsSection = document.querySelectorAll('.commentsSection');
-			commentsSection.forEach(commentsSection => {
-				fetch(`/getcmtbaiviet/${mangaId}`)
-					.then(response => response.json())
-					.then(data => {
+	 function getAndDisplayComments(mangaId) {
+            const commentsSection = document.querySelectorAll('.commentsSection');
 
+            fetch(`/getcmtbaiviet/${mangaId}`)
+                .then(response => response.json())
+                .then(data => {
 
-						commentsSection.innerHTML = '';
+                    commentsSection.forEach(commentsSection => {
+                        commentsSection.innerHTML = '';
 
-						data.forEach(comment => {
-							const newCommentDiv = document.createElement('div');
-							newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
-							commentsSection.appendChild(newCommentDiv);
-						});
-					})
-					.catch(error => {
-						console.error('Lỗi khi lấy danh sách bình luận:', error);
-						alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
-					});
-			})
-		}
+                        data.forEach(comment => {
+                            const newCommentDiv = document.createElement('div');
+                            newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
+                            commentsSection.appendChild(newCommentDiv);
+                        });
+                    })
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy danh sách bình luận:', error);
+                    alert('Đã xảy ra lỗi khi lấy danh sách bình luận.');
+                });
+
+        }
 
 		const settingmanage = document.getElementById('setting');
 

@@ -101,7 +101,7 @@
                             </td>
                         </tr>
                         <!--Modal Bai Viet -->
-                        <div class="modal fade" id="reportmodal" tabindex="-1" role="dialog"
+                        <div class="modal fade" id="reportmodal_{{this._id}}" tabindex="-1" role="dialog"
                             aria-labelledby="reportmodalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -182,7 +182,8 @@
             postCommentBtns.forEach(button => {
                 button.addEventListener('click', function () {
                     const mangaId = this.getAttribute('data-manga-id');
-                    const commentInput = this.closest('.modal-footer').querySelector('.commentInput');
+                    const modalId = `#reportmodal_${mangaId}`;
+                    const commentInput = document.querySelector(`${modalId} .commentInput`);
                     const comment = commentInput.value;
 
                     fetch(`/postcmtbaiviet/${mangaId}`, {
@@ -262,7 +263,7 @@
                                     imagesDiv.style.display = 'none'; // Ẩn thẻ images
                                 }
 
-                                $('#reportmodal').modal('show');
+                                $(`#reportmodal_${mangaId}`).modal('show');
                                 getAndDisplayComments(mangaId)
                             } else {
                                 alert('Dữ liệu từ API không đầy đủ hoặc không hợp lệ.');
