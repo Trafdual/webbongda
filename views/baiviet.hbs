@@ -122,13 +122,16 @@
                         <p id="date"></p>
                         <p id="contents"></p>
                         <div id="images"></div>
+                        <div id="commentsSection">
+                            <!-- Hiển thị danh sách comment ở đây -->
+                        </div>
 
                     </div>
                     <div class="modal-footer">
-                        <div class="input-group" style="border-radius: 20px; border: 1px solid #ccc;">
-                            <input type="text" class="form-control" placeholder="Viết bình luận">
+                        <div class="input-group">
+                            <input id="commentInput" type="text" class="form-control" placeholder="Viết bình luận">
                             <div class="input-group-append">
-                                <i class='bx bx-send input-group-text' style="cursor: pointer;"></i>
+                                <i id="postCommentBtn" class='bx bx-send input-group-text' style="cursor: pointer;" data-manga-id="{{this._id}}"></i>
                             </div>
                         </div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -170,6 +173,34 @@
 
 
     <script>
+        document.getElementById('postCommentBtn').addEventListener('click', function () {
+            const comment = document.getElementById('commentInput').value;
+            const mangaId = this.getAttribute('data-manga-id');
+
+            // Gửi request POST đến server để lưu comment mới
+            fetch(`/postcmtbaiviet/${mangaId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ comment }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const commentsSection = document.getElementById('commentsSection');
+                    const newCommentDiv = document.createElement('div');
+                    newCommentDiv.innerHTML = `
+            <p>${data.comment.userID.username}: ${data.comment.cmt}</p>
+        `;
+                    commentsSection.appendChild(newCommentDiv);
+                    document.getElementById('commentInput').value = '';
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi bình luận:', error);
+                    alert('Đã xảy ra lỗi khi gửi bình luận.');
+                });
+        });
+
         function reportmodal() {
             const reportdetailbutton = document.querySelectorAll('.report-detail-button');
 

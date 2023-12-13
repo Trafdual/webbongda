@@ -1465,6 +1465,7 @@
 					mainContent.innerHTML = data;
 					setbaiviet()
 					reportmodal()
+					setcomment()
 				})
 				.catch(error => console.error('Đã xảy ra lỗi:', error));
 		});
@@ -1476,6 +1477,36 @@
 
 			});
 		}
+		function setcomment() {
+			document.getElementById('postCommentBtn').addEventListener('click', function () {
+				const comment = document.getElementById('commentInput').value;
+				const mangaId = this.getAttribute('data-manga-id');
+
+				// Gửi request POST đến server để lưu comment mới
+				fetch(`/postcmtbaiviet/${mangaId}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ comment }),
+				})
+					.then(response => response.json())
+					.then(data => {
+						const commentsSection = document.getElementById('commentsSection');
+						const newCommentDiv = document.createElement('div');
+						newCommentDiv.innerHTML = `
+            <p>${data.comment.userID.username}: ${data.comment.cmt}</p>
+        `;
+						commentsSection.appendChild(newCommentDiv);
+						document.getElementById('commentInput').value = '';
+					})
+					.catch(error => {
+						console.error('Lỗi khi gửi bình luận:', error);
+						alert('Đã xảy ra lỗi khi gửi bình luận.');
+					});
+			});
+		}
+
 		const settingmanage = document.getElementById('setting');
 
 		settingmanage.addEventListener("click", function (event) {

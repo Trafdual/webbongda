@@ -877,6 +877,51 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
   }
 });
+app.post('/postcmtbaiviet/:baivietId', async (req, res) => {
+  try {
+    const baivietId = req.params.baivietId;
+    const userId = req.session.userId;
+    const { comment } = req.body;
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(403).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    const baiviet = await Baiviet.findById(baivietId);
+
+    if (!baiviet) {
+      res.status(404).json({ message: 'Không tìm thấy bài viết' });
+    }
+
+    const newComment = {
+      userID: userId,
+      cmt: comment,
+      date: vietnamTime
+    };
+
+    baiviet.comment.push(newComment);
+    await baiviet.save();
+
+    if (baiviet.userId.toString() !== userId) {
+      const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
+      const notificationForPostOwner = new NotificationBaiviet({
+        title: 'Bài viết có bình luận mới',
+        content: notificationContentForPostOwner,
+        userId: baiviet.userId,
+        baivietId: baivietId,
+        date: vietnamTime,
+      });
+      await notificationForPostOwner.save();
+    }
+
+    res.status(200).json({ message: 'Đã thêm bình luận thành công', comment: newComment });
+  } catch (error) {
+    console.error('Lỗi khi post bình luận:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
+  }
+});
 app.post('/deletecmtbaiviet/:commentId/:baivietId/:userId', async (req, res) => {
   try {
     const commentId = req.params.commentId;
