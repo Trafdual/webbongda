@@ -177,32 +177,35 @@
 
     <script>
         function postcmt() {
-            const postCommentBtn = document.querySelectorAll('.postCommentBtn');
-            postCommentBtn.forEach(button => {
+            const postCommentBtns = document.querySelectorAll('.postCommentBtn');
+            const commentInputs = document.querySelectorAll('.commentInput');
+
+            postCommentBtns.forEach(button => {
                 button.addEventListener('click', function () {
                     const mangaId = this.getAttribute('data-manga-id');
-                    const comment = document.querySelector(`.commentInput[data-manga-id="${mangaId}"]`).value;
-                    
 
-                    // Gửi request POST đến server để lưu comment mới
-                    fetch(`/postcmtbaiviet/${mangaId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ comment }),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            getAndDisplayComments(mangaId)
-                            document.getElementById(`.commentInput[data-manga-id="${mangaId}"]`).value = '';
+                    commentInputs.forEach(commentInput => {
+                        const comment = commentInput.value;
+
+                        fetch(`/postcmtbaiviet/${mangaId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ comment }),
                         })
-                        .catch(error => {
-                            console.error('Lỗi khi gửi bình luận:', error);
-                            alert('Đã xảy ra lỗi khi gửi bình luận.');
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                getAndDisplayComments(mangaId);
+                                commentInput.value = '';
+                            })
+                            .catch(error => {
+                                console.error('Lỗi khi gửi bình luận:', error);
+                                alert('Đã xảy ra lỗi khi gửi bình luận.');
+                            });
+                    });
                 });
-            })
+            });
         }
 
 
@@ -210,12 +213,15 @@
             fetch(`/getcmtbaiviet/${mangaId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const commentsSection = document.querySelector(`.commentsSection[data-manga-id="${mangaId}"]`);
-                    commentsSection.innerHTML = ''; // Xóa nội dung cũ
-                    data.forEach(comment => {
-                        const newCommentDiv = document.createElement('div');
-                        newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
-                        commentsSection.appendChild(newCommentDiv);
+                    const commentsSection = document.querySelectorAll('.commentsSection');
+                    commentsSections.forEach(commentsSection => {
+                        commentsSection.innerHTML = '';
+
+                        data.forEach(comment => {
+                            const newCommentDiv = document.createElement('div');
+                            newCommentDiv.innerHTML = `<p>${comment.username}: ${comment.cmt}</p>`;
+                            commentsSection.appendChild(newCommentDiv);
+                        });
                     });
                 })
                 .catch(error => {
