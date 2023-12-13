@@ -45,7 +45,7 @@
             max-width: 200px;
             overflow: hidden;
         }
-        
+
         #avatar {
             width: 50px;
             /* Kích thước avatar */
@@ -71,12 +71,18 @@
         }
 
         /* CSS để định dạng content */
-        #content {
+        #contents {
             font-size: 20px;
             margin-top: 10px;
             /* Khoảng cách giữa date và content */
         }
 
+        .modal-dialog {
+            max-height: 80vh;
+            /* Giới hạn chiều cao tối đa của modal là 80% chiều cao của viewport */
+            overflow-y: auto;
+            /* Cho phép scroll nếu nội dung quá lớn */
+        }
     </style>
 </head>
 
@@ -103,10 +109,10 @@
                     <tbody>
                         {{#each baiviet}}
                         <tr>
-                            <td style="text-align: center; " >{{this.content}}</td>
-                            <td style="text-align: center;" >{{this.like}}</td>
-                            <td style="text-align: center;" >{{this.comment}}</td>
-                            <td style="text-align: center;" >{{this.date}}</td>
+                            <td style="text-align: center; ">{{this.content}}</td>
+                            <td style="text-align: center;">{{this.like}}</td>
+                            <td style="text-align: center;">{{this.comment}}</td>
+                            <td style="text-align: center;">{{this.date}}</td>
                             <td>
                                 <button class="btn btn-info report-detail-button"
                                     style="width: 100px; height: 30px; margin-top: 5px; background-color: #33b2fc; border: none; border-radius: 5px; color: white;"
