@@ -1644,6 +1644,7 @@ app.post('/mangadelete/:_id', async (req, res) => {
       category.manga = category.manga.filter((id) => id.toString() !== mangaId);
       await category.save();
     }
+    await Chapter.deleteMany({mangaName:deletedManga.manganame});
     if (user.role === 'nhomdich') {
       res.render('successnhomdich', { message: 'Xóa truyện thành công' });
     } else {
@@ -2218,7 +2219,7 @@ app.post('/chapterput/:_id', async (req, res) => {
       return res.status(403).json({ message: 'Không có id.' });
     }
     const chapterId = req.params._id;
-    let { mangaName, number, viporfree, price, images } = req.body;
+    let { mangaName, number, viporfree, images,price } = req.body;
     const imageArray = images.split('\n')
     number = number.toString();
     const chapter = await Chapter.findById(chapterId);
@@ -2231,6 +2232,12 @@ app.post('/chapterput/:_id', async (req, res) => {
       manga.chapters = manga.chapters.filter((id) => id.toString() !== chapterId);
       manga.chapters.push(chapterId);
       await manga.save();
+    }
+    if(viporfree === 'vip'){
+      price=2;
+    }
+    else{
+      price=0;
     }
     if (user.role === 'nhomdich') {
       chapter.pendingChanges = {
