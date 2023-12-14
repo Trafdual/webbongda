@@ -820,6 +820,7 @@ app.post('/deletebaiviet/:baivietid', async (req, res) => {
       user.baiviet.splice(baivietIndex, 1);
       await user.save();
     }
+   
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'xóa bài viết thành công' })
     }
@@ -1702,7 +1703,6 @@ app.post('/mangadelete/:_id', async (req, res) => {
     }
 
     await Chapter.deleteMany({ mangaName: deletedManga.manganame });
-    // Xóa manga khỏi favoriteManga của tất cả người dùng
     await User.updateMany(
       { 'favoriteManga.mangaId': mangaId },
       { $pull: { favoriteManga: { mangaId: mangaId } } }
