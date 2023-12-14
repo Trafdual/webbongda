@@ -1563,10 +1563,10 @@
 
                         data.forEach(comment => {
                             const newCommentDiv = document.createElement('div');
-                            newCommentDiv.innerHTML = `<div style="display: flex; align-items: center;">
+                            newCommentDiv.innerHTML = `<div style="margin-top:20px ;display: flex; align-items: center;">
     <img style="width: 50px;height: 50px;border-radius: 50%;overflow: hidden;display: inline-block;" src="data:image/jpeg;base64,${comment.avatar}" alt="Images">
-    <div style="background: #ccc; width: auto; height:auto">
-        <p>${comment.username}</p>
+    <div style="background: #ccc; width: auto; height:auto;border-radius: 10px">
+        <h4>${comment.username}</h4>
         <p>${comment.cmt}</p>
     </div>
 </div>`;
