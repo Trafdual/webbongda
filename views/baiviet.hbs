@@ -15,14 +15,31 @@
             text-align: center;
             max-width: 200px;
             overflow: hidden;
-            
-            
+           
+
+
         }
+
         .modal-dialog {
             max-height: 80vh;
             /* Giới hạn chiều cao tối đa của modal là 80% chiều cao của viewport */
+        }
+
+        .fixed-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            /* Màu nền của footer */
+            z-index: 1050;
+            /* Đảm bảo modal-footer hiển thị trên modal-body */
+        }
+
+        .scrollable-body {
+            max-height: 60vh;
+            /* Đặt chiều cao tối đa của modal-body */
             overflow-y: auto;
-            /* Cho phép scroll nếu nội dung quá lớn */
+            /* Kích thước của modal-body vượt quá max-height sẽ có thanh cuộn */
         }
     </style>
 </head>
@@ -81,9 +98,11 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
-                                        <img style=" width: 50px;height: 50px;border-radius: 50%;overflow: hidden;display: inline-block;" id="avatar_{{this._id}}">
-                                        <h4 style="display: inline-block;margin-left: 10px;" id="username_{{this._id}}"></h4>
+                                    <div class="modal-body scrollable-body">
+                                        <img style=" width: 50px;height: 50px;border-radius: 50%;overflow: hidden;display: inline-block;"
+                                            id="avatar_{{this._id}}">
+                                        <h4 style="display: inline-block;margin-left: 10px;" id="username_{{this._id}}">
+                                        </h4>
                                         <p style="margin-top: 5px;" id="date_{{this._id}}"></p>
                                         <p style="font-size: 20px;margin-top: 10px;" id="contents_{{this._id}}"></p>
                                         <div id="images_{{this._id}}"></div>
@@ -91,7 +110,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer fixed-footer">
                                         <div class="input-group">
                                             <input type="text" class="form-control commentInput"
                                                 placeholder="Viết bình luận" required>
@@ -189,11 +208,11 @@
 
                         data.forEach(comment => {
                             const newCommentDiv = document.createElement('div');
-                            newCommentDiv.innerHTML = `<div style="margin-top:20px ;display: flex; align-items: center;">
+                            newCommentDiv.innerHTML = `<div style="margin-top:20px ;display: flex;">
     <img style="width: 50px;height: 50px;border-radius: 50%;overflow: hidden;display: inline-block;" src="data:image/jpeg;base64,${comment.avatar}" alt="Images">
-    <div style="background: #ccc; width: auto; height:auto;border-radius: 10px">
-        <h4>${comment.username}</h4>
-        <p>${comment.cmt}</p>
+    <div style="background: #ccc; width: auto; height:auto;border-radius: 10px; margin-left:10px;">
+        <h6 style="margin-left:10px;">${comment.username}</h6>
+        <p style="margin-left:10px;">${comment.cmt}</p>
     </div>
 </div>`;
                             commentsSection.appendChild(newCommentDiv);
