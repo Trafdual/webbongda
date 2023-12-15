@@ -24,8 +24,8 @@
         <h2>Danh sách User</h2>
         <div class="table-data">
             <div class="order">
-                <table>
-                    <thead>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
                             <th style="text-align: center;">Username</th>
                             <th style="text-align: center;">Phone</th>
@@ -119,15 +119,15 @@
                     <form id="editCategoryForm" method="post">
                         <div class="form-group">
                             <label for="editusername">username:</label>
-                            <input type="text" class="form-control" id="editusername" name="username">
+                            <input type="text" class="form-control" id="editusername" name="username" required>
                         </div>
                         <div class="form-group">
                             <label for="editrole">role:</label>
-                            <input type="text" class="form-control" id="editrole" name="role">
+                            <input type="text" class="form-control" id="editrole" name="role" required>
                         </div>
                          <div class="form-group">
                             <label for="editphone">phone:</label>
-                            <input type="text" class="form-control" id="editphone" name="phone" >
+                            <input type="text" class="form-control" id="editphone" name="phone" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>

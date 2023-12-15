@@ -550,8 +550,8 @@ app.get('/getcmtbaiviet/:baivietId', async (req, res) => {
         cmt: item.cmt,
         username: usercmt.username,
         avatar: usercmt.avatar || '',
-        role:usercmt.role,
-        rolevip:usercmt.rolevip,
+        role: usercmt.role,
+        rolevip: usercmt.rolevip,
         date: formatdatecmt
       };
     }))
@@ -592,7 +592,8 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
           content: notificationContentForPostOwner,
           userId: baiviet.userId,
           baivietId: baivietId,
-          date: vietnamTime
+          date: vietnamTime,
+          isRead:true
         });
 
         await notificationForPostOwner.save();
@@ -644,23 +645,40 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
     const notify = await NotificationBaiviet.find({ userId: userID }).sort({ date: -1 }).lean()
-    const formatnotify = notify.map((item) => {
-      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
-      return {
+    const isReadTemp = notify.some((item) => item.isRead !== false);
+    const formatnotify = {
+      isRead: isReadTemp,
+      notify: notify.map((item) => ({
         _id: item._id,
         title: item.title,
         content: item.content,
         userId: item.userId,
-        date: formattedDate,
-        baivietId: item.baivietId
-      }
-    })
+        date: moment(item.date).format('DD/MM/YYYY HH:mm:ss'),
+        baivietId: item.baivietId,
+        isRead:item.isRead 
+      })),
+    };
     res.json(formatnotify)
   } catch (error) {
     console.error('Lỗi khi tìm thông báo:', err);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
   }
 })
+
+app.post('/postfalsenotify/:userId', async(req,res)=>{
+  try {
+    const userID = req.params.userId;
+    const notify = await NotificationBaiviet.updateMany(
+      { userId: userID },
+      { $set: { isRead: false } },
+      { setDefaultsOnInsert: true } // Thêm option này
+    );
+    res.json({ message: "Đã đọc thông báo" });
+  } catch (error) {
+    console.error('Lỗi đọc thông báo:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi đọc thông báo.' });
+  }
+});
 app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -771,7 +789,7 @@ app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
       role: userbv.role,
       rolevip: userbv.rolevip,
       content: baiviet.content,
-      image: baiviet.images,
+      images: baiviet.images,
       like: baiviet.like,
       isLiked: isLiked,
       date: formattedDate,
@@ -820,6 +838,7 @@ app.post('/deletebaiviet/:baivietid', async (req, res) => {
       user.baiviet.splice(baivietIndex, 1);
       await user.save();
     }
+   
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'xóa bài viết thành công' })
     }
@@ -867,11 +886,58 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
         userId: baiviet.userId,
         baivietId: baivietId,
         date: vietnamTime,
+        isRead:true
       });
       await notificationForPostOwner.save();
     }
 
     res.status(200).json({ message: 'Đã thêm bình luận thành công' });
+  } catch (error) {
+    console.error('Lỗi khi post bình luận:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
+  }
+});
+app.post('/postcmtbaiviet/:baivietId', async (req, res) => {
+  try {
+    const baivietId = req.params.baivietId;
+    const userId = req.session.userId;
+    const { comment } = req.body;
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(403).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    const baiviet = await Baiviet.findById(baivietId);
+
+    if (!baiviet) {
+      res.status(404).json({ message: 'Không tìm thấy bài viết' });
+    }
+
+    const newComment = {
+      userID: userId,
+      cmt: comment,
+      date: vietnamTime
+    };
+
+    baiviet.comment.push(newComment);
+    await baiviet.save();
+
+    if (baiviet.userId.toString() !== userId) {
+      const notificationContentForPostOwner = `${user.username} đã bình luận bài viết:${baiviet.content} của bạn`;
+      const notificationForPostOwner = new NotificationBaiviet({
+        title: 'Bài viết có bình luận mới',
+        content: notificationContentForPostOwner,
+        userId: baiviet.userId,
+        baivietId: baivietId,
+        date: vietnamTime,
+        isRead:true,
+      });
+      await notificationForPostOwner.save();
+    }
+
+    res.json({ comment: newComment });
   } catch (error) {
     console.error('Lỗi khi post bình luận:', error);
     res.status(500).json({ error: 'Đã xảy ra lỗi khi post bình luận.' });
@@ -950,6 +1016,80 @@ app.post('/report/:baivietId/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
   }
 })
+app.post('/reportbaiviet/:baivietId', async (req, res) => {
+  try {
+    const baivietId = req.params.baivietId;
+    const userId = req.session.userId
+    const vietnamTime = momenttimezone().add(7, 'hours').toDate();
+    const user = await User.findById(userId)
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' })
+    }
+
+    const baiviet = await Baiviet.findByIdAndDelete(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+    await NotificationBaiviet.deleteMany({ baivietId: baivietId });
+    await Notification.deleteMany({ mangaId: baivietId });
+    const baivietIndex = user.baiviet.indexOf(baivietId);
+    if (baivietIndex !== -1) {
+      user.baiviet.splice(baivietIndex, 1);
+      await user.save();
+    }
+    const notification = new NotificationBaiviet({
+      title: 'Report',
+      content: `bài viết ${baiviet.content} của bạn đã bị xóa do vi phạm tiêu chuẩn cộng đồng`,
+      userId: baiviet.userId,
+      baivietId: baivietId,
+      date: vietnamTime,
+    });
+    await notification.save()
+    res.render("successadmin", { message: 'report bài viết thành công' })
+
+  } catch (error) {
+    console.error('Lỗi report bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi report bài viết' });
+  }
+})
+app.get('/baivietreport/:baivietId', async (req, res) => {
+  try {
+    const baivietId = req.params.baivietId;
+    const baiviet = await Baiviet.findById(baivietId)
+    if (!baiviet) {
+      res.status(404).json({ message: 'không tìm thấy bài viết này' });
+    }
+    const user = await User.findById(baiviet.userId);
+    if (!user) {
+      res.status(404).json({ message: 'không tìm thấy user' });
+    }
+    const formattedDate = moment(baiviet.date).format('DD/MM/YYYY HH:mm:ss');
+    const formatdata = {
+      avatar: user.avatar || '',
+      username: user.username,
+      content: baiviet.content,
+      date: formattedDate,
+      images: baiviet.images || ''
+    }
+    res.json(formatdata)
+  } catch (error) {
+    console.error('Lỗi khi tìm bài viết:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm bài viết.' });
+  }
+})
+app.post('/deletenotifybaiviet/:_id', async (req, res) => {
+  try {
+    const id = req.params._id;
+    const notify = await Notification.findByIdAndDelete(id);
+    if (!notify) {
+      res.status(403).json({ message: 'không tìm thấy thông báo' })
+    }
+    res.render('successadmin', { message: 'xóa thông báo thành công' })
+  } catch (error) {
+    console.error('Lỗi xóa thông báo:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi xóa thông báo' });
+  }
+})
 app.get('/renderbaiviet', async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -994,6 +1134,7 @@ app.get('/renderbaiviet', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
   }
 });
+
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
@@ -1068,15 +1209,18 @@ app.post('/categoryput/:id', async (req, res) => {
     const categoryId = req.params.id;
     const { categoryname } = req.body;
 
-    const category = await Category.findByIdAndUpdate(
-      categoryId,
-      { categoryname },
-      { new: true }
-    );
+    const category = await Category.findById(categoryId);
 
     if (!category) {
       return res.status(404).json({ message: 'Không tìm thấy thể loại.' });
     }
+    const manga = await Manga.find({ category: category.categoryname });
+    manga.forEach(cate => {
+      cate.category = categoryname;
+    })
+    await Promise.all(manga.map(cate => cate.save()));
+    category.categoryname = categoryname;
+    await category.save();
 
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'sửa thể loại thành công' })
@@ -1100,11 +1244,19 @@ app.post('/categorydelete/:_id', async (req, res) => {
     const categoryId = req.params._id;
 
 
-    const deletedCategory = await Category.findByIdAndRemove(categoryId);
+    const deletedCategory = await Category.findById(categoryId);
 
     if (!deletedCategory) {
       return res.status(404).json({ message: 'thể loại không tồn tại.' });
     }
+    const manga = await Manga.find({ category: deletedCategory.categoryname });
+    manga.forEach(cate => {
+      cate.category = 'Đang cập nhật'
+    })
+    await Promise.all(manga.map(cate => cate.save()));
+
+
+    await deletedCategory.deleteOne();
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'xóa thể loại thành công' })
     }
@@ -1296,6 +1448,7 @@ app.post('/mangapost', async (req, res) => {
 
       await notification.save();
 
+      manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = false;
       await manga.save();
       categoryObject.manga.push(manga._id);
@@ -1303,6 +1456,7 @@ app.post('/mangapost', async (req, res) => {
       res.render('successnhomdich', { message: 'Truyện của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
+      manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = true
       await manga.save();
       categoryObject.manga.push(manga._id);
@@ -1386,8 +1540,7 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 
 app.get('/unread-count', async (req, res) => {
   try {
-    // Đếm số lượng thông báo chưa đọc
-    const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap/ } });
+    const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap|Report/ } });
 
     res.json({ unreadCount });
   } catch (error) {
@@ -1568,6 +1721,13 @@ app.post('/mangadelete/:_id', async (req, res) => {
       category.manga = category.manga.filter((id) => id.toString() !== mangaId);
       await category.save();
     }
+
+    await Chapter.deleteMany({ mangaName: deletedManga.manganame });
+    await User.updateMany(
+      { 'favoriteManga.mangaId': mangaId },
+      { $pull: { favoriteManga: { mangaId: mangaId } } }
+    );
+
     if (user.role === 'nhomdich') {
       res.render('successnhomdich', { message: 'Xóa truyện thành công' });
     } else {
@@ -1717,8 +1877,8 @@ app.get('/mangachitiet/:mangaId/:userId', async (req, res) => {
         userID: com.userID,
         username: username,
         avatar: userComment.avatar || '',
-        role:userComment.role,
-        rolevip:userComment.rolevip,
+        role: userComment.role,
+        rolevip: userComment.rolevip,
         cmt: com.cmt,
         date: formatdatecmt
       };
@@ -2062,7 +2222,7 @@ app.post('/purchaseChapter/:userId/:chapterId', async (req, res) => {
 app.post('/chapters', async (req, res) => {
   try {
     const userId = req.session.userId
-    const { mangaName, number, viporfree, images, price } = req.body;
+    const { mangaName, number, viporfree, images } = req.body;
     const user = await User.findById(userId)
     if (!userId || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -2080,7 +2240,7 @@ app.post('/chapters', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy truyện liên quan đến chương này.' });
     }
 
-    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray, price });
+    const chapter = new Chapter({ mangaName, number, viporfree, images: imageArray });
     if (user.role === 'nhomdich') {
       const notification = new Notification({
         adminId: '653a20c611295a22062661f9',
@@ -2090,7 +2250,12 @@ app.post('/chapters', async (req, res) => {
         mangaId: chapter._id
       });
       await notification.save();
-
+      if (chapter.viporfree === 'free') {
+        chapter.price = 0;
+      }
+      else {
+        chapter.price = 2;
+      }
       chapter.isChap = false;
       await chapter.save();
       manga.chapters.push(chapter._id);
@@ -2098,6 +2263,12 @@ app.post('/chapters', async (req, res) => {
       res.render('successnhomdich', { message: 'Chap của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
+      if (chapter.viporfree === 'free') {
+        chapter.price = 0;
+      }
+      else {
+        chapter.price = 2;
+      }
       chapter.isChap = true
       await chapter.save();
       manga.chapters.push(chapter._id);
@@ -2131,7 +2302,7 @@ app.post('/chapterput/:_id', async (req, res) => {
       return res.status(403).json({ message: 'Không có id.' });
     }
     const chapterId = req.params._id;
-    let { mangaName, number, viporfree, price, images } = req.body;
+    let { mangaName, number, viporfree, images, price } = req.body;
     const imageArray = images.split('\n')
     number = number.toString();
     const chapter = await Chapter.findById(chapterId);
@@ -2144,6 +2315,12 @@ app.post('/chapterput/:_id', async (req, res) => {
       manga.chapters = manga.chapters.filter((id) => id.toString() !== chapterId);
       manga.chapters.push(chapterId);
       await manga.save();
+    }
+    if (viporfree === 'vip') {
+      price = 2;
+    }
+    else {
+      price = 0;
     }
     if (user.role === 'nhomdich') {
       chapter.pendingChanges = {
@@ -3168,12 +3345,12 @@ app.get('/user/:userId', async (req, res) => {
         };
       }
     });
-    const detailuser=userRoles[user._id.toString()]
+    const detailuser = userRoles[user._id.toString()]
     res.json({
       userId: detailuser.userId,
       username: detailuser.username,
       role: detailuser.role,
-      rolevip:detailuser.rolevip,
+      rolevip: detailuser.rolevip,
       coin: user.coin,
       avatar: detailuser.avatar || ''
     })
@@ -3221,21 +3398,23 @@ app.post('/rename/:userId', async (req, res) => {
 })
 app.post('/quenmk', async (req, res) => {
   try {
-    const { phone, passNew } = req.body;
+    const { phone, passNew,username } = req.body;
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
-    // Tìm người dùng theo số điện thoại
+     const usernam = await User.findOne({ username: username });
+
+     if (!usernam) {
+       return res.status(403).json({ message: 'Không tìm thấy username' });
+     }
+ 
     const user = await User.findOne({ phone: phone });
 
     if (!user || user.phone === null) {
       return res.status(403).json({ message: 'Không tìm thấy tài khoản' });
     }
 
-    // Hash mật khẩu mới
     const hashedPassword = await bcrypt.hash(passNew, 10);
-
-    // Cập nhật mật khẩu cho người dùng
     user.password = hashedPassword;
     await user.save();
 

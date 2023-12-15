@@ -5,7 +5,8 @@ const notificationSchema = new mongoose.Schema({
   content: String,
   userId: {type:mongoose.Schema.Types.ObjectId,ref:'user'},
   date: { type: Date, default: Date.now },
-  baivietId: {type:mongoose.Schema.Types.ObjectId,ref:'baiviet'}
+  baivietId: {type:mongoose.Schema.Types.ObjectId,ref:'baiviet'},
+  isRead:{type:Boolean,default:false}
 });
 
 const Notification = mongoose.model('notificationbaiviet', notificationSchema);

@@ -2,13 +2,19 @@
 <html>
 
 <head>
-  <title>Manga</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-  <style>
+	<title>Manga</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+		td {
+			text-align: center;
+			max-width: 200px;
+			overflow: hidden;
+		}
 
 		* {
 			margin: 0;
@@ -637,112 +643,118 @@
 </head>
 
 <body>
-  <div class="jumbotron text-center">
-    <h1>Manga</h1>
-    <form method="get" action="/add">
-      <button type="submit">Thêm truyện</button>
-    </form>
-    <hr>
-    <h2>Danh sách Truyện</h2>
-    <div class="table-data">
-      <div class="order">
-           
-    <table class="table" >
-      <thead class="thead-dark">
-        <tr>
-          <th style="text-align: center;">Image</th>
-          <th style="text-align: center;">Manganame</th>
-          <th style="text-align: center;">Author</th>
-          <th style="text-align: center;">Content</th>
-          <th style="text-align: center;">Category </th>
-          <th style="text-align: center;">View</th>
-          <th style="text-align: center;">Like</th>
-          <th style="text-align: center;">Option</th>
-        </tr>
-      </thead>
+	<div class="jumbotron text-center">
+		<h1>Manga</h1>
+		<form method="get" action="/add">
+			<button type="submit">Thêm truyện</button>
+		</form>
+		<hr>
+		<h2>Danh sách Truyện</h2>
+		<div class="table-data">
+			<div class="order">
 
-      <tbody>
-        {{#each manga}}
-        <tr>
-          <td><img src="{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
-          <td>{{this.manganame}}</td>
-          <td>{{this.author}}</td>
-          <td>{{this.content}}</td>
-          <td>{{this.category}}</td>
-          <td>{{this.view}}</td>
-          <td>{{this.like}}</td>
-          {{!-- <td>
-            <button class="btn btn-info" onclick="showChapters('{{this.manganame}}')">Chi tiết</button>
-          </td> --}}
-          <td>
-            <form style="margin-top: 10px;" action="/mangaput/{{this._id}}" method="get">
-              <button style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;" type="submit">Edit</button>
-            </form>
-            <form style="margin-top: 10px;" action="/mangadelete/{{this._id}}" onclick="return confirm('ban co muon xoa khong ?')" method="post">
-              <button style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;" type="submit">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {{/each}}
-      </tbody>
+				<table class="table">
+					<thead class="thead-dark">
+						<tr>
+							<th style="text-align: center;">Image</th>
+							<th style="text-align: center;">Manganame</th>
+							<th style="text-align: center;">Author</th>
+							<th style="text-align: center;">Content</th>
+							<th style="text-align: center;">Category </th>
+							<th style="text-align: center;">View</th>
+							<th style="text-align: center;">Like</th>
+							<th style="text-align: center;">Option</th>
+						</tr>
+					</thead>
 
-    </table>
-      </div>
-      </div>
- 
+					<tbody>
+						{{#each manga}}
+						<tr>
+							<td><img src="{{this.image}}" style="width: 100px;height: 100px;" loading="lazy"></td>
+							<td>{{this.manganame}}</td>
+							<td>{{this.author}}</td>
+							<td>{{this.content}}</td>
+							<td>{{this.category}}</td>
+							<td>{{this.view}}</td>
+							<td>{{this.like}}</td>
+							{{!-- <td>
+								<button class="btn btn-info" onclick="showChapters('{{this.manganame}}')">Chi
+									tiết</button>
+							</td> --}}
+							<td>
+								<form style="margin-top: 10px;" action="/mangaput/{{this._id}}" method="get">
+									<button
+										style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
+										type="submit">Edit</button>
+								</form>
+								<form style="margin-top: 10px;" action="/mangadelete/{{this._id}}"
+									onclick="return confirm('ban co muon xoa khong ?')" method="post">
+									<button
+										style="width: 100px; height: 30px; margin-top: 5px; background-color: #f50d0d; border: none; border-radius: 5px; color: white;"
+										type="submit">Delete</button>
+								</form>
+							</td>
+						</tr>
+						{{/each}}
+					</tbody>
 
-  </div>
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Danh sách Chap</h4>
-        </div>
-        <div class="modal-body">
-          <ul class="list-group" id="chapList">
-            <!-- Danh sách chap sẽ được thêm vào đây -->
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-        </div>
-      </div>
-    </div>
-  </div>
+				</table>
+			</div>
+		</div>
 
-  <script>
-   function showChapters(mangaName) {
-  console.log("Tên manga:", mangaName);
-  // Sử dụng Fetch API để gửi yêu cầu GET đến API
-  // để lấy danh sách chap cho manga với tên được truyền vào (mangaName)
-  fetch(`/mangas/${encodeURIComponent(mangaName)}/chapters`)
-    .then((response) => response.json())
-    .then((chapters) => {
-      // Xử lý danh sách chap ở đây, ví dụ: hiển thị trong một modal popup
-      displayChaptersModal(chapters);
-    })
-    .catch((error) => {
-      console.error('Lỗi khi lấy danh sách chap:', error);
-    });
-}
 
-function displayChaptersModal(chapters) {
-  // Lấy ra phần danh sách chap trong modal
-  const chapList = document.getElementById('chapList');
-  chapList.innerHTML = ''; // Xóa nội dung danh sách cũ
+	</div>
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Danh sách Chap</h4>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group" id="chapList">
+						<!-- Danh sách chap sẽ được thêm vào đây -->
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-  chapters.forEach((chapter) => {
-    const chapItem = document.createElement('li');
-    chapItem.textContent = `Chap ${chapter.number}`;
-    chapItem.classList.add('list-group-item');
-    chapList.appendChild(chapItem);
-  });
+	<script>
+		function showChapters(mangaName) {
+			console.log("Tên manga:", mangaName);
+			// Sử dụng Fetch API để gửi yêu cầu GET đến API
+			// để lấy danh sách chap cho manga với tên được truyền vào (mangaName)
+			fetch(`/mangas/${encodeURIComponent(mangaName)}/chapters`)
+				.then((response) => response.json())
+				.then((chapters) => {
+					// Xử lý danh sách chap ở đây, ví dụ: hiển thị trong một modal popup
+					displayChaptersModal(chapters);
+				})
+				.catch((error) => {
+					console.error('Lỗi khi lấy danh sách chap:', error);
+				});
+		}
 
-  // Hiển thị modal
-  $('#myModal').modal('show');
-}
-  </script>
+		function displayChaptersModal(chapters) {
+			// Lấy ra phần danh sách chap trong modal
+			const chapList = document.getElementById('chapList');
+			chapList.innerHTML = ''; // Xóa nội dung danh sách cũ
+
+			chapters.forEach((chapter) => {
+				const chapItem = document.createElement('li');
+				chapItem.textContent = `Chap ${chapter.number}`;
+				chapItem.classList.add('list-group-item');
+				chapList.appendChild(chapItem);
+			});
+
+			// Hiển thị modal
+			$('#myModal').modal('show');
+		}
+	</script>
 </body>
 
 </html>
