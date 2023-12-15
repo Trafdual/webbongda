@@ -667,7 +667,7 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
     const notify = await NotificationBaiviet.find({ userId: userID }).sort({ date: -1 }).lean()
-    const isReadTemp = notify.some((item) => item.isRead !== false || item.isRead !== undefined || item.isRead !== null || item.isRead !=='' );
+    const isReadTemp = notify.some((item) => item.isRead !== false);
     const formatnotify = {
       isRead: isReadTemp,
       notify: notify.map((item) => ({
