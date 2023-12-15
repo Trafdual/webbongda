@@ -689,7 +689,11 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
 app.post('/postfalsenotify/:userId', async(req,res)=>{
   try {
     const userID = req.params.userId;
-    const notify = await NotificationBaiviet.updateMany({ userId: userID }, { $set: { isRead: false } });
+    const notify = await NotificationBaiviet.updateMany(
+      { userId: userID },
+      { $set: { isRead: false } },
+      { setDefaultsOnInsert: true } // Thêm option này
+    );
     res.json({ message: "Đã đọc thông báo" });
   } catch (error) {
     console.error('Lỗi đọc thông báo:', error);
