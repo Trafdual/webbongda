@@ -686,7 +686,7 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
   }
 })
-app.post('postfalsenotify/:userId', async(req,res)=>{
+app.post('/postfalsenotify/:userId', async(req,res)=>{
 try {
   const userID = req.params.userId
   const notify = await NotificationBaiviet.find({ userId: userID })
