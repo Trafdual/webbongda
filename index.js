@@ -686,6 +686,20 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
   }
 })
+app.post('postfalsenotify/:userId', async(req,res)=>{
+try {
+  const userID = req.params.userId
+  const notify = await NotificationBaiviet.find({ userId: userID })
+  notify.forEach(item=>{
+    item.isRead=false
+  })
+  await Promise.all(notify.map(not => not.save()));
+  res.json({message:"Đã đọc thông báo"})
+} catch (error) {
+  console.error('Lỗi đọc thông báo:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi đọc thông báo.' });
+}
+})
 app.get('/detailbaiviet/:baivietId/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
