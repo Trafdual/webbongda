@@ -644,17 +644,18 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
     const notify = await NotificationBaiviet.find({ userId: userID }).sort({ date: -1 }).lean()
-    const formatnotify = notify.map((item) => {
-      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
-      return {
+    const isReadTemp = notify.some((item) => item.isRead === false || item.isRead === undefined );
+    const formatnotify = {
+      isRead: isReadTemp,
+      notify: notify.map((item) => ({
         _id: item._id,
         title: item.title,
         content: item.content,
         userId: item.userId,
-        date: formattedDate,
-        baivietId: item.baivietId
-      }
-    })
+        date: moment(item.date).format('DD/MM/YYYY HH:mm:ss'),
+        baivietId: item.baivietId,
+      })),
+    };
     res.json(formatnotify)
   } catch (error) {
     console.error('Lỗi khi tìm thông báo:', err);
@@ -1114,6 +1115,7 @@ app.get('/renderbaiviet', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách bài viết' });
   }
 });
+
 //api get, post category
 app.get('/categorys', async (req, res) => {
   try {
@@ -3381,24 +3383,19 @@ app.post('/quenmk', async (req, res) => {
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
-     // Tìm người dùng theo số điện thoại
      const usernam = await User.findOne({ username: username });
 
      if (!usernam) {
        return res.status(403).json({ message: 'Không tìm thấy username' });
      }
  
-    // Tìm người dùng theo số điện thoại
     const user = await User.findOne({ phone: phone });
 
     if (!user || user.phone === null) {
       return res.status(403).json({ message: 'Không tìm thấy tài khoản' });
     }
 
-    // Hash mật khẩu mới
     const hashedPassword = await bcrypt.hash(passNew, 10);
-
-    // Cập nhật mật khẩu cho người dùng
     user.password = hashedPassword;
     await user.save();
 
