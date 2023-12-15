@@ -653,7 +653,8 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
         content: item.content,
         userId: item.userId,
         date: formattedDate,
-        baivietId: item.baivietId
+        baivietId: item.baivietId,
+        isRead:item.isRead || ''
       }
     })
     res.json(formatnotify)
