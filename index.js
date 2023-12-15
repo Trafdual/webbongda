@@ -592,7 +592,8 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
           content: notificationContentForPostOwner,
           userId: baiviet.userId,
           baivietId: baivietId,
-          date: vietnamTime
+          date: vietnamTime,
+          isRead:true
         });
 
         await notificationForPostOwner.save();
@@ -890,6 +891,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
         userId: baiviet.userId,
         baivietId: baivietId,
         date: vietnamTime,
+        isRead:true
       });
       await notificationForPostOwner.save();
     }
@@ -935,6 +937,7 @@ app.post('/postcmtbaiviet/:baivietId', async (req, res) => {
         userId: baiviet.userId,
         baivietId: baivietId,
         date: vietnamTime,
+        isRead:true,
       });
       await notificationForPostOwner.save();
     }
