@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>category</title>
+    <title>Comic</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -23,8 +23,8 @@
         <h2>Danh sách thể loại</h2>
         <div class="table-data">
             <div class="order">
-                <table>
-                    <thead>
+                <table class="table">
+                    <thead class="thead-dark">
                         <tr>
                             <th style="text-align: center;">Category Name</th>
                             <th style="text-align: center;">Option</th>
@@ -34,13 +34,11 @@
                     <tbody>
                         {{#each category}}
                         <tr>
-                            <td>{{this.categoryname}}</td>
+                            <td style="text-align: center;">{{this.categoryname}}</td>
                             <td>
-                                <form style="margin-top: 10px; text-align: center;" action="/categoryput/{{this._id}}" method="get">
                                     <button
                                         style="width: 100px; height: 30px; margin-top: 5px; background-color: #1E90FF; border: none; border-radius: 5px; color: white;"
-                                        type="button" class="editCategoryButton">Edit</button>
-                                </form>
+                                        type="button" class="editCategoryButton" data-id="{{this._id}}">Edit</button>
                                 <form style="margin-top: 10px;" action="/categorydelete/{{this._id}}"
                                     onclick="return confirm('Bạn có muốn xóa Thể loại này?" method="post">
                                     <button
@@ -72,7 +70,7 @@
                     <form id="addCategoryForm" method="post" action="/category">
                         <div class="form-group">
                             <label for="categoryname">Tên thể loại:</label>
-                            <input type="text" class="form-control" id="categoryname" name="categoryname">
+                            <input type="text" class="form-control" id="categoryname" name="categoryname" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -101,7 +99,7 @@
                     <form id="editCategoryForm" method="post">
                         <div class="form-group">
                             <label for="editCategoryname">Tên thể loại:</label>
-                            <input type="text" class="form-control" id="editCategoryname" name="categoryname">
+                            <input type="text" class="form-control" id="editCategoryname" name="categoryname" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -124,8 +122,8 @@
             // Hiện dialog sửa thể loại khi bấm nút "Edit" trong bảng danh sách thể loại
             $(".editCategoryButton").click(function () {
                 // Lấy thông tin thể loại từ hàng bảng
-                var categoryId = $(this).closest("tr").find("td:first").text();
-                var categoryname = $(this).closest("tr").find("td:nth-child(2)").text();
+                var categoryId = $(this).data("id");
+                var categoryname = $(this).closest("tr").find("td:first").text();
 
                 // Hiển thị thông tin thể loại trong modal sửa thể loại
                 $("#editCategoryname").val(categoryname);
