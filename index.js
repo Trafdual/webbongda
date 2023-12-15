@@ -1519,7 +1519,6 @@ app.post('/approveManga/:mangaId', async (req, res) => {
 
 app.get('/unread-count', async (req, res) => {
   try {
-    // Đếm số lượng thông báo chưa đọc
     const unreadCount = await Notification.countDocuments({ title: { $regex: /Duyệt sửa truyện|Duyệt thêm truyện|Duyệt thêm chap|Duyệt sửa chap|Report/ } });
 
     res.json({ unreadCount });
@@ -3378,10 +3377,17 @@ app.post('/rename/:userId', async (req, res) => {
 })
 app.post('/quenmk', async (req, res) => {
   try {
-    const { phone, passNew } = req.body;
+    const { phone, passNew,username } = req.body;
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
+     // Tìm người dùng theo số điện thoại
+     const usernam = await User.findOne({ username: username });
+
+     if (!usernam) {
+       return res.status(403).json({ message: 'Không tìm thấy username' });
+     }
+ 
     // Tìm người dùng theo số điện thoại
     const user = await User.findOne({ phone: phone });
 
