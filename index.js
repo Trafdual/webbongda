@@ -48,11 +48,7 @@ const upload = multer({ storage: storage });
 const uri = "mongodb+srv://totnghiepduan2023:qs49jTtYwyQcsZ6i@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
 mongoose.connect(uri, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  tls: {
-    ciphers: 'TLS_AES_256_GCM_SHA384',  // Chọn các thuật toán phù hợp với cấu hình hệ thống
-  },
-  
+  useUnifiedTopology: true
 }).then(console.log("kết nối thành công"));
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
