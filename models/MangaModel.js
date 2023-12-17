@@ -23,8 +23,6 @@ const mangaSchema = new mongoose.Schema({
     author: { type: String },
     content: { type: String },
     category: { type: String },
-    view: { type: Number },
-    like: { type: Number },
     image: { type: String },
     link:{type:String}
   },

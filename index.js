@@ -593,7 +593,7 @@ app.post('/addfavoritebaiviet/:userId/:baivietId', async (req, res) => {
           userId: baiviet.userId,
           baivietId: baivietId,
           date: vietnamTime,
-          isRead:true
+          isRead: true
         });
 
         await notificationForPostOwner.save();
@@ -676,7 +676,7 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
         userId: item.userId,
         date: moment(item.date).format('DD/MM/YYYY HH:mm:ss'),
         baivietId: item.baivietId,
-        isRead:item.isRead 
+        isRead: item.isRead
       })),
     };
     res.json(formatnotify)
@@ -686,7 +686,7 @@ app.get('/notifybaiviet1/:userId', async (req, res) => {
   }
 })
 
-app.post('/postfalsenotify/:userId', async(req,res)=>{
+app.post('/postfalsenotify/:userId', async (req, res) => {
   try {
     const userID = req.params.userId;
     const notify = await NotificationBaiviet.updateMany(
@@ -859,7 +859,7 @@ app.post('/deletebaiviet/:baivietid', async (req, res) => {
       user.baiviet.splice(baivietIndex, 1);
       await user.save();
     }
-   
+
     if (user.role === 'nhomdich') {
       res.render("successnhomdich", { message: 'xóa bài viết thành công' })
     }
@@ -907,7 +907,7 @@ app.post('/postcmtbaiviet/:baivietId/:userId', async (req, res) => {
         userId: baiviet.userId,
         baivietId: baivietId,
         date: vietnamTime,
-        isRead:true
+        isRead: true
       });
       await notificationForPostOwner.save();
     }
@@ -953,7 +953,7 @@ app.post('/postcmtbaiviet/:baivietId', async (req, res) => {
         userId: baiviet.userId,
         baivietId: baivietId,
         date: vietnamTime,
-        isRead:true,
+        isRead: true,
       });
       await notificationForPostOwner.save();
     }
@@ -1446,7 +1446,7 @@ app.post('/huymangaput/:mangaId/:id', async (req, res) => {
 app.post('/mangapost', async (req, res) => {
   try {
     const userId = req.session.userId
-    const { manganame, author, content, category, view, like, image } = req.body;
+    const { manganame, author, content, category, image } = req.body;
     const categoryObject = await Category.findOne({ categoryname: category });
     const user = await User.findById(userId)
     if (!user) {
@@ -1456,7 +1456,7 @@ app.post('/mangapost', async (req, res) => {
     if (!categoryObject) {
       return res.status(404).json({ message: 'Thể loại không tồn tại.' });
     }
-    const manga = new Manga({ userID: userId, manganame, author, content, category, view, like, image });
+    const manga = new Manga({ userID: userId, manganame, author, content, category, image });
 
     if (user.role === 'nhomdich') {
       const notification = new Notification({
@@ -1468,7 +1468,8 @@ app.post('/mangapost', async (req, res) => {
       });
 
       await notification.save();
-
+      manga.view = 10;
+      manga.like = 0;
       manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = false;
       await manga.save();
@@ -1477,6 +1478,8 @@ app.post('/mangapost', async (req, res) => {
       res.render('successnhomdich', { message: 'Truyện của bạn đã thêm thành công và đang đợi xét duyệt' });
     }
     else {
+      manga.view = 10;
+      manga.like = 0;
       manga.link = `https://du-an-2023.vercel.app/manga/${manga._id}/chapters`
       manga.isRead = true
       await manga.save();
@@ -1651,7 +1654,7 @@ app.post('/mangaput/:_id', async (req, res) => {
   try {
     const userId = req.session.userId;
     const mangaId = req.params._id;
-    const { manganame, author, content, category, view, like, image, link } = req.body;
+    const { manganame, author, content, category,image, link } = req.body;
     const user = await User.findById(userId);
     if (!user || typeof userId !== 'string') {
       console.log("Session:", req.session);
@@ -1685,8 +1688,6 @@ app.post('/mangaput/:_id', async (req, res) => {
         author,
         content,
         category,
-        view,
-        like,
         image,
         link
       };
@@ -1709,8 +1710,6 @@ app.post('/mangaput/:_id', async (req, res) => {
       manga.author = author;
       manga.content = content;
       manga.category = category;
-      manga.view = view;
-      manga.like = like;
       manga.image = image;
       manga.link = link
       await manga.save();
@@ -3419,16 +3418,16 @@ app.post('/rename/:userId', async (req, res) => {
 })
 app.post('/quenmk', async (req, res) => {
   try {
-    const { phone, passNew,username } = req.body;
+    const { phone, passNew, username } = req.body;
     if (!phone || !/^\d{10}$/.test(phone)) {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     }
-     const usernam = await User.findOne({ username: username });
+    const usernam = await User.findOne({ username: username });
 
-     if (!usernam) {
-       return res.status(403).json({ message: 'Không tìm thấy username' });
-     }
- 
+    if (!usernam) {
+      return res.status(403).json({ message: 'Không tìm thấy username' });
+    }
+
     const user = await User.findOne({ phone: phone });
 
     if (!user || user.phone === null) {
