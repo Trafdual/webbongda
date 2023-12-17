@@ -645,6 +645,27 @@ app.get('/notifybaiviet/:userId', async (req, res) => {
   try {
     const userID = req.params.userId
     const notify = await NotificationBaiviet.find({ userId: userID }).sort({ date: -1 }).lean()
+    const formatnotify = notify.map((item) => {
+      const formattedDate = moment(item.date).format('DD/MM/YYYY HH:mm:ss');
+      return {
+        _id: item._id,
+        title: item.title,
+        content: item.content,
+        userId: item.userId,
+        date: formattedDate,
+        baivietId: item.baivietId
+      }
+    })
+    res.json(formatnotify)
+  } catch (error) {
+    console.error('Lỗi khi tìm thông báo:', err);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm thông báo.' });
+  }
+})
+app.get('/notifybaiviet1/:userId', async (req, res) => {
+  try {
+    const userID = req.params.userId
+    const notify = await NotificationBaiviet.find({ userId: userID }).sort({ date: -1 }).lean()
     const isReadTemp = notify.some((item) => item.isRead !== false);
     const formatnotify = {
       isRead: isReadTemp,
