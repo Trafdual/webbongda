@@ -2941,7 +2941,7 @@ app.get("/revenue", async (req, res) => {
 });
 
 app.get('/cancel', (req, res) => {
-  res.send('Thanh toán đã bị hủy.');
+  res.render("successthanhtoan", { message: 'Thanh toán đã bị hủy mời quay trở lại app!' });
 });
 
 app.get('/topUsers', async (req, res) => {
