@@ -18,7 +18,6 @@ const mangaSchema = new mongoose.Schema({
   isRead:{type:Boolean},
   isApproved: { type: Boolean, default: false }, // Trường mới để đánh dấu trạng thái được duyệt hay không
   pendingChanges: {
-    // Trường mới để lưu trữ các thay đổi đang chờ
     manganame: { type: String },
     author: { type: String },
     content: { type: String },
