@@ -1,12 +1,12 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
+const User = require('../models/UserModel')
 const moment = require('moment');
 const momenttimezone = require('moment-timezone');
-const Category = require('./models/CategoryModel')
-const Manga = require('./models/MangaModel')
-const Chapter = require('./models/ChapterModel')
-const Payment = require('./models/PaymentModel')
-const Notification = require('./models/NotifyModel')
+const Category = require('../models/CategoryModel')
+const Manga = require('../models/MangaModel')
+const Chapter = require('../models/ChapterModel')
+const Payment = require('../models/PaymentModel')
+const Notification = require('../models/NotifyModel')
 
 router.get('/mangas', async (req, res) => {
     try {

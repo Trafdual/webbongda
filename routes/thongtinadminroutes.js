@@ -3,9 +3,9 @@ const User = require('./models/UserModel')
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const multer = require('multer')
-const Manga = require('./models/MangaModel')
-const Payment = require('./models/PaymentModel')
-const Baiviet = require('./models/BaiVietModel')
+const Manga = require('../models/MangaModel')
+const Payment = require('../models/PaymentModel')
+const Baiviet = require('../models/BaiVietModel')
 
 const storage = multer.memoryStorage();
 

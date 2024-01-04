@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
-const Category = require('./models/CategoryModel')
-const Manga = require('./models/MangaModel')
-const Chapter = require('./models/ChapterModel')
-const Baiviet = require('./models/BaiVietModel')
-const User = require('./models/UserModel')
+const Category = require('../models/CategoryModel')
+const Manga = require('../models/MangaModel')
+const Chapter = require('../models/ChapterModel')
+const Baiviet = require('../models/BaiVietModel')
+const User = require('../models/UserModel')
 const cheerio = require('cheerio');
 
 const checkAuth = (req, res, next) => {

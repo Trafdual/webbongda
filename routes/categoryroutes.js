@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
-const Category = require('./models/CategoryModel')
-const Manga = require('./models/MangaModel')
+const User = require('../models/UserModel')
+const Category = require('../models/CategoryModel')
+const Manga = require('../models/MangaModel')
 
 router.get('/categorys', async (req, res) => {
     try {

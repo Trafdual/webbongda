@@ -1,12 +1,12 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
+const User = require('../models/UserModel')
 const moment = require('moment');
 const momenttimezone = require('moment-timezone');
 const multer = require('multer')
-const Payment = require('./models/PaymentModel')
-const Baiviet = require('./models/BaiVietModel')
-const Notification = require('./models/NotifyModel')
-const NotificationBaiviet = require('./models/NotifyBaiVietModel')
+const Payment = require('../models/PaymentModel')
+const Baiviet = require('../models/BaiVietModel')
+const Notification = require('../models/NotifyModel')
+const NotificationBaiviet = require('../models/NotifyBaiVietModel')
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });

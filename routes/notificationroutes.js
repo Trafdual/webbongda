@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Notification = require('./models/NotifyModel')
+const Notification = require('../models/NotifyModel')
 
 
 router.get('/unread-count', async (req, res) => {

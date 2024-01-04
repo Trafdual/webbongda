@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
+const User = require('../models/UserModel')
 const bcrypt = require("bcryptjs");
 const multer = require('multer')
-const Manga = require('./models/MangaModel')
-const Payment = require('./models/PaymentModel')
+const Manga = require('../models/MangaModel')
+const Payment = require('../models/PaymentModel')
 const jwt = require('jsonwebtoken');
 
 const storage = multer.memoryStorage();

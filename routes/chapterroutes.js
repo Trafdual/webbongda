@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
+const User = require('../models/UserModel')
 const cheerio = require('cheerio');
-const Manga = require('./models/MangaModel')
-const Chapter = require('./models/ChapterModel')
-const Notification = require('./models/NotifyModel')
+const Manga = require('../models/MangaModel')
+const Chapter = require('../models/ChapterModel')
+const Notification = require('../models/NotifyModel')
 
 
 

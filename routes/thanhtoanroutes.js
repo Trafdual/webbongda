@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require('./models/UserModel')
+const User = require('../models/UserModel')
 const paypal = require('paypal-rest-sdk');
 const moment = require('moment');
 const momenttimezone = require('moment-timezone');
-const Payment = require('./models/PaymentModel')
+const Payment = require('../models/PaymentModel')
 
 paypal.configure({
     mode: 'sandbox',
