@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const multer = require('multer')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
