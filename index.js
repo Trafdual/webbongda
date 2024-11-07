@@ -33,7 +33,7 @@ app.set("view engine", ".hbs");
 app.set("views", path.join(__dirname, "views"));
 app.use(methodOverride('_method'));
 
-const uri = "mongodb+srv://totnghiepduan2023:qs49jTtYwyQcsZ6i@cluster0.tzx1qqh.mongodb.net/DuanTotNghiep?retryWrites=true&w=majority";
+const uri = "mongodb+srv://webbongda:webbongda2024@webbongda.me9wj.mongodb.net/webbongda?retryWrites=true&w=majority&appName=webbongda";
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -59,6 +59,8 @@ app.use(session({
   }
 }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, '/styles')))
+app.use(express.static(path.join(__dirname, '/images')))
 
 app.use('/',handle);
 app.use('/',baiviet);

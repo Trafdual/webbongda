@@ -1,0 +1,69 @@
+body {
+  background-image: url(http://localhost:8080/sanbong2.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: "Roboto", "Arial", "Helvetica", sans-serif;
+}
+.imgbongda {
+  width: 100px;
+  height: 100px;
+}
+.tieudebongda {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.h1bongda {
+  font-size: 60px;
+  color: white;
+  font-weight: bold;
+  font-style: italic;
+  margin-right: 10px;
+}
+.h2bongda {
+  font-size: 25px;
+  color: white;
+  font-weight: bold;
+  font-style: italic;
+}
+.texttieude {
+  display: flex;
+  align-items: baseline;
+}
+
+.loichao {
+  text-align: center;
+}
+
+.h1loichao {
+  color: white;
+  font-weight: bold;
+  font-style: italic;
+}
+.h2loichao {
+  color: white;
+  font-weight: bold;
+}
+.btnlogin{
+    background-color:white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    color: black;
+    font-weight: bold;
+    margin-right: 10px;
+    font-size:20px;
+    cursor: pointer;
+}
+
+.btnlogin:hover{
+    background-color: #047edb;
+    color: white;
+}
+.divbtnlogin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
