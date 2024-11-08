@@ -1,11 +1,9 @@
 const router = require('express').Router()
 const User = require('../models/UserModel')
 const bcrypt = require('bcryptjs')
+const { response } = require('express')
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
-const Manga = require('../models/MangaModel')
-const Payment = require('../models/PaymentModel')
-const Baiviet = require('../models/BaiVietModel')
 
 const storage = multer.memoryStorage()
 
@@ -73,11 +71,9 @@ router.post('/loginadmin', async (req, res) => {
       )
       req.session.userId = user._id
       req.session.token = token
-      return res.redirect('/admin')
+      return res.json(user)
     } else {
-      return res.render('dangkydangnhap/loginadmin.hbs', {
-        RoleError: 'Bạn không có quyền truy cập trang web'
-      })
+      return res.json({ message: 'bạn không có quyền truy cập trang web' })
     }
   } catch (error) {
     console.error(error)
@@ -112,11 +108,9 @@ router.post('/loginuser', async (req, res) => {
       )
       req.session.userId = user._id
       req.session.token = token
-      return res.redirect('/user')
+      return res.json(user)
     } else {
-      return res.render('dangkydangnhap/loginuser.hbs', {
-        RoleError: 'Bạn không có quyền truy cập trang web'
-      })
+      return res.json({ message: 'bạn không có quyền truy cập trang web' })
     }
   } catch (error) {
     console.error(error)
@@ -151,114 +145,13 @@ router.post('/loginstaff', async (req, res) => {
       )
       req.session.userId = user._id
       req.session.token = token
-      return res.redirect('/staff')
+     return res.json(user)
     } else {
-      return res.render('dangkydangnhap/loginstaff.hbs', {
-        RoleError: 'Bạn không có quyền truy cập trang web'
-      })
+      return res.json({ message: 'bạn không có quyền truy cập trang web' })
     }
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Đã xảy ra lỗi.' })
-  }
-})
-
-
-router.post('/userdelete/:_id', async (req, res) => {
-  try {
-    const userId = req.params._id
-
-    const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId })
-    const hasUserBaiviet = await Baiviet.exists({ userId: userId })
-    const hasUserCommentsBaiviet = await Baiviet.exists({
-      'comment.userID': userId
-    })
-    const haspayment = await Payment.exists({ userID: userId })
-
-    if (
-      !hasUserCmtManga &&
-      !hasUserBaiviet &&
-      !hasUserCommentsBaiviet &&
-      !haspayment
-    ) {
-      const deletedUser = await User.findByIdAndRemove(userId)
-      if (!deletedUser) {
-        return res.status(404).json({ message: 'Người dùng không tồn tại.' })
-      }
-
-      return res.json({ message: 'Người dùng đã được xóa thành công.' })
-    }
-
-    await Manga.updateMany(
-      { 'comment.userID': userId },
-      { $pull: { comment: { userID: userId } } }
-    )
-    await Baiviet.deleteMany({ userId: userId })
-    await Baiviet.updateMany(
-      { 'comment.userID': userId },
-      { $pull: { comment: { userID: userId } } }
-    )
-    await Payment.deleteMany({ userID: userId })
-
-    const deletedUser = await User.findByIdAndRemove(userId)
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'Người dùng không tồn tại.' })
-    }
-
-    res.json({ message: 'Xóa user thành công' })
-  } catch (error) {
-    console.error('Lỗi khi xóa người dùng:', error)
-    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa người dùng.' })
-  }
-})
-
-router.post('/userdeleteweb/:_id', async (req, res) => {
-  try {
-    const userId = req.params._id
-
-    const hasUserCmtManga = await Manga.exists({ 'comment.userID': userId })
-    const hasUserBaiviet = await Baiviet.exists({ userId: userId })
-    const hasUserCommentsBaiviet = await Baiviet.exists({
-      'comment.userID': userId
-    })
-    const haspayment = await Payment.exists({ userID: userId })
-
-    if (
-      !hasUserCmtManga &&
-      !hasUserBaiviet &&
-      !hasUserCommentsBaiviet &&
-      !haspayment
-    ) {
-      const deletedUser = await User.findByIdAndRemove(userId)
-      if (!deletedUser) {
-        return res.status(404).json({ message: 'Người dùng không tồn tại.' })
-      }
-
-      return res.json({ message: 'Người dùng đã được xóa thành công.' })
-    }
-
-    await Manga.updateMany(
-      { 'comment.userID': userId },
-      { $pull: { comment: { userID: userId } } }
-    )
-    await Baiviet.deleteMany({ userId: userId })
-    await Baiviet.updateMany(
-      { 'comment.userID': userId },
-      { $pull: { comment: { userID: userId } } }
-    )
-    await Payment.deleteMany({ userID: userId })
-
-    const deletedUser = await User.findByIdAndRemove(userId)
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'Người dùng không tồn tại.' })
-    }
-
-    res.render('successadmin', {
-      message: `xóa ${deletedUser.role} thành công `
-    })
-  } catch (error) {
-    console.error('Lỗi khi xóa người dùng:', error)
-    res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa người dùng.' })
   }
 })
 
