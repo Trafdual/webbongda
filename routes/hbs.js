@@ -66,14 +66,24 @@ router.get('/logout', async (req, res) => {
   res.redirect('/loginadmin')
 })
 
-router.get('/nhomdich', checkAuth, async (req, res) => {
+router.get('/staff', checkAuth, async (req, res) => {
   const userId = req.session.userId
   const user = await User.findById(userId)
   if (!user) {
     res.status(403).json({ message: 'không tìm thấy user' })
   }
-  res.render('nhomdich', { user })
+  res.render('staff/staff.hbs', { user })
 })
+
+router.get('/user', checkAuth, async (req, res) => {
+  const userId = req.session.userId
+  const user = await User.findById(userId)
+  if (!user) {
+    res.status(403).json({ message: 'không tìm thấy user' })
+  }
+  res.render('user/user.hbs', { user })
+})
+
 
 router.get('/setting', async (req, res) => {
   const userId = req.session.userId
