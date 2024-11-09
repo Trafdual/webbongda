@@ -27,7 +27,7 @@ router.get('/getfullsan', async (req, res) => {
   }
 })
 
-router.get('/getsantheoloai', async (req, res) => {
+router.post('/getsantheoloai', async (req, res) => {
   try {
     const { tenloaisan } = req.body
     const loaisanbong = await LoaiSanBong.findOne({ tenloaisan })
@@ -97,7 +97,7 @@ router.post('/postsanbong', async (req, res) => {
   }
 })
 
-router.post('/putsanbong/:idsanbong', async (req, res) => {
+router.put('/putsanbong/:idsanbong', async (req, res) => {
   try {
     const idsanbong = req.params.idsanbong
     const { tensan, trangthai } = req.body
