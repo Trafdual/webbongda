@@ -44,110 +44,25 @@ router.post('/registerweb', async (req, res) => {
   }
 })
 
-router.post('/loginadmin', async (req, res) => {
+router.post('/loginfull', async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, password, role } = req.body
     const user = await User.findOne({ email })
 
     if (!user) {
-      return res.render('dangkydangnhap/loginadmin.hbs', {
-        UserError: 'Email không đúng'
-      })
+      res.json({ message: 'email không chính xác' })
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
-      return res.render('dangkydangnhap/loginadmin.hbs', {
-        PassError: 'Mật khẩu không đúng'
-      })
+      res.json({ message: 'nhập sai mật khẩu' })
     }
 
-    if (user.role === 'admin') {
-      const token = jwt.sign(
-        { userId: user._id, role: user.role },
-        'mysecretkey',
-        { expiresIn: '1h' }
-      )
-      req.session.userId = user._id
-      req.session.token = token
-      return res.json(user)
+    if (user.role !== role) {
+      res.json({ message: 'bạn không có quyền truy cập trang web' })
     } else {
-      return res.json({ message: 'bạn không có quyền truy cập trang web' })
-    }
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Đã xảy ra lỗi.' })
-  }
-})
-
-router.post('/loginuser', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return res.render('dangkydangnhap/loginuser.hbs', {
-        UserError: 'Email không đúng'
-      })
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-
-    if (!isPasswordValid) {
-      return res.render('dangkydangnhap/loginuser.hbs', {
-        PassError: 'Mật khẩu không đúng'
-      })
-    }
-
-    if (user.role === 'user') {
-      const token = jwt.sign(
-        { userId: user._id, role: user.role },
-        'mysecretkey',
-        { expiresIn: '1h' }
-      )
-      req.session.userId = user._id
-      req.session.token = token
-      return res.json(user)
-    } else {
-      return res.json({ message: 'bạn không có quyền truy cập trang web' })
-    }
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Đã xảy ra lỗi.' })
-  }
-})
-
-router.post('/loginstaff', async (req, res) => {
-  try {
-    const { email, password } = req.body
-    const user = await User.findOne({ email })
-
-    if (!user) {
-      return res.render('dangkydangnhap/loginstaff.hbs', {
-        UserError: 'Email không đúng'
-      })
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-
-    if (!isPasswordValid) {
-      return res.render('dangkydangnhap/loginstaff.hbs', {
-        PassError: 'Mật khẩu không đúng'
-      })
-    }
-
-    if (user.role === 'staff') {
-      const token = jwt.sign(
-        { userId: user._id, role: user.role },
-        'mysecretkey',
-        { expiresIn: '1h' }
-      )
-      req.session.userId = user._id
-      req.session.token = token
-     return res.json(user)
-    } else {
-      return res.json({ message: 'bạn không có quyền truy cập trang web' })
+      res.json(user)
     }
   } catch (error) {
     console.error(error)
