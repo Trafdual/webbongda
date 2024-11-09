@@ -13,14 +13,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 const handle=require('./routes/hbs');
-const baiviet=require('./routes/baivietroutes');
-const category=require('./routes/categoryroutes');
-const manga=require('./routes/mangaroutes');
-const chapter=require('./routes/chapterroutes');
-const thanhtoan=require('./routes/thanhtoanroutes');
-const notification=require('./routes/notificationroutes');
 const thongtinadmin=require('./routes/thongtinadminroutes');
 const thongtinuser=require('./routes/thongtinuser');
+const loaisanbongRoutes=require('./routes/LoaiSanBongRoutes')
+const sanbongRoutes=require('./routes/SanBongRoutes')
+const dothueRoutes=require('./routes/DoThueRoutes')
 
 var app = express();
 
@@ -45,7 +42,7 @@ mongoose.connect(uri, {
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
   mongoUrl: uri,
-  collection: 'sessions', // Tên collection lưu trữ session trong MongoDB
+  collection: 'sessions',
 };
 
 app.use(cookieParser());
@@ -65,15 +62,11 @@ app.use(express.static(path.join(__dirname, '/styles')))
 app.use(express.static(path.join(__dirname, '/images')))
 hbs1.registerPartials(path.join(__dirname, 'views/components'));
 app.use('/',handle);
-app.use('/',baiviet);
-app.use('/',category);
-app.use('/',manga);
-app.use('/',chapter);
-app.use('/',thanhtoan);
-app.use('/',notification);
 app.use('/',thongtinadmin);
 app.use('/',thongtinuser);
-
+app.use('/', loaisanbongRoutes)
+app.use('/', sanbongRoutes)
+app.use('/', dothueRoutes)
 
 app.listen(8080, () => {
   try {
