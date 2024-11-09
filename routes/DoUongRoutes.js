@@ -23,7 +23,7 @@ router.post(
       const domain = 'http://localhost:8080'
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
-        : null
+        : ''
       const douong = new DoUong({ tendouong, soluong, price, image })
       const madouong = 'DU' + douong._id.toString().slice(-4)
       douong.madouong = madouong
@@ -58,7 +58,7 @@ router.post(
 
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
-        : null
+        : ''
       const existingDoUong = await DoUong.findById(iddouong)
 
       const updatedDoUong = await DoUong.findByIdAndUpdate(
