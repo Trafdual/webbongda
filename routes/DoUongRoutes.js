@@ -1,22 +1,11 @@
 const router = require('express').Router()
-const DoThue = require('../models/DoThueModels')
+const DoUong = require('../models/DoUongModels')
 const uploads = require('./uploads')
 
-router.get('/getdothue', async (req, res) => {
+router.get('/getdouong', async (req, res) => {
   try {
-    const dothue = await DoThue.find().lean()
-    res.json(dothue)
-  } catch (error) {
-    console.error('đã xảy ra lỗi:', error)
-    res.status(500).json({ error: 'Đã xảy ra lỗi' })
-  }
-})
-
-router.get('/getputdothue/:iddothue', async (req, res) => {
-  try {
-    const iddothue = req.params.iddothue
-    const dothue = await DoThue.findById(iddothue)
-    res.json(dothue)
+    const douong = await DoUong.find().lean()
+    res.json(douong)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -24,22 +13,22 @@ router.get('/getputdothue/:iddothue', async (req, res) => {
 })
 
 router.post(
-  '/postdothue',
+  '/postdouong',
   uploads.fields([
     { name: 'image', maxCount: 1 } // Một ảnh duy nhất
   ]),
   async (req, res) => {
     try {
-      const { tendothue, soluong, price } = req.body
+      const { tendouong, soluong, price } = req.body
       const domain = 'http://localhost:8080'
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
         : null
-      const dothue = new DoThue({ tendothue, soluong, price, image })
-      const madothue = 'DT' + dothue._id.toString().slice(-4)
-      dothue.madothue = madothue
-      await dothue.save()
-      res.json(dothue)
+      const douong = new DoUong({ tendouong, soluong, price, image })
+      const madouong = 'DU' + douong._id.toString().slice(-4)
+      douong.madouong = madouong
+      await douong.save()
+      res.json(douong)
     } catch (error) {
       console.error('đã xảy ra lỗi:', error)
       res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -47,32 +36,43 @@ router.post(
   }
 )
 
+router.get('/getputdouong/:iddouong', async (req, res) => {
+  try {
+    const iddouong = req.params.iddouong
+    const douong = await DoUong.findById(iddouong)
+    res.json(douong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 router.post(
-  '/putdothue/:iddothue',
+  '/putdouong/:iddouong',
   uploads.fields([{ name: 'image', maxCount: 1 }]),
   async (req, res) => {
     try {
-      const { tendothue, soluong, price } = req.body
-      const iddothue = req.params.iddothue
+      const { tendouong, soluong, price } = req.body
+      const iddouong = req.params.iddouong
       const domain = 'http://localhost:8080'
 
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
         : null
-      const existingDoThue = await DoThue.findById(iddothue)
+      const existingDoUong = await DoUong.findById(iddouong)
 
-      const updatedDoThue = await DoThue.findByIdAndUpdate(
-        iddothue,
+      const updatedDoUong = await DoUong.findByIdAndUpdate(
+        iddouong,
         {
-          tendothue,
+          tendouong,
           soluong,
           price,
-          image: image || existingDoThue.image
+          image: image || existingDoUong.image
         },
         { new: true }
       )
 
-      res.json(updatedDoThue)
+      res.json(updatedDoUong)
     } catch (error) {
       console.error('đã xảy ra lỗi:', error)
       res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -80,10 +80,10 @@ router.post(
   }
 )
 
-router.post('/deletedothue/:iddothue', async (req, res) => {
+router.post('/deletedouong/:iddouong', async (req, res) => {
   try {
-    const iddothue = req.params.iddothue
-    await DoThue.findByIdAndDelete(iddothue)
+    const iddouong = req.params.iddouong
+    await DoUong.findByIdAndDelete(iddouong)
     res.json({ message: 'xóa thành công' })
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)

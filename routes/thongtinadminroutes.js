@@ -69,6 +69,16 @@ router.post('/loginfull', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi.' })
   }
 })
+router.get('/getnhanvien', async (req, res) => {
+  try {
+    const user = await User.find().lean()
+    const userjson = user.filter(u => u.role === 'staff')
+    res.json(userjson)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Đã xảy ra lỗi.' })
+  }
+})
 
 router.post('/userput/:id', async (req, res) => {
   try {
@@ -79,16 +89,12 @@ router.post('/userput/:id', async (req, res) => {
       return res.status(400).json({ message: 'Số điện thoại không hợp lệ' })
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        username,
-        password: hashedPassword,
-        role,
-        phone: phone.toString()
-      },
-      { new: true }
-    )
+    const user = await User.findByIdAndUpdate(userId, {
+      username,
+      password: hashedPassword,
+      role,
+      phone: phone.toString()
+    })
 
     if (!user) {
       return res.status(404).json({ message: 'Không tìm thấy user.' })
