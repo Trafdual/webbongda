@@ -18,6 +18,7 @@ const thongtinuser=require('./routes/thongtinuser');
 const loaisanbongRoutes=require('./routes/LoaiSanBongRoutes')
 const sanbongRoutes=require('./routes/SanBongRoutes')
 const dothueRoutes=require('./routes/DoThueRoutes')
+const douongRoutes=require('./routes/DoUongRoutes')
 
 var app = express();
 
@@ -60,13 +61,15 @@ app.use(session({
 app.use(cors());
 app.use(express.static(path.join(__dirname, '/styles')))
 app.use(express.static(path.join(__dirname, '/images')))
-hbs1.registerPartials(path.join(__dirname, 'views/components'));
+
 app.use('/',handle);
 app.use('/',thongtinadmin);
 app.use('/',thongtinuser);
 app.use('/', loaisanbongRoutes)
 app.use('/', sanbongRoutes)
 app.use('/', dothueRoutes)
+app.use('/', douongRoutes)
+
 
 app.listen(8080, () => {
   try {
