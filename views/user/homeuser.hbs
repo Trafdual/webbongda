@@ -1,0 +1,88 @@
+<!-- views/calendar-interface.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Interface</title>
+  <link rel="stylesheet" href="http://localhost:8080/homeuser.css">
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header class="header">
+    <div class="logo">
+      <img src="/images/logo.png" alt="Logo"> DONGDE STADIUM
+    </div>
+    <nav>
+      <button>Trang Chủ</button>
+      <button>Đặt Sân</button>
+      <div class="account-info">
+        <span>tài khoản 1</span>
+        <img src="/images/user-avatar.png" alt="User Avatar">
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    
+    <!-- Left Sidebar for Date Picker and Legend -->
+    <aside class="sidebar">
+      <h2>Chọn Ngày</h2>
+      <div class="calendar-picker">
+        <h3>Tháng Một 2024</h3>
+        <div class="month-selector">
+          <button>&lt;</button>
+          <span>Tháng Một 2024</span>
+          <button>&gt;</button>
+        </div>
+        <div class="date-grid">
+          {{#each dates}}
+            <div class="date">{{this}}</div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="status-legend">
+        <h3>Chú Giải Trạng Thái</h3>
+        <div class="legend-item" style="background-color: #FF5733;">Sau thời gian cho phép đặt</div>
+        <div class="legend-item" style="background-color: #3498DB;">Trạng thái Mới đặt</div>
+        <div class="legend-item" style="background-color: #F1C40F;">Sân đã được đặt hết</div>
+        <h3>Sau Khi Thanh Toán</h3>
+        <div class="legend-item" style="background-color: #28B463;">Trạng thái Đang đá</div>
+        <div class="legend-item" style="background-color: #9B59B6;">Trạng thái Chờ nhận sân</div>
+        <div class="legend-item" style="background-color: #2ECC71;">Trạng thái Đã thanh toán</div>
+        <div class="legend-item" style="background-color: #7D3C98;">Trạng thái Chờ thanh toán</div>
+      </div>
+    </aside>
+
+    <!-- Include Calendar Component -->
+    <div class="calendar-section">
+     {{> calendar }}
+    </div>
+
+    <!-- Right Sidebar for Events -->
+    <aside class="events">
+      <h3>Sự Kiện</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Thông tin ca</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each events}}
+            <tr>
+              <td>{{this.info}}</td>
+              <td>{{this.action}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </aside>
+  </div>
+
+  <script src="http://localhost:8080/scripts/calendar.js"></script>
+</body>
+</html>

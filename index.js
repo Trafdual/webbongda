@@ -5,6 +5,8 @@ const session = require('express-session');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handelbars = require('handlebars');
 const hbs = require('express-handlebars');
+const hbs1 = require('hbs');
+
 const methodOverride = require('method-override');
 const path = require('path')
 const cors = require('cors');
@@ -61,7 +63,7 @@ app.use(session({
 app.use(cors());
 app.use(express.static(path.join(__dirname, '/styles')))
 app.use(express.static(path.join(__dirname, '/images')))
-
+hbs1.registerPartials(path.join(__dirname, 'views/components'));
 app.use('/',handle);
 app.use('/',baiviet);
 app.use('/',category);

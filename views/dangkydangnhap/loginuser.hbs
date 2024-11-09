@@ -90,8 +90,13 @@
             <p class="alert alert-danger">{{PassError}}</p>
             {{/if}}
             <input type="checkbox" onclick="togglePassword()"> Hiển thị mật khẩu<br><br>
-            <input type="submit" value="Login">
+            <input type="submit" value="Login" action="/home">
         </form>
+        <form action="/register">
+                <button class="btnlogin" type="submit">
+                    Đăng ký
+                </button>
+            </form>
     </div>
 
 </body>
