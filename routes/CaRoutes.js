@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Ca = require('../models/CaModels')
+const moment = require('moment')
 
 router.get('/getCa', async (req, res) => {
   try {
@@ -14,7 +15,20 @@ router.get('/getCa', async (req, res) => {
 router.post('/postca', async (req, res) => {
   try {
     const { tenca, giaca, begintime, endtime, trangthai } = req.body
-    const ca = new Ca({ tenca, giaca, begintime, endtime, trangthai })
+    const formattedbegin = moment(begintime).isValid()
+      ? moment(begintime).toDate()
+      : null
+    const formattedend = moment(endtime).isValid()
+      ? moment(begintime).toDate()
+      : null
+
+    const ca = new Ca({
+      tenca,
+      giaca,
+      begintime: formattedbegin,
+      endtime: formattedend,
+      trangthai
+    })
     await ca.save()
     res.json(ca)
   } catch (error) {
@@ -38,10 +52,18 @@ router.post('/updateca/:id', async (req, res) => {
   try {
     const { tenca, giaca, begintime, endtime, trangthai } = req.body
     const id = req.params.id
+    const formattedbegin = moment(begintime).isValid()
+      ? moment(begintime).toDate()
+      : null
+    const formattedend = moment(endtime).isValid()
+      ? moment(begintime).toDate()
+      : null
+
     const ca = await Ca.findByIdAndUpdate(id, {
       tenca,
       giaca,
-      begintime,
+      begintime: formattedbegin,
+      endtime: formattedend,
       endtime,
       trangthai
     })
