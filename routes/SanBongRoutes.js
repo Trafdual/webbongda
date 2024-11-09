@@ -27,7 +27,7 @@ router.get('/getfullsan', async (req, res) => {
   }
 })
 
-router.get('/getsantheoloai', async (req, res) => {
+router.post('/getsantheoloai', async (req, res) => {
   try {
     const { tenloaisan } = req.body
     const loaisanbong = await LoaiSanBong.findOne({ tenloaisan })
