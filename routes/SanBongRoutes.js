@@ -5,7 +5,22 @@ const SanBong = require('../models/SanBongModels')
 router.get('/getfullsan', async (req, res) => {
   try {
     const sanbong = await SanBong.find().lean()
-    res.json(sanbong)
+    const sanbongjson = await Promise.all(
+      sanbong.map(async san => {
+        const san1 = await SanBong.findById(san._id)
+        const loaisan = await LoaiSanBong.findById(san1.loaisan)
+        return {
+          _id: san1._id,
+          masan: san1.masan,
+          tensan: san1.tensan,
+          loaisan: loaisan.tenloaisan,
+          maloai: loaisan.maloaisan,
+          idloaisan: loaisan._id,
+          trangthai: san1.trangthai
+        }
+      })
+    )
+    res.json(sanbongjson)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -19,7 +34,40 @@ router.get('/getsantheoloai', async (req, res) => {
     const sanbong = await Promise.all(
       loaisanbong.sanbong.map(async san => {
         const san1 = await SanBong.findById(san._id)
-        return san1
+        return {
+          _id: san1._id,
+          masan: san1.masan,
+          tensan: san1.tensan,
+          loaisan: loaisanbong.tenloaisan,
+          maloai: loaisanbong.maloaisan,
+          idloaisan: loaisanbong._id,
+          trangthai: san1.trangthai
+        }
+      })
+    )
+    res.json(sanbong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.get('/getsantheoidloai/:idloai', async (req, res) => {
+  try {
+    const idloai = req.params.idloai
+    const loaisanbong = await LoaiSanBong.findById(idloai)
+    const sanbong = await Promise.all(
+      loaisanbong.sanbong.map(async san => {
+        const san1 = await SanBong.findById(san._id)
+        return {
+          _id: san1._id,
+          masan: san1.masan,
+          tensan: san1.tensan,
+          loaisan: loaisanbong.tenloaisan,
+          maloai: loaisanbong.maloaisan,
+          idloaisan: loaisanbong._id,
+          trangthai: san1.trangthai
+        }
       })
     )
     res.json(sanbong)
@@ -80,6 +128,5 @@ router.post('/deletesanbong/:idsanbong', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
-
 
 module.exports = router
