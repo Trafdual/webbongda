@@ -18,6 +18,7 @@ const sanbongRoutes=require('./routes/SanBongRoutes')
 const dothueRoutes=require('./routes/DoThueRoutes')
 const douongRoutes=require('./routes/DoUongRoutes')
 const caRoutes=require('./routes/CaRoutes')
+const bookingRoutes=require('./routes/BookingRoutes')
 
 var app = express();
 
@@ -71,6 +72,7 @@ app.use('/', sanbongRoutes)
 app.use('/', dothueRoutes)
 app.use('/', douongRoutes)
 app.use('/',caRoutes)
+app.use('/',bookingRoutes)
 
 
 app.listen(8080, () => {

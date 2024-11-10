@@ -105,4 +105,5 @@ router.post('/deleteca/:id', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
+
 module.exports = router
