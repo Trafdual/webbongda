@@ -34,7 +34,7 @@ router.post(
       const domain = 'http://localhost:8080'
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
-        : null
+        : ''
       const dothue = new DoThue({ tendothue, soluong, price, image })
       const madothue = 'DT' + dothue._id.toString().slice(-4)
       dothue.madothue = madothue
@@ -58,7 +58,7 @@ router.post(
 
       const image = req.files['image']
         ? `${domain}/${req.files['image'][0].filename}`
-        : null
+        : ''
       const existingDoThue = await DoThue.findById(iddothue)
 
       const updatedDoThue = await DoThue.findByIdAndUpdate(

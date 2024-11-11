@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   email:{type:String},
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'user','staff'], default: 'user' },
+  booking: [{ type: mongoose.Schema.Types.ObjectId, ref: 'booking' }],
+  hoadon: [{ type: mongoose.Schema.Types.ObjectId, ref: 'hoadon' }],
 });
 
 const User = mongoose.model('user', userSchema);
