@@ -111,6 +111,26 @@ router.put('/putsanbong/:idsanbong', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
+router.get('/getputsanbong/:id', async (req, res) => {
+  try {
+    const id = req.params.id
+    const sanbong = await SanBong.findById(id)
+    const loaisanbong = await LoaiSanBong.findById(sanbong.loaisan)
+    const sanbongjson = {
+      _id: sanbong._id,
+      masan: sanbong.masan,
+      tensan: sanbong.tensan,
+      loaisan: loaisanbong.tenloaisan,
+      maloai: loaisanbong.maloaisan,
+      idloaisan: loaisanbong._id,
+      trangthai: sanbong.trangthai
+    }
+    res.json(sanbongjson)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
 
 router.post('/deletesanbong/:idsanbong', async (req, res) => {
   try {

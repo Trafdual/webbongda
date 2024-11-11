@@ -5,7 +5,20 @@ const moment = require('moment')
 router.get('/getCa', async (req, res) => {
   try {
     const ca = await Ca.find().lean()
-    res.json(ca)
+    const cajson = await Promise.all(
+      ca.map(async c => {
+        const ca1 = await Ca.findById(c._id)
+        return {
+          _id: ca1._id,
+          tenca: ca1.tenca,
+          giaca: ca1.giaca,
+          begintime: moment(c.begintime).format('HH:mm'), // Định dạng lại giờ
+          endtime: moment(c.endtime).format('HH:mm'), // Định dạng lại giờ
+          trangthai: ca1.trangthai
+        }
+      })
+    )
+    res.json(cajson)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -15,11 +28,11 @@ router.get('/getCa', async (req, res) => {
 router.post('/postca', async (req, res) => {
   try {
     const { tenca, giaca, begintime, endtime, trangthai } = req.body
-    const formattedbegin = moment(begintime).isValid()
-      ? moment(begintime).toDate()
+    const formattedbegin = moment(begintime, 'HH:mm').isValid()
+      ? moment(begintime, 'HH:mm')
       : null
-    const formattedend = moment(endtime).isValid()
-      ? moment(begintime).toDate()
+    const formattedend = moment(endtime, 'HH:mm').isValid()
+      ? moment(endtime, 'HH:mm')
       : null
 
     const ca = new Ca({
@@ -41,7 +54,15 @@ router.get('/getputca/:id', async (req, res) => {
   try {
     const id = req.params.id
     const ca = await Ca.findById(id).lean()
-    res.json(ca)
+    const cajson = {
+      _id: ca._id,
+      tenca: ca.tenca,
+      giaca: ca.giaca,
+      begintime: moment(ca.begintime).format('HH:mm'), // Định dạng lại giờ
+      endtime: moment(ca.endtime).format('HH:mm'), // Định dạng lại giờ
+      trangthai: ca.trangthai
+    }
+    res.json(cajson)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -52,11 +73,11 @@ router.post('/updateca/:id', async (req, res) => {
   try {
     const { tenca, giaca, begintime, endtime, trangthai } = req.body
     const id = req.params.id
-    const formattedbegin = moment(begintime).isValid()
-      ? moment(begintime).toDate()
+    const formattedbegin = moment(begintime, 'HH:mm').isValid()
+      ? moment(begintime, 'HH:mm')
       : null
-    const formattedend = moment(endtime).isValid()
-      ? moment(begintime).toDate()
+    const formattedend = moment(endtime, 'HH:mm').isValid()
+      ? moment(endtime, 'HH:mm')
       : null
 
     const ca = await Ca.findByIdAndUpdate(id, {
@@ -74,7 +95,7 @@ router.post('/updateca/:id', async (req, res) => {
   }
 })
 
-router.delete('/deleteca/:id', async (req, res) => {
+router.post('/deleteca/:id', async (req, res) => {
   try {
     const id = req.params.id
     await Ca.findByIdAndDelete(id)
