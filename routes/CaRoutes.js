@@ -85,7 +85,6 @@ router.post('/updateca/:id', async (req, res) => {
       giaca,
       begintime: formattedbegin,
       endtime: formattedend,
-      endtime,
       trangthai
     })
     res.json(ca)
