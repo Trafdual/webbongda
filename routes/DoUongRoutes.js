@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const DoUong = require('../models/DoUongModels')
 const uploads = require('./uploads')
+const Hoadon = require('../models/HoaDonModels')
 
 router.get('/getdouong', async (req, res) => {
   try {
@@ -90,5 +91,73 @@ router.post('/deletedouong/:iddouong', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
+
+router.post('/bandouong/:iddouong/:idhoadon', async (req, res) => {
+  try {
+    const iddouong = req.params.iddouong
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+    const douong = await DoUong.findById(iddouong)
+    const hoadon = await Hoadon.findById(idhoadon)
+    hoadon.douong.push({
+      iddouong: douong._id,
+      soluong: soluong,
+      tien: douong.price * soluong
+    })
+    douong.soluong = douong.soluong - soluong
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
+    await douong.save()
+    await hoadon.save()
+    res.json(douong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/xoadouonghoadon/:iddouong/:idhoadon', async (req, res) => {
+  try {
+    const idhoadon = req.params.idhoadon
+    const iddouong = req.params.iddouong
+    const hoadon = await Hoadon.findById(idhoadon)
+    const douong = await DoUong.findById(iddouong)
+
+    const itemToRemove = hoadon.douong.find(
+      item => item.iddouong.toString() === iddouong.toString()
+    )
+
+    if (!itemToRemove) {
+      return res.json({ error: 'Không tìm thấy đồ thuê trong hóa đơn' })
+    }
+
+    douong.soluong += itemToRemove.soluong
+    await douong.save()
+
+    hoadon.douong = hoadon.douong.filter(
+      item => item.iddouong.toString() !== iddouong.toString()
+    )
+    await hoadon.save()
+    res.json({
+      message:
+        'Xóa đồ thuê khỏi hóa đơn thành công và cập nhật số lượng đồ uống'
+    })
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 
 module.exports = router

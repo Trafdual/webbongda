@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const DoThue = require('../models/DoThueModels')
 const uploads = require('./uploads')
+const Hoadon = require('../models/HoaDonModels')
 
 router.get('/getdothue', async (req, res) => {
   try {
@@ -87,6 +88,59 @@ router.post('/deletedothue/:iddothue', async (req, res) => {
     res.json({ message: 'xóa thành công' })
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/bandothue/:iddothue/:idhoadon', async (req, res) => {
+  try {
+    const iddothue = req.params.iddothue
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+    const dothue = await DoThue.findById(iddothue)
+    const hoadon = await Hoadon.findById(idhoadon)
+    hoadon.dothue.push({
+      iddothue: dothue._id,
+      soluong: soluong,
+      tien: dothue.price * soluong
+    })
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+    await dothue.save()
+    await hoadon.save()
+    res.json(dothue)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/xoadothuehoadon/:iddothue/:idhoadon', async (req, res) => {
+  try {
+    const idhoadon = req.params.idhoadon
+    const iddothue = req.params.iddothue
+    const hoadon = await Hoadon.findById(idhoadon)
+
+    hoadon.dothue = hoadon.dothue.filter(
+      item => item.iddothue.toString() !== iddothue.toString()
+    )
+    await hoadon.save()
+
+    res.json({
+      message:
+        'Xóa đồ thuê khỏi hóa đơn thành công và cập nhật số lượng đồ thuê'
+    })
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })

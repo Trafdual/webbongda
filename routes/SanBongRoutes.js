@@ -27,6 +27,16 @@ router.get('/getfullsan', async (req, res) => {
   }
 })
 
+router.get('/getallsan', async (req, res) => {
+  try {
+    const sanbong = await SanBong.find().lean()
+    res.json(sanbong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 router.post('/getsantheoloai', async (req, res) => {
   try {
     const { tenloaisan } = req.body
