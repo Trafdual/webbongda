@@ -191,7 +191,7 @@ router.get('/getbookingdetails/:iduser/:date', async (req, res) => {
   }
 })
 
-router.post('/checkin/:idbooking', async (req, res) => {
+router.post('/postcheckin/:idbooking', async (req, res) => {
   try {
     const idbooking = req.params.idbooking
     const booking = await Booking.findById(idbooking)
