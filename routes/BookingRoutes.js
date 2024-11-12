@@ -49,21 +49,49 @@ router.post('/datlichsan/:iduser', async (req, res) => {
     const iduser = req.params.iduser
     const { loaisanbong, idca, ngayda, soluongsan } = req.body
     const user = await User.findById(iduser)
-    const loaisan = await LoaiSanBong.findOne({ tenloaisan: loaisanbong })
+    const loaisan = await LoaiSanBong.findOne({
+      tenloaisan: loaisanbong
+    }).populate('sanbong')
     const ngaydat = momenttimezone().toDate()
     const ca = await Ca.findById(idca)
+
+    let selectedSan = null
+
+    for (const san of loaisan.sanbong) {
+      const existingBooking = await Booking.findOne({
+        sanbong: san,
+        ca: idca,
+        ngayda: ngayda
+      })
+
+      if (!existingBooking) {
+        selectedSan = san
+        break
+      }
+    }
+
+    if (!selectedSan) {
+      return res.json({
+        error: 'Không có sân nào trống cho ca và ngày đã chọn'
+      })
+    }
+
     const booking = new Booking({
       user: user._id,
+      sanbong: selectedSan,
       loaisanbong: loaisan._id,
       ca: idca,
       ngayda: ngayda,
       ngaydat: ngaydat,
       tiencoc: (ca.giaca * soluongsan) / 2,
-      soluongsan
+      soluongsan,
+      sanbong: selectedSan._id
     })
+
     await booking.save()
     user.booking.push(booking._id)
     await user.save()
+
     res.json(booking)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
@@ -124,21 +152,18 @@ router.get('/getbookingdays/:iduser', async (req, res) => {
   }
 })
 
-// api/bookingRoutes.js
 router.get('/getbookingdetails/:iduser/:date', async (req, res) => {
   try {
     const { iduser, date } = req.params
     const user = await User.findById(iduser)
 
-    // Chuyển đổi string date thành ngày thực tế
     const dayStart = moment(date).startOf('day').toDate()
     const dayEnd = moment(date).endOf('day').toDate()
 
-    // Tìm tất cả các booking của người dùng trong ngày
     const bookings = await Booking.find({
       user: user._id,
       ngayda: { $gte: dayStart, $lte: dayEnd }
-    }).populate('ca loaisanbong') // Giả sử bạn muốn lấy thông tin ca và loại sân
+    }).populate('ca loaisanbong')
 
     const bookingDetails = await Promise.all(
       bookings.map(async booking => {
@@ -162,6 +187,63 @@ router.get('/getbookingdetails/:iduser/:date', async (req, res) => {
     res.json(bookingDetails)
   } catch (error) {
     console.error('Lỗi khi lấy thông tin ca đặt:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/checkin/:idbooking', async (req, res) => {
+  try {
+    const idbooking = req.params.idbooking
+    const booking = await Booking.findById(idbooking)
+    booking.checkin = true
+    await booking.save()
+    res.json(booking)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.get('/getdacoc', async (req, res) => {
+  try {
+    const booking = await Booking.find().lean()
+    const bookingjson = booking.filter(
+      booking => booking.coc === true && booking.checkin === false
+    )
+    const bookingjson2 = await Promise.all(
+      bookingjson.map(async booking => {
+        const sanbong = await SanBong.findById(booking.sanbong)
+        const loaisanbong = await LoaiSanBong.findById(booking.loaisanbong)
+        const ca = await Ca.findById(booking.ca)
+        return {
+          _id: booking._id,
+          hovaten: booking.tennguoidat,
+          phone: booking.phone,
+          sanbong: sanbong.tensanbong,
+          loaisanbong: loaisanbong.tenloaisan,
+          ca: ca.tenca,
+          giaca: ca.giaca,
+          begintime: moment(ca.begintime).format('HH:mm'),
+          endtime: moment(ca.endtime).format('HH:mm'),
+          ngayda: moment(booking.ngayda).format('DD-MM-YYYY'),
+          ngaydat: booking.ngaydat
+        }
+      })
+    )
+    res.json(bookingjson2)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.get('/checkin', async (req, res) => {
+  try {
+    const booking = await Booking.find().lean()
+    const bookingjson = booking.filter(booking => booking.checkin === true)
+    res.json(bookingjson)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })

@@ -3,9 +3,10 @@ const mongoose = require('mongoose')
 const bookingSchema = new mongoose.Schema({
  user:{type:mongoose.Schema.Types.ObjectId,ref:'user'},
  tennguoidat:{type:String},
+ sanbong:{type:mongoose.Schema.Types.ObjectId,ref:'sanbong'},
  phone:{type:String},
  loaisanbong:{type:mongoose.Schema.Types.ObjectId,ref:'loaisan'},
- ca:[{type:mongoose.Schema.Types.ObjectId,ref:'ca'}],
+ ca:{type:mongoose.Schema.Types.ObjectId,ref:'ca'},
  ngayda:{type:Date},
  ngaydat:{type:Date},
  tiencoc:{type:Number},

@@ -21,6 +21,7 @@ const dothueRoutes=require('./routes/DoThueRoutes')
 const douongRoutes=require('./routes/DoUongRoutes')
 const caRoutes=require('./routes/CaRoutes')
 const bookingRoutes=require('./routes/BookingRoutes')
+const thamsoRoutes=require('./routes/ThamSoRoutes')
 
 var app = express();
 
@@ -73,6 +74,7 @@ app.use('/', dothueRoutes)
 app.use('/', douongRoutes)
 app.use('/',caRoutes)
 app.use('/',bookingRoutes)
+app.use('/',thamsoRoutes)
 
 
 app.listen(8080, () => {
