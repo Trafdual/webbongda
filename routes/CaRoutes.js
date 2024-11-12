@@ -1,26 +1,49 @@
 const router = require('express').Router()
 const Ca = require('../models/CaModels')
 const moment = require('moment')
+const Booking = require('../models/BookingModels')
+const LoaiSanBong = require('../models/LoaiSanBongModels')
 
-router.get('/getCa', async (req, res) => {
+router.get('/getCatest/:tenloaisan', async (req, res) => {
   try {
-    const ca = await Ca.find().lean()
+    const tenloaisan  = req.params.tenloaisan
+    const ca = await Ca.find().lean() // Lấy danh sách ca
     const cajson = await Promise.all(
       ca.map(async c => {
-        const ca1 = await Ca.findById(c._id)
+        const ca1 = await Ca.findById(c._id) // Tìm lại ca theo _id
+        const loaisan = await LoaiSanBong.findOne({
+          tenloaisan: tenloaisan
+        })
+        const ngayda = moment(req.query.ngayda).startOf('day').toDate()
+
+        // Lấy số lượng sân đã được đặt cho ca và ngày đó
+        const bookingsForCaOnDate = await Booking.find({
+          loaisanbong: loaisan._id,
+          ca: c._id,
+          ngayda: ngayda
+        })
+
+        // Tính số lượng sân đã được đặt
+        const bookedSanCount = bookingsForCaOnDate.reduce(
+          (acc, booking) => acc + booking.soluongsan,
+          0
+        )
+
+        const availableSanCount = loaisan.sanbong.length - bookedSanCount
         return {
           _id: ca1._id,
           tenca: ca1.tenca,
           giaca: ca1.giaca,
-          begintime: moment(c.begintime).format('HH:mm'), // Định dạng lại giờ
-          endtime: moment(c.endtime).format('HH:mm'), // Định dạng lại giờ
-          trangthai: ca1.trangthai
+          begintime: moment(c.begintime).format('HH:mm'),
+          endtime: moment(c.endtime).format('HH:mm'),
+          trangthai: ca1.trangthai,
+          availableSanCount: availableSanCount
         }
       })
     )
     res.json(cajson)
   } catch (error) {
-    console.error('đã xảy ra lỗi:', error)
+    console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
