@@ -6,6 +6,7 @@ const Ca = require('../models/CaModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 const momenttimezone = require('moment-timezone')
 const moment = require('moment')
+const Hoadon = require('../models/HoaDonModels')
 
 router.get('/getbooking/:iduser', async (req, res) => {
   try {
@@ -195,7 +196,16 @@ router.post('/postcheckin/:idbooking', async (req, res) => {
   try {
     const idbooking = req.params.idbooking
     const booking = await Booking.findById(idbooking)
+    const ca= await Ca.findById(booking.ca)
+
     booking.checkin = true
+    const hoadon = new Hoadon({
+      booking: booking._id,
+      tiencoc:booking.tiencoc,
+      giasan:ca.giaca * booking.soluongsan
+    })
+    hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
+    await hoadon.save()
     await booking.save()
     res.json(booking)
   } catch (error) {
@@ -219,7 +229,7 @@ router.get('/getdacoc', async (req, res) => {
           _id: booking._id,
           hovaten: booking.tennguoidat,
           phone: booking.phone,
-          sanbong: sanbong.tensanbong,
+          sanbong: sanbong.tensan,
           loaisanbong: loaisanbong.tenloaisan,
           ca: ca.tenca,
           giaca: ca.giaca,
