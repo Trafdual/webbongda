@@ -195,14 +195,14 @@ router.post('/postcheckin/:idbooking', async (req, res) => {
   try {
     const idbooking = req.params.idbooking
     const booking = await Booking.findById(idbooking)
-    const ca= await Ca.findById(booking.ca)
+    const ca = await Ca.findById(booking.ca)
 
     booking.checkin = true
     const hoadon = new Hoadon({
       booking: booking._id,
-      tiencoc:booking.tiencoc,
-      giasan:ca.giaca * booking.soluongsan,
-      tongtien:booking.tiencoc
+      tiencoc: booking.tiencoc,
+      giasan: ca.giaca * booking.soluongsan,
+      tongtien: booking.tiencoc
     })
     hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
     await hoadon.save()
