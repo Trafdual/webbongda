@@ -6,6 +6,8 @@ const Ca = require('../models/CaModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 const DoThue = require('../models/DoThueModels')
 const DoUong = require('../models/DoUongModels')
+const moment = require('moment')
+
 
 router.get('/gethoadon', async (req, res) => {
   try {
@@ -59,13 +61,17 @@ router.get('/gethoadon', async (req, res) => {
           idhoadon: hd._id,
           mahd: hd.mahd,
           booking: bookingjson,
-          dothue:dothue,
-          douong:douong,
-          tongtien:hd.tongtien
+          dothue: dothue,
+          douong: douong,
+          tongtien: hd.tongtien
         }
       })
     )
-  } catch (error) {}
+    res.json(hoadonjson)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
 })
 
 module.exports = router

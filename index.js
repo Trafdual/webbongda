@@ -20,6 +20,7 @@ const douongRoutes=require('./routes/DoUongRoutes')
 const caRoutes=require('./routes/CaRoutes')
 const bookingRoutes=require('./routes/BookingRoutes')
 const thamsoRoutes=require('./routes/ThamSoRoutes')
+const hoadonRoutes=require('./routes/HoaDonRoutes')
 
 var app = express();
 
@@ -75,7 +76,7 @@ app.use('/', douongRoutes)
 app.use('/',caRoutes)
 app.use('/',bookingRoutes)
 app.use('/',thamsoRoutes)
-
+app.use('/',hoadonRoutes)
 
 app.listen(8080, () => {
   try {

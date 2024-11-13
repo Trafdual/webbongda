@@ -229,7 +229,7 @@ router.get('/getdacoc', async (req, res) => {
           _id: booking._id,
           hovaten: booking.tennguoidat,
           phone: booking.phone,
-          sanbong: sanbong.tensanbong,
+          sanbong: sanbong.tensan,
           loaisanbong: loaisanbong.tenloaisan,
           ca: ca.tenca,
           giaca: ca.giaca,
