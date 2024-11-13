@@ -1,0 +1,26 @@
+<!-- views/calendar.hbs -->
+<section class="calendar">
+  <div class="calendar-header">
+    <button onclick="previousMonth()">&lt;</button>
+    <span id="monthYear">{{monthYear}}</span>
+    <button onclick="nextMonth()">&gt;</button>
+  </div>
+  <div class="calendar-grid">
+    {{#each calendarDays}}
+      <div class="day-cell" onclick="openNoteModal('{{this.date}}')">
+        <span>{{this.day}}</span>
+        <div class="note">{{this.note}}</div>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+<!-- Modal for notes -->
+<div id="noteModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeNoteModal()">&times;</span>
+    <h3>Ghi chú cho ngày <span id="selectedDate"></span></h3>
+    <textarea id="noteInput" placeholder="Nhập ghi chú..."></textarea>
+    <button onclick="saveNote()">Lưu</button>
+  </div>
+</div>

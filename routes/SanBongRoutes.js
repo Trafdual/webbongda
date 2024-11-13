@@ -110,7 +110,7 @@ router.post('/postsanbong', async (req, res) => {
   }
 })
 
-router.post('/putsanbong/:idsanbong', async (req, res) => {
+router.put('/putsanbong/:idsanbong', async (req, res) => {
   try {
     const idsanbong = req.params.idsanbong
     const { tensan, trangthai } = req.body

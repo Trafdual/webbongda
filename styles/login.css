@@ -1,5 +1,5 @@
 body {
-  background-image: url(http://localhost:8080/sanbong2.jpg);
+  background-image: require('../../../assets/images/LOGO.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

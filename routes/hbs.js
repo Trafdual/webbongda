@@ -29,7 +29,12 @@ router.get('/loginadmin', async (req, res) => {
 router.get('/loginuser', async (req, res) => {
   res.render('dangkydangnhap/loginuser.hbs')
 })
-
+router.get('/home', async (req, res) => {
+  res.render('user/homeuser.hbs')
+})
+router.get('/register', async (req, res) => {
+  res.render('dangkydangnhap/registeruser.hbs')
+})
 router.get('/loginstaff', async (req, res) => {
   res.render('dangkydangnhap/loginstaff.hbs')
 })
