@@ -241,7 +241,27 @@ router.get('/checkin', async (req, res) => {
   try {
     const booking = await Booking.find().lean()
     const bookingjson = booking.filter(booking => booking.checkin === true)
-    res.json(bookingjson)
+    const bookingjson2 = await Promise.all(
+      bookingjson.map(async booking => {
+        const sanbong = await SanBong.findById(booking.sanbong)
+        const loaisanbong = await LoaiSanBong.findById(booking.loaisanbong)
+        const ca = await Ca.findById(booking.ca)
+        return {
+          _id: booking._id,
+          hovaten: booking.tennguoidat,
+          phone: booking.phone,
+          sanbong: sanbong.tensanbong,
+          loaisanbong: loaisanbong.tenloaisan,
+          ca: ca.tenca,
+          giaca: ca.giaca,
+          begintime: moment(ca.begintime).format('HH:mm'),
+          endtime: moment(ca.endtime).format('HH:mm'),
+          ngayda: moment(booking.ngayda).format('DD-MM-YYYY'),
+          ngaydat: booking.ngaydat
+        }
+      })
+    )
+    res.json(bookingjson2)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
