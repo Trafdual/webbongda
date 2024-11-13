@@ -8,7 +8,6 @@ const DoThue = require('../models/DoThueModels')
 const DoUong = require('../models/DoUongModels')
 const moment = require('moment')
 
-
 router.get('/gethoadon', async (req, res) => {
   try {
     const hoadon = await HoaDon.find().lean()
@@ -68,6 +67,30 @@ router.get('/gethoadon', async (req, res) => {
       })
     )
     res.json(hoadonjson)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/posthoadon/:idhoadon', async (req, res) => {
+  try {
+    const { phuphi, method, sotaikhoan, nganhang, tienkhachtra, tienthua } =
+      req.body
+    const idhoadon = req.params.idhoadon
+    const hoadon = await HoaDon.findById(idhoadon)
+    hoadon.phuphi = phuphi
+    hoadon.method = method
+    if (method === 'chuyển khoản') {
+      hoadon.sotaikhoan = sotaikhoan
+      hoadon.nganhang = nganhang
+    }
+    if (method === 'tien mat') {
+      hoadon.tienkhachtra = tienkhachtra
+      hoadon.tienthua = tienthua
+    }
+    await hoadon.save()
+    res.json(hoadon)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })

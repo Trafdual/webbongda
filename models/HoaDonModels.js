@@ -23,6 +23,12 @@ const hoadonSchema = new mongoose.Schema({
       tien: { type: Number }
     }
   ],
+  phuphi:{ type: Number },
+  method:{type:String},
+  tienkhachtra:{ type:Number},
+  tienthua:{ type:Number},
+  nganhang:{ type:String},
+  sotaikhoan:{ type:String},
   tongtien: { type: Number },
   date: { type: Date },
   thanhtoan: { type: Boolean, default: false }
