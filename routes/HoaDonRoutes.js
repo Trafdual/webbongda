@@ -6,13 +6,15 @@ const Ca = require('../models/CaModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 const DoThue = require('../models/DoThueModels')
 const DoUong = require('../models/DoUongModels')
+const momenttimezone = require('moment-timezone')
 const moment = require('moment')
 
 router.get('/gethoadon', async (req, res) => {
   try {
     const hoadon = await HoaDon.find().lean()
+    const hoadon1 = hoadon.filter(h => h.thanhtoan === false)
     const hoadonjson = await Promise.all(
-      hoadon.map(async hd => {
+      hoadon1.map(async hd => {
         const booking = await Booking.findById(hd.booking)
         const sanbong = await SanBong.findById(booking.sanbong)
         const loaisanbong = await LoaiSanBong.findById(booking.loaisanbong)
@@ -73,6 +75,78 @@ router.get('/gethoadon', async (req, res) => {
   }
 })
 
+router.get('/gethoadontest', async (req, res) => {
+  try {
+    // Tìm các hóa đơn chưa thanh toán và sử dụng `populate` để lấy các liên kết
+    const hoadon = await HoaDon.find({ thanhtoan: false })
+      .populate({
+        path: 'booking',
+        populate: [
+          { path: 'sanbong', select: 'tensan' },
+          { path: 'loaisanbong', select: 'tenloaisan' },
+          { path: 'ca', select: 'tenca giaca begintime endtime' }
+        ]
+      })
+      .populate('dothue.iddothue', 'tendothue image')
+      .populate('douong.iddouong', 'tendouong image')
+      .lean() // Chuyển đổi sang plain JavaScript object để dễ xử lý
+
+    // Định dạng lại kết quả sau khi lấy dữ liệu populate
+    const hoadonjson = hoadon.map(hd => {
+      // Định dạng thông tin booking
+      const booking = hd.booking
+      const bookingjson = {
+        _id: booking._id,
+        hovaten: booking.tennguoidat,
+        phone: booking.phone,
+        sanbong: booking.sanbong?.tensan || null,
+        loaisanbong: booking.loaisanbong?.tenloaisan || null,
+        ca: booking.ca?.tenca || null,
+        giaca: booking.ca?.giaca || null,
+        begintime: booking.ca
+          ? moment(booking.ca.begintime).format('HH:mm')
+          : null,
+        endtime: booking.ca ? moment(booking.ca.endtime).format('HH:mm') : null,
+        ngayda: moment(booking.ngayda).format('DD-MM-YYYY'),
+        ngaydat: booking.ngaydat
+      }
+
+      // Định dạng thông tin đồ thuê
+      const dothue = hd.dothue.map(dt => ({
+        _id: dt.iddothue._id,
+        tendothue: dt.iddothue.tendothue,
+        image: dt.iddothue.image,
+        soluong: dt.soluong,
+        thanhtien: dt.tien
+      }))
+
+      // Định dạng thông tin đồ uống
+      const douong = hd.douong.map(du => ({
+        _id: du.iddouong._id,
+        tendouong: du.iddouong.tendouong,
+        image: du.iddouong.image,
+        soluong: du.soluong,
+        thanhtien: du.tien
+      }))
+
+      // Định dạng thông tin hóa đơn
+      return {
+        idhoadon: hd._id,
+        mahd: hd.mahd,
+        booking: bookingjson,
+        dothue: dothue,
+        douong: douong,
+        tongtien: hd.tongtien
+      }
+    })
+
+    res.json(hoadonjson)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 router.post('/posthoadon/:idhoadon', async (req, res) => {
   try {
     const { phuphi, method, sotaikhoan, nganhang, tienkhachtra, tienthua } =
@@ -81,11 +155,30 @@ router.post('/posthoadon/:idhoadon', async (req, res) => {
     const hoadon = await HoaDon.findById(idhoadon)
     hoadon.phuphi = phuphi
     hoadon.method = method
+    hoadon.thanhtoan = true
+    hoadon.date = momenttimezone().toDate()
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan -
+      hoadon.tiencoc +
+      tongTienDothue +
+      tongTienDouong +
+      parseFloat(phuphi)
+
     if (method === 'chuyển khoản') {
       hoadon.sotaikhoan = sotaikhoan
       hoadon.nganhang = nganhang
     }
-    if (method === 'tien mat') {
+    if (method === 'tiền mặt') {
       hoadon.tienkhachtra = tienkhachtra
       hoadon.tienthua = tienthua
     }

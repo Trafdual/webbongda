@@ -4,9 +4,19 @@ const moment = require('moment')
 const Booking = require('../models/BookingModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 
+router.get('/getCa', async (req, res) => {
+  try {
+    const ca = await Ca.find().lean()
+    res.json(ca)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 router.get('/getCatest/:tenloaisan', async (req, res) => {
   try {
-    const tenloaisan  = req.params.tenloaisan
+    const tenloaisan = req.params.tenloaisan
     const ca = await Ca.find().lean() // Lấy danh sách ca
     const cajson = await Promise.all(
       ca.map(async c => {

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'user','staff'], default: 'user' },
   booking: [{ type: mongoose.Schema.Types.ObjectId, ref: 'booking' }],
   hoadon: [{ type: mongoose.Schema.Types.ObjectId, ref: 'hoadon' }],
+  giaoca:{ type: mongoose.Schema.Types.ObjectId, ref: 'giaoca' }
 });
 
 const User = mongoose.model('user', userSchema);

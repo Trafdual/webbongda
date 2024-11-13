@@ -145,7 +145,6 @@ router.get('/getbookingdays/:iduser', async (req, res) => {
     const bookingDays = bookings.map(booking => {
       return moment(booking.ngayda).startOf('day').toDate()
     })
-
     res.json(bookingDays)
   } catch (error) {
     console.error('Lỗi khi lấy ngày ca đặt:', error)
@@ -202,7 +201,8 @@ router.post('/postcheckin/:idbooking', async (req, res) => {
     const hoadon = new Hoadon({
       booking: booking._id,
       tiencoc:booking.tiencoc,
-      giasan:ca.giaca * booking.soluongsan
+      giasan:ca.giaca * booking.soluongsan,
+      tongtien:booking.tiencoc
     })
     hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
     await hoadon.save()
@@ -260,7 +260,7 @@ router.get('/checkin', async (req, res) => {
           _id: booking._id,
           hovaten: booking.tennguoidat,
           phone: booking.phone,
-          sanbong: sanbong.tensanbong,
+          sanbong: sanbong.tensan,
           loaisanbong: loaisanbong.tenloaisan,
           ca: ca.tenca,
           giaca: ca.giaca,
