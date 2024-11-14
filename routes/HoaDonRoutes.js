@@ -65,7 +65,8 @@ router.get('/gethoadon', async (req, res) => {
           dothue: dothue,
           douong: douong,
           date: moment(hd.date).format('YYYY-MM-DD HH:mm:ss'),
-          tongtien: hd.tongtien
+          tongtien: hd.tongtien,
+          thanhtoan: hd.thanhtoan
         }
       })
     )

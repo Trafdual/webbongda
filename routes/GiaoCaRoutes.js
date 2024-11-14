@@ -39,18 +39,17 @@ router.post('/giaoca/:idusser', async (req, res) => {
     })
 
     giaoca.tongtientttienmat = totalTienMat
-    giaoca.tongtientttienmat = totalChuyenKhoan
+    giaoca.tongtienttchuyenkhoan = totalChuyenKhoan
     giaoca.hoadonthanhtoan = hoandondatt
     giaoca.hoadonchuathanhtoan = hoandonchuatt
     giaoca.tienbandau = tienbandau
     giaoca.tienphatsinh = tienphatsinh
     giaoca.nvtuonglai = idusergiaoca
-    giaoca.timegiaoca = momenttimezone.toDate()
+    giaoca.timegiaoca = momenttimezone().toDate()
     usergiaoca.giaoca = giaoca._id
     await giaoca.save()
-    res.json({
-      giaoca
-    })
+    await usergiaoca.save()
+    res.json(giaoca)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -68,7 +67,6 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
 
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime },
-      thanhtoan: true
     })
     const totalTienMat = hoadons.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {
@@ -119,7 +117,7 @@ router.post('/nhanca/:iduser', async (req, res) => {
       giaoca1.tongtienttchuyenkhoan -
       giaoca1.tienphatsinh
     const giaoca = new GiaoCa({
-      timenhanca: momenttimezone.toDate(),
+      timenhanca: momenttimezone().toDate(),
       nvhientai: user._id,
       tienbandau: tienbandau
     })
@@ -182,6 +180,5 @@ router.post('/khoitaogiaoca/:idusser', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
-
 
 module.exports = router

@@ -107,11 +107,22 @@ router.post('/datcocsan', async (req, res) => {
 
     for (const idbooking of idbookings) {
       const booking = await Booking.findById(idbooking)
+      const ca = await Ca.findById(booking.ca)
       booking.tennguoidat = tennguoidat
       booking.phone = phone
       booking.coc = true
       tongcoc += booking.tiencoc || 0
+      const hoadon = new Hoadon({
+        booking: booking._id,
+        tiencoc: booking.tiencoc ,
+        giasan: ca.giaca * booking.soluongsan,
+        tongtien:  booking.tiencoc,
+        date: momenttimezone().toDate(),
+        method: 'chuyển khoản'
+      })
+      hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
       await booking.save()
+      await hoadon.save()
     }
     res.json({ tongcoc })
   } catch (error) {
@@ -195,17 +206,7 @@ router.post('/postcheckin/:idbooking', async (req, res) => {
   try {
     const idbooking = req.params.idbooking
     const booking = await Booking.findById(idbooking)
-    const ca = await Ca.findById(booking.ca)
-
     booking.checkin = true
-    const hoadon = new Hoadon({
-      booking: booking._id,
-      tiencoc: booking.tiencoc,
-      giasan: ca.giaca * booking.soluongsan,
-      tongtien: booking.tiencoc
-    })
-    hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
-    await hoadon.save()
     await booking.save()
     res.json(booking)
   } catch (error) {
