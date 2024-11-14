@@ -133,6 +133,19 @@ router.post('/xoadothuehoadon/:iddothue/:idhoadon', async (req, res) => {
     hoadon.dothue = hoadon.dothue.filter(
       item => item.iddothue.toString() !== iddothue.toString()
     )
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
     await hoadon.save()
 
     res.json({
@@ -144,7 +157,5 @@ router.post('/xoadothuehoadon/:iddothue/:idhoadon', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
-
-
 
 module.exports = router

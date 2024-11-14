@@ -16,7 +16,6 @@ router.post('/giaoca/:idusser', async (req, res) => {
 
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime },
-      thanhtoan: true
     })
     const totalTienMat = hoadons.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {

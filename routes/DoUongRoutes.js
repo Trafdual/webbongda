@@ -139,7 +139,7 @@ router.post('/xoadouonghoadon/:iddouong/:idhoadon', async (req, res) => {
     )
 
     if (!itemToRemove) {
-      return res.json({ error: 'Không tìm thấy đồ thuê trong hóa đơn' })
+      return res.json({ error: 'Không tìm thấy đồ uống trong hóa đơn' })
     }
 
     douong.soluong += itemToRemove.soluong
@@ -148,16 +148,28 @@ router.post('/xoadouonghoadon/:iddouong/:idhoadon', async (req, res) => {
     hoadon.douong = hoadon.douong.filter(
       item => item.iddouong.toString() !== iddouong.toString()
     )
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
     await hoadon.save()
     res.json({
       message:
-        'Xóa đồ thuê khỏi hóa đơn thành công và cập nhật số lượng đồ uống'
+        'Xóa đồ uống khỏi hóa đơn thành công và cập nhật số lượng đồ uống'
     })
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
-
 
 module.exports = router
