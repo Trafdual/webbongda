@@ -142,40 +142,83 @@ router.post('/deleteca/:id', async (req, res) => {
 router.get('/soluongsan', async (req, res) => {
   try {
     const ngayDa = new Date()
-    // Lấy tất cả sân
     const sanList = await SanBong.find()
-
-    // Tìm các booking trong ngày đã chọn
+    const currentTime = new Date()
+    const currentHours = currentTime.getHours()
+    const currentMinutes = currentTime.getMinutes()
     const bookings = await Booking.find({ ngayda: ngayDa }).populate('ca')
 
-    // Đếm số lượng ca trống cho mỗi sân
-    const sanTrongList = []
+    let soluongCaHoatDong = 0
+    let soluongCaChoNhanSan = 0
+    let soluongCaQuaGio = 0
+    let soluongCaTrong = 0
+    let soluongCaTong = 0
+
 
     for (const san of sanList) {
-      // Lấy các booking của sân hiện tại
       const bookingSan = bookings.filter(booking =>
         booking.sanbong.equals(san._id)
       )
 
-      // Tập hợp các ID ca đã đặt cho sân
       const caDaDatIds = bookingSan.map(booking => booking.ca._id.toString())
 
-      // Lấy các ca chưa được đặt (có trong Ca nhưng không nằm trong caDaDatIds)
       const caTrong = await Ca.find({ _id: { $nin: caDaDatIds } })
 
-      sanTrongList.push({
-        masan: san.masan,
-        tensan: san.tensan,
-        soluongCaTrong: caTrong.length,
-        danhSachCaTrong: caTrong.map(ca => ({
-          tenca: ca.tenca,
-          begintime: ca.begintime,
-          endtime: ca.endtime
-        }))
+      caTrong.forEach(ca => {
+        const caEndHours = ca.endtime.getHours()
+        const caEndMinutes = ca.endtime.getMinutes()
+
+        if (
+          (caEndHours === 0 &&
+            currentHours === 23 &&
+            currentMinutes > caEndMinutes) ||
+          (caEndHours < currentHours && caEndHours !== 0) ||
+          (caEndHours === currentHours && caEndMinutes <= currentMinutes)
+        ) {
+          soluongCaQuaGio++ 
+        } else {
+          soluongCaTrong++ 
+        }
+        soluongCaTong++
+
       })
+
+      soluongCaHoatDong += bookingSan.filter(booking => {
+        const caEndTime = new Date(booking.ca.endtime)
+        const caEndHours = caEndTime.getHours()
+        const caEndMinutes = caEndTime.getMinutes()
+
+        return (
+          booking.checkin &&
+          (caEndHours > currentHours ||
+            (caEndHours === currentHours && caEndMinutes > currentMinutes) ||
+            (caEndHours === 0 && currentHours !== 23))
+        )
+      }).length
+
+      soluongCaChoNhanSan += bookingSan.filter(booking => {
+        const caEndTime = new Date(booking.ca.endtime)
+        const caEndHours = caEndTime.getHours()
+        const caEndMinutes = caEndTime.getMinutes()
+
+        return (
+          booking.coc === true &&
+          booking.checkin === false &&
+          (caEndHours > currentHours ||
+            (caEndHours === currentHours && caEndMinutes > currentMinutes) ||
+            (caEndHours === 0 && currentHours !== 23))
+        )
+      }).length
     }
 
-    res.json(sanTrongList)
+    // Trả về tổng số ca cho tất cả các sân
+    res.json({
+      soluongCaHoatDong,
+      soluongCaChoNhanSan,
+      soluongCaQuaGio,
+      soluongCaTrong,
+      soluongCaTong
+    })
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
