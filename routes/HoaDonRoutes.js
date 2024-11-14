@@ -64,6 +64,7 @@ router.get('/gethoadon', async (req, res) => {
           booking: bookingjson,
           dothue: dothue,
           douong: douong,
+          date: moment(hd.date).format('YYYY-MM-DD HH:mm:ss'),
           tongtien: hd.tongtien
         }
       })
