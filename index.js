@@ -23,6 +23,7 @@ const caRoutes=require('./routes/CaRoutes')
 const bookingRoutes=require('./routes/BookingRoutes')
 const thamsoRoutes=require('./routes/ThamSoRoutes')
 const hoadonRoutes=require('./routes/HoaDonRoutes')
+const giaocaRoutes=require('./routes/GiaoCaRoutes')
 
 var app = express();
 
@@ -77,6 +78,7 @@ app.use('/',caRoutes)
 app.use('/',bookingRoutes)
 app.use('/',thamsoRoutes)
 app.use('/',hoadonRoutes)
+app.use('/',giaocaRoutes)
 
 app.listen(8080, () => {
   try {
