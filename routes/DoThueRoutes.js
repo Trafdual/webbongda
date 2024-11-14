@@ -158,4 +158,103 @@ router.post('/xoadothuehoadon/:iddothue/:idhoadon', async (req, res) => {
   }
 })
 
+router.post('/bandothue1/:iddothue/:idhoadon', async (req, res) => {
+  try {
+    const iddothue = req.params.iddothue
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+
+    const dothue = await DoThue.findById(iddothue)
+    const hoadon = await Hoadon.findById(idhoadon)
+
+    if (!dothue || !hoadon) {
+      return res
+        .status(404)
+        .json({ error: 'Đồ thuê hoặc hóa đơn không tồn tại' })
+    }
+
+    const existingItem = hoadon.dothue.find(item =>
+      item.iddothue.equals(iddothue)
+    )
+
+    if (existingItem) {
+      existingItem.soluong += soluong
+      existingItem.tien += dothue.price * soluong
+    } else {
+      hoadon.dothue.push({
+        iddothue: dothue._id,
+        soluong: soluong,
+        tien: dothue.price * soluong
+      })
+    }
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
+    await dothue.save()
+    await hoadon.save()
+
+    res.json(dothue)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+
+router.post('/capnhatDothue/:iddothue/:idhoadon', async (req, res) => {
+  try {
+    const iddothue = req.params.iddothue
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+
+    const dothue = await DoThue.findById(iddothue)
+    const hoadon = await Hoadon.findById(idhoadon)
+
+    if (!dothue || !hoadon) {
+      return res
+        .status(404)
+        .json({ error: 'Đồ thuê hoặc hóa đơn không tồn tại' })
+    }
+
+    // Kiểm tra xem iddothue đã tồn tại trong hoadon.dothue chưa
+    const existingItem = hoadon.dothue.find(item =>
+      item.iddothue.equals(iddothue)
+    )
+
+    existingItem.soluong = soluong
+    existingItem.tien = dothue.price * soluong
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
+    await dothue.save()
+    await hoadon.save()
+
+    res.json(dothue)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+
 module.exports = router

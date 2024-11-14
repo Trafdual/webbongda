@@ -127,6 +127,51 @@ router.post('/bandouong/:iddouong/:idhoadon', async (req, res) => {
   }
 })
 
+router.post('/bandouong1/:iddouong/:idhoadon', async (req, res) => {
+  try {
+    const iddouong = req.params.iddouong
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+    const douong = await DoUong.findById(iddouong)
+    const hoadon = await Hoadon.findById(idhoadon)
+    const existingItem = hoadon.douong.find(item =>
+      item.iddouong.equals(iddouong)
+    )
+
+    if (existingItem) {
+      existingItem.soluong += soluong
+      existingItem.tien += douong.price * soluong
+    } else {
+      hoadon.douong.push({
+        iddouong: douong._id,
+        soluong: soluong,
+        tien: douong.price * soluong
+      })
+    }
+
+    douong.soluong = douong.soluong - soluong
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
+    await douong.save()
+    await hoadon.save()
+    res.json(douong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 router.post('/xoadouonghoadon/:iddouong/:idhoadon', async (req, res) => {
   try {
     const idhoadon = req.params.idhoadon
@@ -171,5 +216,46 @@ router.post('/xoadouonghoadon/:iddouong/:idhoadon', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
+
+router.post('/capnhatdouong/:iddouong/:idhoadon', async (req, res) => {
+  try {
+    const iddouong = req.params.iddouong
+    const idhoadon = req.params.idhoadon
+    const { soluong } = req.body
+    const douong = await DoUong.findById(iddouong)
+    const hoadon = await Hoadon.findById(idhoadon)
+    const existingItem = hoadon.douong.find(item =>
+      item.iddouong.equals(iddouong)
+    )
+
+    existingItem.soluong = soluong
+    existingItem.tien = douong.price * soluong
+
+    const quantityChange = soluong - existingItem.soluong
+
+    douong.soluong -= quantityChange
+
+    const tongTienDothue = hoadon.dothue.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+    const tongTienDouong = hoadon.douong.reduce(
+      (sum, item) => sum + item.tien,
+      0
+    )
+
+    hoadon.tongtien =
+      hoadon.giasan - hoadon.tiencoc + tongTienDothue + tongTienDouong
+
+    await douong.save()
+    await hoadon.save()
+    res.json(douong)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+
 
 module.exports = router

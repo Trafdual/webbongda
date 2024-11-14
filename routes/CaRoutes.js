@@ -3,6 +3,7 @@ const Ca = require('../models/CaModels')
 const moment = require('moment')
 const Booking = require('../models/BookingModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
+const SanBong = require('../models/SanBongModels')
 
 router.get('/getCa', async (req, res) => {
   try {
@@ -134,6 +135,49 @@ router.post('/deleteca/:id', async (req, res) => {
     res.json({ message: 'xóa thành công' })
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.get('/soluongsan', async (req, res) => {
+  try {
+    const ngayDa = new Date()
+    // Lấy tất cả sân
+    const sanList = await SanBong.find()
+
+    // Tìm các booking trong ngày đã chọn
+    const bookings = await Booking.find({ ngayda: ngayDa }).populate('ca')
+
+    // Đếm số lượng ca trống cho mỗi sân
+    const sanTrongList = []
+
+    for (const san of sanList) {
+      // Lấy các booking của sân hiện tại
+      const bookingSan = bookings.filter(booking =>
+        booking.sanbong.equals(san._id)
+      )
+
+      // Tập hợp các ID ca đã đặt cho sân
+      const caDaDatIds = bookingSan.map(booking => booking.ca._id.toString())
+
+      // Lấy các ca chưa được đặt (có trong Ca nhưng không nằm trong caDaDatIds)
+      const caTrong = await Ca.find({ _id: { $nin: caDaDatIds } })
+
+      sanTrongList.push({
+        masan: san.masan,
+        tensan: san.tensan,
+        soluongCaTrong: caTrong.length,
+        danhSachCaTrong: caTrong.map(ca => ({
+          tenca: ca.tenca,
+          begintime: ca.begintime,
+          endtime: ca.endtime
+        }))
+      })
+    }
+
+    res.json(sanTrongList)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
