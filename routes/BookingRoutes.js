@@ -183,10 +183,12 @@ router.post('/datcocsan', async (req, res) => {
         sodienthoai: phone,
         method: 'chuyển khoản',
         ngaygio: momenttimezone().toDate(),
-        noiDung: 'đặt cọc'
+        noiDung: 'đặt cọc',
+        tongtien:booking.tiencoc
       })
       lichsu.maGD = 'GD' + lichsu._id.toString().slice(-4)
       hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
+      await lichsu.save()
       await booking.save()
       await hoadon.save()
     }

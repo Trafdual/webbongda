@@ -3,7 +3,7 @@ const GiaoCa = require('../models/GiaoCaModels')
 const User = require('../models/UserModel')
 const HoaDon = require('../models/HoaDonModels')
 const momenttimezone = require('moment-timezone')
-const LichSu=require('../models/LichSuModels')
+const LichSu = require('../models/LichSuModels')
 
 router.post('/giaoca/:idusser', async (req, res) => {
   try {
@@ -80,7 +80,7 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
-    const lichsu= await LichSu.find({
+    const lichsu = await LichSu.find({
       ngaygio: { $gte: shiftStartTime, $lte: currentDateTime }
     })
 
@@ -134,7 +134,7 @@ router.post('/nhanca/:iduser', async (req, res) => {
     const giaoca1 = await GiaoCa.findById(user.giaoca)
     giaoca1.nhanca = true
     await giaoca1.save()
-    res.json(giaoca)
+    res.json(giaoca1)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })

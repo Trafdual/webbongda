@@ -248,8 +248,6 @@ router.get('/getfiltersanbong', async (request, res) => {
     const currentHours = ngayda.getHours()
     const currentMinutes = ngayda.getMinutes()
 
-    console.log(ngayda)
-
     const sanbongjson = await Promise.all(
       sanbong.map(async san => {
         const san1 = await SanBong.findById(san._id).lean()
@@ -264,7 +262,6 @@ router.get('/getfiltersanbong', async (request, res) => {
               sanbong: san1._id,
               ngayda: moment(ngayda).startOf('day').toDate()
             })
-            console.log(moment(ngayda).startOf('day').toDate())
             const trangthai = () => {
               const enttimeHours = c.endtime.getHours()
               const enttimeMinutes = c.endtime.getMinutes()

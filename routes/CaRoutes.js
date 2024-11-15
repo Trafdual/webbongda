@@ -150,7 +150,6 @@ router.get('/soluongsan', async (req, res) => {
     const bookings = await Booking.find({
       ngayda: momenttimezone().startOf('day').toDate()
     }).populate('ca')
-    console.log(bookings)
 
     let soluongCaHoatDong = 0
     let soluongCaChoNhanSan = 0
