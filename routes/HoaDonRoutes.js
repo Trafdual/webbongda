@@ -6,6 +6,7 @@ const Ca = require('../models/CaModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 const DoThue = require('../models/DoThueModels')
 const DoUong = require('../models/DoUongModels')
+const LichSu = require('../models/LichSuModels')
 const momenttimezone = require('moment-timezone')
 const moment = require('moment')
 
@@ -65,8 +66,8 @@ router.get('/gethoadon', async (req, res) => {
           dothue: dothue,
           douong: douong,
           date: moment(hd.date).format('YYYY-MM-DD HH:mm:ss'),
-          tiencoc:hd.tiencoc,
-          phuphi:hd.phuphi || 0,
+          tiencoc: hd.tiencoc,
+          phuphi: hd.phuphi || 0,
           tongtien: hd.tongtien,
           thanhtoan: hd.thanhtoan
         }
@@ -247,6 +248,13 @@ router.post('/posthoadon/:idhoadon', async (req, res) => {
       tongTienDouong +
       parseFloat(phuphi)
 
+    const tongtien =
+      hoadon.giasan -
+      hoadon.tiencoc +
+      tongTienDothue +
+      tongTienDouong +
+      parseFloat(phuphi)
+
     if (method === 'chuyển khoản') {
       hoadon.sotaikhoan = sotaikhoan
       hoadon.nganhang = nganhang
@@ -255,6 +263,15 @@ router.post('/posthoadon/:idhoadon', async (req, res) => {
       hoadon.tienkhachtra = tienkhachtra
       hoadon.tienthua = tienthua
     }
+    const lichsu = new LichSu({
+      hovaten: hoadon.tennguoidat,
+      sodienthoai: hoadon.phone,
+      method: method,
+      ngaygio: momenttimezone().toDate(),
+      tongtien: tongtien,
+      noiDung: 'Thanh toán hóa đơn'
+    })
+    await lichsu.save()
     await hoadon.save()
     res.json(hoadon)
   } catch (error) {

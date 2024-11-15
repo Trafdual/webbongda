@@ -7,6 +7,7 @@ const lichsuSchema = new mongoose.Schema({
  method:{type:String},
  ngaygio:{type:Date},
  noiDung:{type:String},
+ tongtien:{type:Number}
 })
 
 const LichSu = mongoose.model('lichsu', lichsuSchema

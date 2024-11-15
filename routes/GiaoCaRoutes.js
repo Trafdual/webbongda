@@ -79,6 +79,7 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
+
     const totalTienMat = hoadons.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {
         return total + hoadon.tongtien

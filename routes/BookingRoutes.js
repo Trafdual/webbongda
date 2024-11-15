@@ -7,7 +7,8 @@ const LoaiSanBong = require('../models/LoaiSanBongModels')
 const momenttimezone = require('moment-timezone')
 const moment = require('moment')
 const Hoadon = require('../models/HoaDonModels')
-const LichSu=require('../models/LichSuModels')
+const LichSu = require('../models/LichSuModels')
+const { response } = require('express')
 
 router.get('/getbooking/:iduser', async (req, res) => {
   try {
@@ -115,13 +116,20 @@ router.post('/datcocsan', async (req, res) => {
       tongcoc += booking.tiencoc || 0
       const hoadon = new Hoadon({
         booking: booking._id,
-        tiencoc: booking.tiencoc ,
+        tiencoc: booking.tiencoc,
         giasan: ca.giaca * booking.soluongsan,
-        tongtien:  booking.tiencoc,
+        tongtien: booking.tiencoc,
         date: momenttimezone().toDate(),
         method: 'chuyển khoản'
       })
-      const lichsu = new LichSu({})
+      const lichsu = new LichSu({
+        hovaten: tennguoidat,
+        sodienthoai: phone,
+        method: 'chuyển khoản',
+        ngaygio: momenttimezone().toDate(),
+        noiDung: 'đặt cọc'
+      })
+      lichsu.maGD = 'GD' + lichsu._id.toString().slice(-4)
       hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
       await booking.save()
       await hoadon.save()
@@ -275,6 +283,25 @@ router.get('/checkin', async (req, res) => {
       })
     )
     res.json(bookingjson2)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/huysan/:idbooking/:iduser', async (req, res) => {
+  try {
+    const idbooking = req.params.idbooking
+    const iduser = req.params.iduser
+    const user = await User.findById(iduser)
+    const booking = await Booking.findById(idbooking)
+    user.booking = user.booking.filter(
+      book => book._id.toString() !== booking._id.toString()
+    )
+    booking.huysan = true
+    await Booking.findByIdAndDelete(idbooking)
+    await user.save()
+    res.json({ message: 'hủy sân thành công' })
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })

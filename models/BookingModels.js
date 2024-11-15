@@ -14,7 +14,8 @@ const bookingSchema = new mongoose.Schema({
  checkin:{type:Boolean,default: false},
  thanhtoan:{type:Boolean,default: false},
  soluongsan:{type:Number},
- datecheckein:{type:Date}
+ datecheckein:{type:Date},
+ huysan:{type:Boolean,default: false}
 })
 
 const Booking = mongoose.model('booking', bookingSchema
