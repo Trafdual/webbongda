@@ -102,6 +102,62 @@ router.post('/datlichsan/:iduser', async (req, res) => {
   }
 })
 
+router.post('/datlichho/:iduser', async (req, res) => {
+  try {
+    const iduser = req.params.iduser
+    const { loaisanbong, idca, ngayda, soluongsan } = req.body
+    const user = await User.findById(iduser)
+    const loaisan = await LoaiSanBong.findOne({
+      tenloaisan: loaisanbong
+    }).populate('sanbong')
+    const ngaydat = momenttimezone().toDate()
+    const ca = await Ca.findById(idca)
+
+    let selectedSan = null
+
+    for (const san of loaisan.sanbong) {
+      const existingBooking = await Booking.findOne({
+        sanbong: san,
+        ca: idca,
+        ngayda: ngayda
+      })
+
+      if (!existingBooking) {
+        selectedSan = san
+        break
+      }
+    }
+
+    if (!selectedSan) {
+      return res.json({
+        error: 'Không có sân nào trống cho ca và ngày đã chọn'
+      })
+    }
+
+    const booking = new Booking({
+      user: user._id,
+      sanbong: selectedSan,
+      loaisanbong: loaisan._id,
+      ca: idca,
+      ngayda: ngayda,
+      ngaydat: ngaydat,
+      tiencoc: (ca.giaca * soluongsan) / 2,
+      soluongsan,
+      sanbong: selectedSan._id
+    })
+
+    await booking.save()
+    user.booking.push(booking._id)
+    await user.save()
+
+    res.json(booking)
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+
 router.post('/datcocsan', async (req, res) => {
   try {
     const { tennguoidat, phone, idbookings } = req.body

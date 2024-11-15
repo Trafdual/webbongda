@@ -3,6 +3,7 @@ const GiaoCa = require('../models/GiaoCaModels')
 const User = require('../models/UserModel')
 const HoaDon = require('../models/HoaDonModels')
 const momenttimezone = require('moment-timezone')
+const LichSu=require('../models/LichSuModels')
 
 router.post('/giaoca/:idusser', async (req, res) => {
   try {
@@ -79,17 +80,20 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
+    const lichsu= await LichSu.find({
+      ngaygio: { $gte: shiftStartTime, $lte: currentDateTime }
+    })
 
-    const totalTienMat = hoadons.reduce((total, hoadon) => {
-      if (hoadon.method === 'tiền mặt') {
-        return total + hoadon.tongtien
+    const totalTienMat = lichsu.reduce((total, lichsu) => {
+      if (lichsu.method === 'tiền mặt') {
+        return total + lichsu.tongtien
       }
       return total
     }, 0)
 
-    const totalChuyenKhoan = hoadons.reduce((total, hoadon) => {
-      if (hoadon.method === 'chuyển khoản') {
-        return total + hoadon.tongtien
+    const totalChuyenKhoan = lichsu.reduce((total, lichsu) => {
+      if (lichsu.method === 'chuyển khoản') {
+        return total + lichsu.tongtien
       }
       return total
     }, 0)
