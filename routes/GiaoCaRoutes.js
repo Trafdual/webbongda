@@ -56,10 +56,7 @@ router.post('/giaoca/:idusser', async (req, res) => {
     usergiaoca.giaoca = giaocanew._id
 
     giaocanew.tienbandau =
-      giaoca.tienbandau +
-      giaoca.tongtientttienmat +
-      giaoca.tongtienttchuyenkhoan -
-      giaoca.tienphatsinh
+      tienbandau + totalTienMat + totalChuyenKhoan - tienphatsinh
     await giaocanew.save()
     await user.save()
     await usergiaoca.save()
