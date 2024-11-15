@@ -50,7 +50,7 @@ router.post('/giaoca/:idusser', async (req, res) => {
     giaoca.tienphatsinh = tienphatsinh
     giaoca.nvtuonglai = idusergiaoca
     giaoca.timegiaoca = momenttimezone().toDate()
-    user.giaoca = ''
+    user.giaoca = null
     await giaoca.save()
 
     usergiaoca.giaoca = giaocanew._id
@@ -96,7 +96,11 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
       return total
     }, 0)
 
-    const hoandondatt = hoadons.length
+    const hoadonsDaThanhToan = hoadons.filter(
+      hoadon => hoadon.thanhtoan === true
+    )
+
+    const hoandondatt = hoadonsDaThanhToan.length
     const hoandonchuatt = await HoaDon.countDocuments({
       date: { $gte: shiftStartTime, $lte: currentDateTime },
       thanhtoan: false

@@ -7,6 +7,7 @@ const LoaiSanBong = require('../models/LoaiSanBongModels')
 const momenttimezone = require('moment-timezone')
 const moment = require('moment')
 const Hoadon = require('../models/HoaDonModels')
+const LichSu=require('../models/LichSuModels')
 
 router.get('/getbooking/:iduser', async (req, res) => {
   try {
@@ -120,6 +121,7 @@ router.post('/datcocsan', async (req, res) => {
         date: momenttimezone().toDate(),
         method: 'chuyển khoản'
       })
+      const lichsu = new LichSu({})
       hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
       await booking.save()
       await hoadon.save()
