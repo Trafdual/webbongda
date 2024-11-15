@@ -224,7 +224,9 @@ router.get('/santrong', async (req, res) => {
     const currentTime = new Date()
     const currentHours = currentTime.getHours()
     const currentMinutes = currentTime.getMinutes()
-    const bookings = await Booking.find({ ngayda: ngayDa.startOf('day').toDate() }).populate('ca')
+    const bookings = await Booking.find({
+      ngayda: ngayDa.startOf('day').toDate()
+    }).populate('ca')
 
     const danhSachCaTrongCuaSan = []
 
@@ -239,9 +241,10 @@ router.get('/santrong', async (req, res) => {
 
       const danhSachCaTrong = []
 
-      caTrong.forEach(async(ca) => {
+      caTrong.forEach(async ca => {
         const caEndHours = ca.endtime.getHours()
         const caEndMinutes = ca.endtime.getMinutes()
+
         if (caEndHours === 0) {
           if (currentHours === 0 && currentMinutes < caEndMinutes) {
             danhSachCaTrong.push({
@@ -250,7 +253,7 @@ router.get('/santrong', async (req, res) => {
               giaca: ca.giaca,
               begintime: moment(ca.begintime).format('HH:mm'),
               endtime: moment(ca.endtime).format('HH:mm'),
-              trangthai: ca.trangthai
+              trangthai: 'Đang trống'
             })
           } else {
             danhSachCaTrong.push({
@@ -259,7 +262,7 @@ router.get('/santrong', async (req, res) => {
               giaca: ca.giaca,
               begintime: moment(ca.begintime).format('HH:mm'),
               endtime: moment(ca.endtime).format('HH:mm'),
-              trangthai: ca.trangthai
+              trangthai: 'Đang trống'
             })
           }
         } else if (
@@ -274,16 +277,17 @@ router.get('/santrong', async (req, res) => {
             giaca: ca.giaca,
             begintime: moment(ca.begintime).format('HH:mm'),
             endtime: moment(ca.endtime).format('HH:mm'),
-            trangthai: ca.trangthai
+            trangthai: 'Đang trống'
           })
         }
       })
-
-      danhSachCaTrongCuaSan.push({
-        _id: san._id,
-        tensan: san.tensan,
-        ca: danhSachCaTrong
-      })
+      if (danhSachCaTrong.length > 0) {
+        danhSachCaTrongCuaSan.push({
+          _id: san._id,
+          tensan: san.tensan,
+          ca: danhSachCaTrong
+        })
+      }
     }
 
     res.json(danhSachCaTrongCuaSan)
@@ -335,7 +339,7 @@ router.get('/sanquagio', async (req, res) => {
             giaca: ca.giaca,
             begintime: moment(ca.begintime).format('HH:mm'),
             endtime: moment(ca.endtime).format('HH:mm'),
-            trangthai: ca.trangthai
+            trangthai: 'Quá giờ'
           })
         } else {
           return
@@ -355,5 +359,49 @@ router.get('/sanquagio', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
+
+router.get('/chonhansan', async (req, res) => {
+  try {
+    const ngayDa = momenttimezone().startOf('day').toDate()
+    const sanList = await SanBong.find()
+
+    const bookings = await Booking.find({
+      ngayda: ngayDa,
+      coc: true,
+      checkin: false
+    }).populate('ca')
+
+    const danhSachChoNhanSan = []
+
+    for (const san of sanList) {
+      const bookingSan = bookings.filter(booking =>
+        booking.sanbong.equals(san._id)
+      )
+
+      const danhSachCaChoNhanSan = bookingSan.map(booking => ({
+        _id: booking.ca._id,
+        tenca: booking.ca.tenca,
+        giaca: booking.ca.giaca,
+        begintime: moment(booking.ca.begintime).format('HH:mm'),
+        endtime: moment(booking.ca.endtime).format('HH:mm'),
+        trangthai: 'Chờ nhận sân'
+      }))
+
+      if (danhSachCaChoNhanSan.length > 0) {
+        danhSachChoNhanSan.push({
+          _id: san._id,
+          tensan: san.tensan,
+          ca: danhSachCaChoNhanSan
+        })
+      }
+    }
+
+    res.json(danhSachChoNhanSan)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
 
 module.exports = router

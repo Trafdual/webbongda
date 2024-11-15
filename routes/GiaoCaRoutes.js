@@ -107,6 +107,7 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
       nvhientai: user.hovaten,
       phone: user.phone,
       timenhanca: giaoca.timenhanca,
+      tienbandau: giaoca.tienbandau,
       hoadonthanhtoan: hoandondatt,
       hoadonchuathanhtoan: hoandonchuatt,
       tongtientttienmat: totalTienMat,
