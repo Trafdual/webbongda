@@ -4,6 +4,7 @@ const moment = require('moment')
 const Booking = require('../models/BookingModels')
 const LoaiSanBong = require('../models/LoaiSanBongModels')
 const SanBong = require('../models/SanBongModels')
+const momenttimezone = require('moment-timezone')
 
 router.get('/getCa', async (req, res) => {
   try {
@@ -146,13 +147,17 @@ router.get('/soluongsan', async (req, res) => {
     const currentTime = new Date()
     const currentHours = currentTime.getHours()
     const currentMinutes = currentTime.getMinutes()
-    const bookings = await Booking.find({ ngayda: ngayDa }).populate('ca')
+    const bookings = await Booking.find({
+      ngayda: momenttimezone().startOf('day').toDate()
+    }).populate('ca')
+    console.log(bookings)
 
     let soluongCaHoatDong = 0
     let soluongCaChoNhanSan = 0
     let soluongCaQuaGio = 0
-    let soluongCaTrong = 0
+    let soluongCaTrong1 = 0
     let soluongCaTong = 0
+    let soluongcaTrongTong = 0
 
     for (const san of sanList) {
       const bookingSan = bookings.filter(booking =>
@@ -169,58 +174,41 @@ router.get('/soluongsan', async (req, res) => {
 
         if (caEndHours === 0) {
           if (currentHours === 0 && currentMinutes < caEndMinutes) {
-            // Nếu giờ hiện tại là 0h và phút hiện tại chưa qua phút kết thúc của ca 0h, thì ca vẫn trống
-            soluongCaTrong++
+            soluongCaTrong1++
           } else {
-            // Sau 0h, ca đó sẽ được tính là ca trống
-            soluongCaTrong++
+            soluongCaTrong1++
           }
         } else if (
           caEndHours < currentHours ||
           (caEndHours === currentHours && caEndMinutes <= currentMinutes)
         ) {
-          soluongCaQuaGio++ // Ca đã qua giờ
+          soluongCaQuaGio++
         } else {
-          soluongCaTrong++ // Ca chưa qua giờ và chưa được đặt
+          soluongCaTrong1++
         }
-        soluongCaTong++
       })
 
-      // Tính các ca đã đặt và còn hoạt động
       soluongCaHoatDong += bookingSan.filter(booking => {
-        const caEndTime = new Date(booking.ca.endtime)
-        const caEndHours = caEndTime.getHours()
-        const caEndMinutes = caEndTime.getMinutes()
-
-        return (
-          booking.checkin &&
-          (caEndHours > currentHours ||
-            (caEndHours === currentHours && caEndMinutes > currentMinutes) ||
-            (caEndHours === 0 && currentHours !== 23)) // Ca còn hoạt động
-        )
+        return booking.checkin && booking.thanhtoan === false
       }).length
 
       soluongCaChoNhanSan += bookingSan.filter(booking => {
-        const caEndTime = new Date(booking.ca.endtime)
-        const caEndHours = caEndTime.getHours()
-        const caEndMinutes = caEndTime.getMinutes()
-
-        return (
-          booking.coc === true &&
-          booking.checkin === false &&
-          (caEndHours > currentHours ||
-            (caEndHours === currentHours && caEndMinutes > currentMinutes) ||
-            (caEndHours === 0 && currentHours !== 23))
-        )
+        return booking.coc === true && booking.checkin === false
       }).length
     }
 
-    // Trả về tổng số ca cho tất cả các sân
+    soluongcaTrongTong = soluongCaTrong1 - soluongCaHoatDong
+    soluongCaTong =
+      soluongcaTrongTong +
+      soluongCaHoatDong +
+      soluongCaQuaGio +
+      soluongCaChoNhanSan
+
     res.json({
       soluongCaHoatDong,
       soluongCaChoNhanSan,
       soluongCaQuaGio,
-      soluongCaTrong,
+      soluongcaTrongTong,
       soluongCaTong
     })
   } catch (error) {
@@ -231,12 +219,12 @@ router.get('/soluongsan', async (req, res) => {
 
 router.get('/santrong', async (req, res) => {
   try {
-    const ngayDa = new Date()
+    const ngayDa = momenttimezone()
     const sanList = await SanBong.find()
     const currentTime = new Date()
     const currentHours = currentTime.getHours()
     const currentMinutes = currentTime.getMinutes()
-    const bookings = await Booking.find({ ngayda: ngayDa }).populate('ca')
+    const bookings = await Booking.find({ ngayda: ngayDa.startOf('day').toDate() }).populate('ca')
 
     const danhSachCaTrongCuaSan = []
 
@@ -251,15 +239,28 @@ router.get('/santrong', async (req, res) => {
 
       const danhSachCaTrong = []
 
-      caTrong.forEach(ca => {
+      caTrong.forEach(async(ca) => {
         const caEndHours = ca.endtime.getHours()
         const caEndMinutes = ca.endtime.getMinutes()
-
         if (caEndHours === 0) {
           if (currentHours === 0 && currentMinutes < caEndMinutes) {
-            danhSachCaTrong.push(ca)
+            danhSachCaTrong.push({
+              _id: ca._id,
+              tenca: ca.tenca,
+              giaca: ca.giaca,
+              begintime: moment(ca.begintime).format('HH:mm'),
+              endtime: moment(ca.endtime).format('HH:mm'),
+              trangthai: ca.trangthai
+            })
           } else {
-            danhSachCaTrong.push(ca)
+            danhSachCaTrong.push({
+              _id: ca._id,
+              tenca: ca.tenca,
+              giaca: ca.giaca,
+              begintime: moment(ca.begintime).format('HH:mm'),
+              endtime: moment(ca.endtime).format('HH:mm'),
+              trangthai: ca.trangthai
+            })
           }
         } else if (
           caEndHours < currentHours ||
@@ -267,13 +268,21 @@ router.get('/santrong', async (req, res) => {
         ) {
           return
         } else {
-          danhSachCaTrong.push(ca)
+          danhSachCaTrong.push({
+            _id: ca._id,
+            tenca: ca.tenca,
+            giaca: ca.giaca,
+            begintime: moment(ca.begintime).format('HH:mm'),
+            endtime: moment(ca.endtime).format('HH:mm'),
+            trangthai: ca.trangthai
+          })
         }
       })
 
       danhSachCaTrongCuaSan.push({
-        san: san._id,
-        caTrong: danhSachCaTrong
+        _id: san._id,
+        tensan: san.tensan,
+        ca: danhSachCaTrong
       })
     }
 
@@ -320,15 +329,23 @@ router.get('/sanquagio', async (req, res) => {
           caEndHours < currentHours ||
           (caEndHours === currentHours && caEndMinutes <= currentMinutes)
         ) {
-          danhSachcaQuaGio.push(ca)
+          danhSachcaQuaGio.push({
+            _id: ca._id,
+            tenca: ca.tenca,
+            giaca: ca.giaca,
+            begintime: moment(ca.begintime).format('HH:mm'),
+            endtime: moment(ca.endtime).format('HH:mm'),
+            trangthai: ca.trangthai
+          })
         } else {
           return
         }
       })
 
       danhSachcaQuaGioCuaSan.push({
-        san: san._id,
-        caQuaGio: danhSachcaQuaGio
+        _id: san._id,
+        tensan: san.tensan,
+        ca: danhSachcaQuaGio
       })
     }
 

@@ -1,9 +1,9 @@
 const router = require('express').Router()
 const User = require('../models/UserModel')
 const bcrypt = require('bcryptjs')
-const { response } = require('express')
-const jwt = require('jsonwebtoken')
 const multer = require('multer')
+const momenttimezone = require('moment-timezone')
+const GiaoCa = require('../models/GiaoCaModels')
 
 const storage = multer.memoryStorage()
 
@@ -62,7 +62,27 @@ router.post('/loginfull', async (req, res) => {
     if (user.role !== role) {
       res.json({ message: 'bạn không có quyền truy cập trang web' })
     } else {
-      res.json(user)
+      if (user.role === 'staff') {
+        const today = momenttimezone()
+        const startOfDay = today.startOf('day').toDate()
+        const endOfDay = today.endOf('day').toDate()
+
+        const giaoca = await GiaoCa.find({
+          timenhanca: { $gte: startOfDay, $lt: endOfDay }
+        })
+        if (giaoca.length > 0) {
+          if (user.giaoca) {
+            const giao= await GiaoCa.findById(user.giaoca)
+            res.json({ user, nhanca: giao.nhanca })
+          } else {
+            res.json({ message: 'chưa đến ca của bạn' })
+          }
+        } else {
+          res.json({user})
+        }
+      } else {
+        res.json({user})
+      }
     }
   } catch (error) {
     console.error(error)

@@ -10,12 +10,17 @@ router.post('/giaoca/:idusser', async (req, res) => {
     const { tienbandau, idusergiaoca, tienphatsinh } = req.body
     const user = await User.findById(iduser)
     const usergiaoca = await User.findById(idusergiaoca)
+    const giaocanew = new GiaoCa({
+      timenhanca: momenttimezone().toDate(),
+      nvhientai: usergiaoca._id
+    })
+
     const giaoca = await GiaoCa.findById(user.giaoca)
     const shiftStartTime = giaoca.timenhanca
     const currentDateTime = new Date()
 
     const hoadons = await HoaDon.find({
-      date: { $gte: shiftStartTime, $lte: currentDateTime },
+      date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
     const totalTienMat = hoadons.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {
@@ -45,8 +50,18 @@ router.post('/giaoca/:idusser', async (req, res) => {
     giaoca.tienphatsinh = tienphatsinh
     giaoca.nvtuonglai = idusergiaoca
     giaoca.timegiaoca = momenttimezone().toDate()
-    usergiaoca.giaoca = giaoca._id
+    user.giaoca = ''
     await giaoca.save()
+
+    usergiaoca.giaoca = giaocanew._id
+
+    giaocanew.tienbandau =
+      giaoca.tienbandau +
+      giaoca.tongtientttienmat +
+      giaoca.tongtienttchuyenkhoan -
+      giaoca.tienphatsinh
+    await giaocanew.save()
+    await user.save()
     await usergiaoca.save()
     res.json(giaoca)
   } catch (error) {
@@ -65,7 +80,7 @@ router.get('/getgiaoca/:iduser', async (req, res) => {
     const currentDateTime = new Date()
 
     const hoadons = await HoaDon.find({
-      date: { $gte: shiftStartTime, $lte: currentDateTime },
+      date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
     const totalTienMat = hoadons.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {
@@ -110,19 +125,8 @@ router.post('/nhanca/:iduser', async (req, res) => {
     const iduser = req.params.iduser
     const user = await User.findById(iduser)
     const giaoca1 = await GiaoCa.findById(user.giaoca)
-    const tienbandau =
-      giaoca1.tienbandau +
-      giaoca1.tongtientttienmat +
-      giaoca1.tongtienttchuyenkhoan -
-      giaoca1.tienphatsinh
-    const giaoca = new GiaoCa({
-      timenhanca: momenttimezone().toDate(),
-      nvhientai: user._id,
-      tienbandau: tienbandau
-    })
-    user.giaoca = giaoca._id
-    await giaoca.save()
-    await user.save()
+    giaoca1.nhanca = true
+    await giaoca1.save()
     res.json(giaoca)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
@@ -168,7 +172,8 @@ router.post('/khoitaogiaoca/:idusser', async (req, res) => {
     const giaoca = new GiaoCa({
       timenhanca: momenttimezone().toDate(),
       nvhientai: iduser,
-      tienbandau: 0
+      tienbandau: 0,
+      nhanca: true
     })
     await giaoca.save()
     user.giaoca = giaoca._id
