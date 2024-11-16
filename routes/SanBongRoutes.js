@@ -196,6 +196,9 @@ router.get('/getallsanbong', async (request, res) => {
                 ) {
                   return 'Đang hoạt động'
                 }
+                else if(booking.thanhtoan === true){
+                  return 'Quá giờ'
+                }
               } else {
                 if (enttimeHours === 0) {
                   if (currentHours === 0 && currentMinutes < enttimeMinutes) {

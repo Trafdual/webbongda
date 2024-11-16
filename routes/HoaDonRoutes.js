@@ -221,15 +221,18 @@ router.get('/gethoadontest', async (req, res) => {
   }
 })
 
-router.post('/posthoadon/:idhoadon', async (req, res) => {
+router.post('/posthoadon/:idhoadon/:idbooking', async (req, res) => {
   try {
     const { phuphi, method, sotaikhoan, nganhang, tienkhachtra, tienthua } =
       req.body
     const idhoadon = req.params.idhoadon
+    const idbooking = req.params.idbooking
     const hoadon = await HoaDon.findById(idhoadon)
+    const booking = await Booking.findById(idbooking)
     hoadon.phuphi = phuphi
     hoadon.method = method
     hoadon.thanhtoan = true
+    booking.thanhtoan = true
     hoadon.date = momenttimezone().toDate()
 
     const tongTienDothue = hoadon.dothue.reduce(
@@ -271,6 +274,7 @@ router.post('/posthoadon/:idhoadon', async (req, res) => {
       tongtien: tongtien,
       noiDung: 'Thanh toán hóa đơn'
     })
+    await booking.save()
     await lichsu.save()
     await hoadon.save()
     res.json(hoadon)
