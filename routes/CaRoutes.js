@@ -9,7 +9,26 @@ const momenttimezone = require('moment-timezone')
 router.get('/getCa', async (req, res) => {
   try {
     const ca = await Ca.find().lean()
+
     res.json(ca)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+router.get('/getcafull', async (req, res) => {
+  try {
+    const ca = await Ca.find().lean()
+    const cajson = ca.map(c => {
+      return {
+        _id: c._id,
+        tenca: c.tenca,
+        giaca: c.giaca,
+        begintime: moment(c.begintime).format('HH:mm'),
+        endtime: moment(c.endtime).format('HH:mm')
+      }
+    })
+    res.json(cajson)
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
@@ -401,6 +420,5 @@ router.get('/chonhansan', async (req, res) => {
     res.status(500).json({ error: 'Đã xảy ra lỗi' })
   }
 })
-
 
 module.exports = router

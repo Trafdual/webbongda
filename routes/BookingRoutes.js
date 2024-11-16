@@ -370,9 +370,8 @@ router.post('/doilich/:idbooking', async (req, res) => {
     const { idca } = req.body
     const booking = await Booking.findById(idbooking)
     const ca = await Ca.findById(idca)
-    booking.ca = idca
-    booking.tiencoc = ca.giaca
-    const chenhlech = ca.giaca - booking.giaca
+    const cacu= await Ca.findById(booking.ca)
+    const chenhlech = ca.giaca - cacu.giaca
     if (chenhlech !== 0) {
       const lichsu = new LichSu({
         hovaten: booking.tennguoidat,
@@ -380,10 +379,14 @@ router.post('/doilich/:idbooking', async (req, res) => {
         method: chenhlech > 0 ? 'chuyển khoản' : 'hoàn tiền',
         ngaygio: momenttimezone().toDate(),
         noiDung: chenhlech > 0 ? 'đặt thêm cọc' : 'hoàn lại tiền cọc',
-        tongtien: Math.abs(chenhlech)
+        tongtien: chenhlech / 2
       })
       await lichsu.save()
     }
+
+    booking.ca = idca
+    booking.tiencoc = ca.giaca / 2
+    booking.giaca = ca.giaca
 
     await booking.save()
     res.json({ message: 'đổi lịch thành công' })

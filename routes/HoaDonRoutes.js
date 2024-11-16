@@ -284,4 +284,75 @@ router.post('/posthoadon/:idhoadon/:idbooking', async (req, res) => {
   }
 })
 
+router.get('/doanhthu', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query
+
+    if (!startDate || !endDate) {
+      return res
+        .status(400)
+        .json({ error: 'Vui lòng cung cấp startDate và endDate' })
+    }
+
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    end.setHours(23, 59, 59, 999)
+
+
+    if (isNaN(start) || isNaN(end)) {
+      return res.status(400).json({ error: 'Ngày không hợp lệ' })
+    }
+
+    // Tạo danh sách tất cả các ngày trong khoảng thời gian
+    const generateDateRange = (start, end) => {
+      const dates = []
+      const currentDate = new Date(start)
+
+      while (currentDate <= end) {
+        dates.push(new Date(currentDate).toISOString().split('T')[0]) // Chỉ lấy phần ngày
+        currentDate.setDate(currentDate.getDate() + 1)
+      }
+
+      return dates
+    }
+
+    const allDates = generateDateRange(start, end)
+
+    // Lấy dữ liệu doanh thu từ MongoDB
+    const doanhThuTheoNgay = await LichSu.aggregate([
+      {
+        $match: {
+          ngaygio: { $gte: start, $lte: end }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$ngaygio' } },
+          tongDoanhThu: { $sum: '$tongtien' }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ])
+
+    // Chuyển đổi kết quả MongoDB thành đối tượng {ngay: doanhThu}
+    const doanhThuMap = doanhThuTheoNgay.reduce((acc, item) => {
+      acc[item._id] = item.tongDoanhThu
+      return acc
+    }, {})
+
+    // Kết hợp tất cả các ngày với doanh thu
+    const finalResult = allDates.map(date => ({
+      ngay: date,
+      tongDoanhThu: doanhThuMap[date] || 0 // Giá trị mặc định là 0 nếu không có doanh thu
+    }))
+
+    res.json(finalResult)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tính doanh thu' })
+  }
+})
+
 module.exports = router
