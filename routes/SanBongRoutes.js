@@ -195,8 +195,7 @@ router.get('/getallsanbong', async (request, res) => {
                   booking.thanhtoan === false
                 ) {
                   return 'Đang hoạt động'
-                }
-                else if(booking.thanhtoan === true){
+                } else if (booking.thanhtoan === true) {
                   return 'Quá giờ'
                 }
               } else {
@@ -220,6 +219,7 @@ router.get('/getallsanbong', async (request, res) => {
             return {
               _id: c._id,
               tenca: c.tenca,
+              date: momenttimezone().format('DD-MM-YYYY'),
               giaca: c.giaca,
               begintime: moment(c.begintime).format('HH:mm'),
               endtime: moment(c.endtime).format('HH:mm'),
@@ -298,6 +298,7 @@ router.get('/getfiltersanbong', async (request, res) => {
             return {
               _id: c._id,
               tenca: c.tenca,
+              date:moment(ngayda).format('DD-MM-YYYY'),
               giaca: c.giaca,
               begintime: moment(c.begintime).format('HH:mm'),
               endtime: moment(c.endtime).format('HH:mm'),
