@@ -66,6 +66,8 @@ app.use(session({
 app.use(cors());
 app.use(express.static(path.join(__dirname, '/styles')))
 app.use(express.static(path.join(__dirname, '/images')))
+app.use(express.static(path.join(__dirname, '/uploads')))
+
 
 app.use('/',handle);
 app.use('/',thongtinadmin);

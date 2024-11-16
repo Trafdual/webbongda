@@ -228,6 +228,7 @@ router.post('/posthoadon/:idhoadon/:idbooking', async (req, res) => {
     const idhoadon = req.params.idhoadon
     const idbooking = req.params.idbooking
     const hoadon = await HoaDon.findById(idhoadon)
+
     const booking = await Booking.findById(idbooking)
     hoadon.phuphi = phuphi
     hoadon.method = method
@@ -267,8 +268,8 @@ router.post('/posthoadon/:idhoadon/:idbooking', async (req, res) => {
       hoadon.tienthua = tienthua
     }
     const lichsu = new LichSu({
-      hovaten: hoadon.tennguoidat,
-      sodienthoai: hoadon.phone,
+      hovaten: booking.tennguoidat,
+      sodienthoai: booking.phone,
       method: method,
       ngaygio: momenttimezone().toDate(),
       tongtien: tongtien,
@@ -297,7 +298,6 @@ router.get('/doanhthu', async (req, res) => {
     const start = new Date(startDate)
     const end = new Date(endDate)
     end.setHours(23, 59, 59, 999)
-
 
     if (isNaN(start) || isNaN(end)) {
       return res.status(400).json({ error: 'Ngày không hợp lệ' })
@@ -352,6 +352,27 @@ router.get('/doanhthu', async (req, res) => {
   } catch (error) {
     console.error('Đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi khi tính doanh thu' })
+  }
+})
+
+router.get('/lichsugiaodich', async (req, res) => {
+  try {
+    const lichsu = await LichSu.find().lean()
+    const lichsujson = lichsu.map(ls => {
+      return {
+        maGD: ls.maGD,
+        hovaten: ls.hovaten,
+        sodienthoai: ls.sodienthoai,
+        method: ls.method,
+        ngaygio: moment(ls.ngaygio).format('DD-MM-YYYY HH:mm:ss'),
+        tongtien: ls.tongtien,
+        noiDung: ls.noiDung
+      }
+    })
+    res.json(lichsujson)
+  } catch (error) {
+    console.error('Đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi ' })
   }
 })
 

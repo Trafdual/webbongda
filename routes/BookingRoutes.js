@@ -370,7 +370,7 @@ router.post('/doilich/:idbooking', async (req, res) => {
     const { idca } = req.body
     const booking = await Booking.findById(idbooking)
     const ca = await Ca.findById(idca)
-    const cacu= await Ca.findById(booking.ca)
+    const cacu = await Ca.findById(booking.ca)
     const chenhlech = ca.giaca - cacu.giaca
     if (chenhlech !== 0) {
       const lichsu = new LichSu({
@@ -381,6 +381,8 @@ router.post('/doilich/:idbooking', async (req, res) => {
         noiDung: chenhlech > 0 ? 'đặt thêm cọc' : 'hoàn lại tiền cọc',
         tongtien: chenhlech / 2
       })
+      lichsu.maGD = 'GD' + lichsu._id.toString().slice(-4)
+
       await lichsu.save()
     }
 
