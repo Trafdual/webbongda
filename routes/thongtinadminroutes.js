@@ -19,12 +19,24 @@ router.post('/registerweb', async (req, res) => {
     }
     const exitphone = await User.findOne({ phone })
     if (exitphone) {
-      return res.status(400).json({ message: 'số điện thoại đã được đăng kí' })
+      return res.status(400).json({ message: 'Số điện thoại đã được đăng kí' })
+    }
+
+    // Kiểm tra email đúng định dạng
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!email || !emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Email không hợp lệ' })
     }
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
-      return res.status(400).json({ message: 'email đã được đăng ký' })
+      return res.status(400).json({ message: 'Email đã được đăng ký' })
+    }
+
+    // Kiểm tra mật khẩu mạnh
+    const passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/
+    if (!password || !passwordRegex.test(password)) {
+      return res.status(400).json({message:'Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt'})
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -43,6 +55,7 @@ router.post('/registerweb', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi.' })
   }
 })
+
 
 router.post('/loginfull', async (req, res) => {
   try {
