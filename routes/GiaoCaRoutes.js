@@ -11,9 +11,7 @@ router.post('/giaoca/:idusser', async (req, res) => {
     const { tienbandau, idusergiaoca, tienphatsinh } = req.body
     const user = await User.findById(iduser)
     const usergiaoca = await User.findById(idusergiaoca)
-    const lichsu = await LichSu.find({
-      date: { $gte: shiftStartTime, $lte: currentDateTime }
-    })
+
     const giaocanew = new GiaoCa({
       timenhanca: momenttimezone().toDate(),
       nvhientai: usergiaoca._id
@@ -26,6 +24,10 @@ router.post('/giaoca/:idusser', async (req, res) => {
     const hoadons = await HoaDon.find({
       date: { $gte: shiftStartTime, $lte: currentDateTime }
     })
+    const lichsu = await LichSu.find({
+      ngaygio: { $gte: shiftStartTime, $lte: currentDateTime }
+    })
+
     const totalTienMat = lichsu.reduce((total, hoadon) => {
       if (hoadon.method === 'tiền mặt') {
         return total + hoadon.tongtien

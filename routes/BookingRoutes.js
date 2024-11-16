@@ -8,7 +8,6 @@ const momenttimezone = require('moment-timezone')
 const moment = require('moment')
 const Hoadon = require('../models/HoaDonModels')
 const LichSu = require('../models/LichSuModels')
-const { response } = require('express')
 
 router.get('/getbooking/:iduser', async (req, res) => {
   try {
@@ -157,7 +156,6 @@ router.post('/datlichho/:iduser', async (req, res) => {
   }
 })
 
-
 router.post('/datcocsan', async (req, res) => {
   try {
     const { tennguoidat, phone, idbookings } = req.body
@@ -184,7 +182,7 @@ router.post('/datcocsan', async (req, res) => {
         method: 'chuyển khoản',
         ngaygio: momenttimezone().toDate(),
         noiDung: 'đặt cọc',
-        tongtien:booking.tiencoc
+        tongtien: booking.tiencoc
       })
       lichsu.maGD = 'GD' + lichsu._id.toString().slice(-4)
       hoadon.mahd = 'HD' + hoadon._id.toString().slice(-4)
@@ -360,6 +358,60 @@ router.post('/huysan/:idbooking/:iduser', async (req, res) => {
     await Booking.findByIdAndDelete(idbooking)
     await user.save()
     res.json({ message: 'hủy sân thành công' })
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.post('/doilich/:idbooking', async (req, res) => {
+  try {
+    const idbooking = req.params.idbooking
+    const { idca } = req.body
+    const booking = await Booking.findById(idbooking)
+    const ca = await Ca.findById(idca)
+    booking.ca = idca
+    booking.tiencoc = ca.giaca
+    const chenhlech = ca.giaca - booking.giaca
+    if (chenhlech !== 0) {
+      const lichsu = new LichSu({
+        hovaten: booking.tennguoidat,
+        sodienthoai: booking.phone,
+        method: chenhlech > 0 ? 'chuyển khoản' : 'hoàn tiền',
+        ngaygio: momenttimezone().toDate(),
+        noiDung: chenhlech > 0 ? 'đặt thêm cọc' : 'hoàn lại tiền cọc',
+        tongtien: Math.abs(chenhlech)
+      })
+      await lichsu.save()
+    }
+
+    await booking.save()
+    res.json({ message: 'đổi lịch thành công' })
+  } catch (error) {
+    console.error('đã xảy ra lỗi:', error)
+    res.status(500).json({ error: 'Đã xảy ra lỗi' })
+  }
+})
+
+router.get('/getchitiebooking/:idbooking', async (req, res) => {
+  try {
+    const idbooking = req.params.idbooking
+    const booking = await Booking.findById(idbooking).populate('ca loaisanbong')
+    const ca = await Ca.findById(booking.ca)
+    const bookingjson = {
+      _id: booking._id,
+      ca: ca.tenca,
+      begintime: moment(ca.begintime).format('HH:mm'),
+      endtime: moment(ca.endtime).format('HH:mm'),
+      loaisanbong: booking.loaisanbong.tenloaisan,
+      giaca: ca.giaca * booking.soluongsan,
+      soluongsan: booking.soluongsan,
+      tiencoc: booking.tiencoc,
+      coc: booking.coc,
+      checkin: booking.checkin,
+      thanhtoan: booking.thanhtoan
+    }
+    res.json(bookingjson)
   } catch (error) {
     console.error('đã xảy ra lỗi:', error)
     res.status(500).json({ error: 'Đã xảy ra lỗi' })

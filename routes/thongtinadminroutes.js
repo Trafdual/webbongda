@@ -72,16 +72,16 @@ router.post('/loginfull', async (req, res) => {
         })
         if (giaoca.length > 0) {
           if (user.giaoca) {
-            const giao= await GiaoCa.findById(user.giaoca)
+            const giao = await GiaoCa.findById(user.giaoca)
             res.json({ user, nhanca: giao.nhanca })
           } else {
             res.json({ message: 'chưa đến ca của bạn' })
           }
         } else {
-          res.json({user})
+          res.json({ user })
         }
       } else {
-        res.json({user})
+        res.json({ user })
       }
     }
   } catch (error) {
@@ -89,11 +89,33 @@ router.post('/loginfull', async (req, res) => {
     res.status(500).json({ message: 'Đã xảy ra lỗi.' })
   }
 })
+
+
 router.get('/getnhanvien', async (req, res) => {
   try {
     const user = await User.find().lean()
     const userjson = user.filter(u => u.role === 'staff')
-    res.json(userjson)
+    const userjson2 = userjson.map(user => {
+      const trangthai = () => {
+        if (user.giaoca === null || user.giaoca === undefined) {
+          return 'không trong ca'
+        } else {
+          return 'đang trong ca'
+        }
+      }
+      return {
+        _id: user._id,
+        hovaten: user.hovaten,
+        phone: user.phone,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+        hoadon: user.hoadon,
+        booking: user.booking,
+        trangthai: trangthai()
+      }
+    })
+    res.json(userjson2)
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Đã xảy ra lỗi.' })
